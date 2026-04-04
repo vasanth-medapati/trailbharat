@@ -1,621 +1,1186 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
-<title>TrailBharat — Explore India in 3D</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<link href="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css" rel="stylesheet"/>
-<script src="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
-<link rel="stylesheet" href="css/style.css"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrailBharat — Missing Features</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --bg2: #111814;
+    --bg3: #182119;
+    --card: #1a2420;
+    --card2: #1f2c27;
+    --border: rgba(74,200,130,0.15);
+    --border2: rgba(74,200,130,0.3);
+    --accent: #3de097;
+    --accent2: #22c47e;
+    --accent3: #0e9c5c;
+    --danger: #ff4d4d;
+    --danger2: #ff2020;
+    --warn: #ffb930;
+    --blue: #4da6ff;
+    --purple: #a78bfa;
+    --text: #e8f5ee;
+    --text2: #9bbfac;
+    --text3: #618071;
+    --font: 'Space Grotesk', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,15,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 20px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-size: 18px; font-weight: 700; color: var(--accent);
+    letter-spacing: -0.5px; margin-right: 12px; white-space: nowrap;
+  }
+  .nav-tab {
+    padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text2); font-family: var(--font);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-tab:hover { border-color: var(--border2); color: var(--text); }
+  .nav-tab.active {
+    background: var(--accent); color: #0a0f0d;
+    border-color: var(--accent);
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none; padding: 28px 20px; max-width: 720px; margin: 0 auto;
+    animation: fadein 0.3s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadein { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:none; } }
+
+  .section-header { margin-bottom: 28px; }
+  .section-title {
+    font-size: 26px; font-weight: 700; letter-spacing: -0.8px;
+    color: var(--text); line-height: 1.2; margin-bottom: 6px;
+  }
+  .section-sub { font-size: 14px; color: var(--text3); }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 600; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: 10px; border: none;
+    font-family: var(--font); font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--accent); color: #0a0f0d;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-danger {
+    background: var(--danger); color: #fff;
+  }
+  .btn-danger:hover { background: var(--danger2); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent; color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-outline:hover { background: var(--card2); color: var(--text); }
+  .btn-full { width: 100%; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
+  }
+  .badge-green { background: rgba(61,224,151,0.12); color: var(--accent); }
+  .badge-red { background: rgba(255,77,77,0.12); color: var(--danger); }
+  .badge-blue { background: rgba(77,166,255,0.12); color: var(--blue); }
+  .badge-warn { background: rgba(255,185,48,0.12); color: var(--warn); }
+  .badge-purple { background: rgba(167,139,250,0.12); color: var(--purple); }
+
+  /* ── INPUTS ── */
+  input[type="text"], input[type="tel"], textarea, select {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px;
+    color: var(--text); font-family: var(--font); font-size: 14px;
+    outline: none; transition: border-color 0.2s;
+  }
+  input[type="text"]:focus,
+  input[type="tel"]:focus,
+  textarea:focus,
+  select:focus { border-color: var(--border2); }
+  textarea { resize: vertical; min-height: 90px; }
+  select { cursor: pointer; }
+  label { display: block; font-size: 13px; color: var(--text3); margin-bottom: 6px; margin-top: 14px; }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 10px;
+    background: var(--bg3); border: 1px solid var(--border);
+    font-size: 13px; margin-bottom: 12px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--text3); flex-shrink: 0;
+  }
+  .dot.green { background: var(--accent); animation: pulse 1.5s infinite; }
+  .dot.red { background: var(--danger); animation: pulse 1.5s infinite; }
+  .dot.warn { background: var(--warn); }
+  @keyframes pulse {
+    0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+
+  /* ── COORD DISPLAY ── */
+  .coord-box {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    font-family: var(--mono); font-size: 13px; color: var(--accent);
+    margin-bottom: 12px; letter-spacing: 0.5px;
+  }
+  .coord-label {
+    font-family: var(--font); font-size: 11px;
+    color: var(--text3); margin-bottom: 4px; letter-spacing: 0.5px;
+  }
+
+  /* ── SOS BUTTON ── */
+  .sos-btn {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: var(--danger); border: 4px solid rgba(255,77,77,0.3);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; cursor: pointer; margin: 24px auto;
+    font-family: var(--font); font-size: 22px; font-weight: 700;
+    color: #fff; letter-spacing: 1px;
+    box-shadow: 0 0 0 0 rgba(255,77,77,0.4);
+    transition: transform 0.15s;
+    animation: sos-ring 2s infinite;
+  }
+  .sos-btn:hover { transform: scale(1.04); }
+  .sos-btn:active { transform: scale(0.96); }
+  .sos-btn .sos-icon { font-size: 32px; margin-bottom: 2px; }
+  @keyframes sos-ring {
+    0% { box-shadow: 0 0 0 0 rgba(255,77,77,0.4); }
+    70% { box-shadow: 0 0 0 22px rgba(255,77,77,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,77,77,0); }
+  }
+
+  /* ── CONTACT ROW ── */
+  .contact-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .contact-row:last-child { border-bottom: none; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--card2); display: flex; align-items: center;
+    justify-content: center; font-weight: 600; font-size: 14px;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .contact-name { font-weight: 600; font-size: 14px; }
+  .contact-num { font-size: 13px; color: var(--text3); }
+  .contact-tag { margin-left: auto; }
+
+  /* ── GRID 2 ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 420px) { .grid2 { grid-template-columns: 1fr; } }
+
+  /* ── FEATURE ROW ── */
+  .feature-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .feature-row:last-child { border-bottom: none; }
+  .feature-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--bg3); display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .feature-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .feature-desc { font-size: 13px; color: var(--text3); }
+
+  /* ── SHARE LINK ── */
+  .share-link {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px;
+    font-family: var(--mono); font-size: 12px; color: var(--blue);
+    word-break: break-all;
+  }
+  .copy-btn {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 10px;
+    color: var(--text2); font-size: 12px; cursor: pointer;
+    font-family: var(--font); flex-shrink: 0; white-space: nowrap;
+  }
+  .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ── AI RESPONSE ── */
+  .ai-response {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px;
+    font-size: 14px; line-height: 1.8; color: var(--text);
+    white-space: pre-wrap; display: none;
+  }
+  .ai-response.visible { display: block; animation: fadein 0.4s ease; }
+  .ai-typing {
+    display: none; align-items: center; gap: 8px;
+    padding: 14px 18px; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: 12px;
+    font-size: 13px; color: var(--text3);
+  }
+  .ai-typing.visible { display: flex; }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dots span {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); display: block;
+    animation: bounce 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,80%,100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+
+  /* ── FORENSIC ── */
+  .forensic-stat {
+    text-align: center; padding: 14px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .forensic-stat-val {
+    font-size: 22px; font-weight: 700; color: var(--accent);
+    font-family: var(--mono);
+  }
+  .forensic-stat-label {
+    font-size: 11px; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;
+  }
+  .log-line {
+    display: flex; gap: 12px; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .log-line:last-child { border-bottom: none; }
+  .log-time { font-family: var(--mono); color: var(--text3); font-size: 12px; flex-shrink: 0; }
+  .log-event { color: var(--text); }
+  .log-badge { margin-left: auto; flex-shrink: 0; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--card2); border: 1px solid var(--border2);
+    border-radius: 12px; padding: 10px 20px;
+    color: var(--text); font-size: 14px; font-weight: 500;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    z-index: 999; white-space: nowrap; pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--bg3); border-radius: 6px;
+    height: 6px; overflow: hidden; margin-top: 8px;
+  }
+  .progress-bar {
+    height: 100%; background: var(--accent); border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  /* ── ITINERARY DAY ── */
+  .day-card {
+    border-left: 3px solid var(--accent3);
+    padding-left: 16px; margin-bottom: 20px;
+  }
+  .day-header {
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+  }
+  .day-body { font-size: 14px; line-height: 1.8; color: var(--text2); }
+
+  /* ── TOGGLE ── */
+  .toggle-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 14px; }
+  .toggle-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+  .toggle {
+    position: relative; width: 42px; height: 24px; flex-shrink: 0;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0; background: var(--bg3);
+    border-radius: 12px; cursor: pointer; border: 1px solid var(--border2);
+    transition: all 0.25s;
+  }
+  .toggle-slider::after {
+    content: ''; position: absolute; left: 3px; top: 3px;
+    width: 16px; height: 16px; background: var(--text3);
+    border-radius: 50%; transition: all 0.25s;
+  }
+  .toggle input:checked + .toggle-slider { background: var(--accent3); border-color: var(--accent); }
+  .toggle input:checked + .toggle-slider::after {
+    transform: translateX(18px); background: #fff;
+  }
+
+  .section-divider {
+    text-align: center; padding: 40px 0 20px;
+    color: var(--text3); font-size: 13px;
+  }
+</style>
 </head>
 <body>
 
-<!-- ══ SPLASH ══ -->
-<div id="splash">
-  <div class="splash-inner">
-    <div class="splash-logo">TB</div>
-    <div class="splash-name">TrailBharat</div>
-    <div class="splash-tagline">Explore India in 3D · Offline Ready</div>
-    <div class="splash-bar"><div class="splash-fill" id="splashFill"></div></div>
-    <div class="splash-status" id="splashStatus">Loading India's heritage...</div>
-  </div>
-</div>
-
-<!-- ══ AUTH MODAL ══ -->
-<div id="authModal" class="modal-overlay" style="display:none">
-  <div class="auth-box">
-    <div class="auth-logo">TB</div>
-    <h2 class="auth-title" id="authTitle">Welcome to TrailBharat</h2>
-    <p class="auth-sub" id="authSub">Create your explorer account</p>
-    <div id="authRegFields">
-      <input class="auth-input" id="regName" placeholder="Full Name" type="text"/>
-      <input class="auth-input" id="regEmail" placeholder="Email address" type="email"/>
-      <input class="auth-input" id="regPass" placeholder="Password" type="password"/>
-      <input class="auth-input" id="regPhone" placeholder="Phone (for SOS)" type="tel"/>
-    </div>
-    <div id="authLoginFields" style="display:none">
-      <input class="auth-input" id="loginEmail" placeholder="Email address" type="email"/>
-      <input class="auth-input" id="loginPass" placeholder="Password" type="password"/>
-    </div>
-    <button class="auth-btn" id="authSubmitBtn" onclick="authSubmit()">Create Account</button>
-    <div class="auth-toggle" id="authToggle">Already have an account? <span onclick="toggleAuth()">Sign In</span></div>
-    <button class="auth-skip" onclick="skipAuth()">Continue as Guest →</button>
-  </div>
-</div>
-
-<!-- ══ NAV ══ -->
-<nav id="navbar">
-  <a href="#" class="nav-logo" onclick="showPage('home')">
-    <div class="nav-mark">TB</div>
-    <span class="nav-name">TrailBharat</span>
-  </a>
-  <div class="nav-center">
-    <button class="nav-btn" onclick="showPage('map')">🗺 Map</button>
-    <button class="nav-btn" onclick="showPage('explore')">🏛 Explore</button>
-    <button class="nav-btn" onclick="showPage('trip')">✈ Trip Planner</button>
-    <button class="nav-btn" onclick="showPage('safety')">🛡 Safety</button>
-    <button class="nav-btn" onclick="showPage('weather')">🌤 Weather</button>
-    <button class="nav-btn" onclick="showPage('rewards')">⭐ Rewards</button>
-  </div>
-  <div class="nav-right">
-    <div class="gps-pill" id="gpsPill" onclick="showPage('map')">
-      <div class="gps-dot" id="gpsDot"></div>
-      <span id="gpsText">GPS</span>
-    </div>
-    <button class="sos-btn" onclick="showPage('emergency')">🆘 SOS</button>
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    <div class="user-avatar" id="userAvatar" onclick="showPage('account')">?</div>
-  </div>
-  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+<nav>
+  <div class="nav-brand">🏔 TrailBharat</div>
+  <button class="nav-tab active" onclick="showTab('sos')">🆘 SOS</button>
+  <button class="nav-tab" onclick="showTab('live')">📍 Live Share</button>
+  <button class="nav-tab" onclick="showTab('ai')">🤖 AI Planner</button>
+  <button class="nav-tab" onclick="showTab('forensic')">🔍 Trail Forensics</button>
 </nav>
 
-<div class="mobile-nav" id="mobileNav">
-  <button onclick="showPage('map');closeMobile()">🗺 Live Map</button>
-  <button onclick="showPage('explore');closeMobile()">🏛 Explore India</button>
-  <button onclick="showPage('trip');closeMobile()">✈ Trip Planner</button>
-  <button onclick="showPage('safety');closeMobile()">🛡 Safety & Forensics</button>
-  <button onclick="showPage('weather');closeMobile()">🌤 Weather</button>
-  <button onclick="showPage('rewards');closeMobile()">⭐ Rewards</button>
-  <button onclick="showPage('emergency');closeMobile()" style="color:#dc2626">🆘 Emergency SOS</button>
-  <button onclick="showPage('account');closeMobile()">👤 My Account</button>
-</div>
+<!-- ═══════════════════════════════════════════ -->
+<!--               SOS SECTION                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-sos" class="section active">
+  <div class="section-header">
+    <div class="section-title">Emergency SOS</div>
+    <div class="section-sub">One tap sends your live GPS + trail history via SMS. Works on 2G.</div>
+  </div>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: HOME
-══════════════════════════════════════════════════════ -->
-<div id="page-home" class="page active">
-  <section class="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-content">
-      <div class="hero-badge"><span class="badge-pulse"></span> India's #1 Offline 3D Explorer</div>
-      <h1>Explore <span class="hl">Every Corner</span><br>of India in 3D</h1>
-      <p class="hero-p">Offline 3D maps · Heritage guides · Trip planner · AI assistant · Real-time safety · Emergency SOS — everything a traveller needs, no internet required in the field.</p>
-      <div class="hero-btns">
-        <button class="btn-green" onclick="showPage('map')">📍 Open 3D Map</button>
-        <button class="btn-outline" onclick="showPage('trip')">✈ Plan a Trip</button>
-        <button class="btn-outline" onclick="showPage('explore')">🏛 Explore Sites</button>
+  <div id="sos-status-bar" class="status-bar">
+    <div class="dot" id="sos-dot"></div>
+    <span id="sos-status-text" style="color:var(--text3)">Acquiring GPS signal...</span>
+  </div>
+
+  <div class="coord-box">
+    <div class="coord-label">YOUR COORDINATES</div>
+    <div id="sos-coords">-- Waiting for GPS --</div>
+  </div>
+
+  <div id="sos-btn-area" style="text-align:center">
+    <div class="sos-btn" id="sosBtnMain" onclick="triggerSOS()">
+      <div class="sos-icon">🆘</div>
+      SOS
+    </div>
+    <div style="font-size:12px;color:var(--text3);margin-top:-8px">Tap to send GPS via SMS</div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">Emergency Contacts</div>
+    <div id="contacts-list">
+      <div class="contact-row">
+        <div class="avatar">M</div>
+        <div>
+          <div class="contact-name">Mom</div>
+          <div class="contact-num">+91 98765 43210</div>
+        </div>
+        <div class="contact-tag"><span class="badge badge-green">Primary</span></div>
       </div>
-      <div class="hero-stats">
-        <div class="hstat"><div class="hnum">38,000+</div><div class="hlbl">Heritage Sites</div></div>
-        <div class="hstat"><div class="hnum">28</div><div class="hlbl">States Mapped</div></div>
-        <div class="hstat"><div class="hnum">0G</div><div class="hlbl">Internet Needed</div></div>
-        <div class="hstat"><div class="hnum">±3m</div><div class="hlbl">GPS Accuracy</div></div>
-        <div class="hstat"><div class="hnum">AI</div><div class="hlbl">Trip Planner</div></div>
+      <div class="contact-row">
+        <div class="avatar">R</div>
+        <div>
+          <div class="contact-name">Rahul</div>
+          <div class="contact-num">+91 87654 32109</div>
+        </div>
+        <div class="contact-tag"><span class="badge badge-blue">Friend</span></div>
+      </div>
+      <div class="contact-row">
+        <div class="avatar" style="background:rgba(255,77,77,0.15);color:var(--danger)">P</div>
+        <div>
+          <div class="contact-name">Police Control</div>
+          <div class="contact-num">100</div>
+        </div>
+        <div class="contact-tag"><span class="badge badge-red">Emergency</span></div>
       </div>
     </div>
-    <div class="hero-cards">
-      <div class="feat-card" onclick="showPage('map')">
-        <div class="fc-icon">🗺</div>
-        <div class="fc-title">Live 3D Map</div>
-        <div class="fc-desc">Real roads, buildings, monuments — all in 3D with GPS</div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" id="new-contact-name" placeholder="Name" style="flex:1;min-width:120px">
+      <input type="tel" id="new-contact-num" placeholder="+91 XXXXX XXXXX" style="flex:1;min-width:140px">
+      <button class="btn btn-outline" onclick="addContact()">+ Add</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Emergency Numbers</div>
+    <div class="grid2">
+      <div class="feature-row" style="border:none;padding:6px 0">
+        <div class="feature-icon">🚔</div>
+        <div><div class="feature-title">Police</div><div style="font-family:var(--mono);font-size:16px;color:var(--accent)">100</div></div>
       </div>
-      <div class="feat-card" onclick="showPage('trip')">
-        <div class="fc-icon">✈</div>
-        <div class="fc-title">AI Trip Planner</div>
-        <div class="fc-desc">Type a destination — get a full itinerary + bookings guide</div>
+      <div class="feature-row" style="border:none;padding:6px 0">
+        <div class="feature-icon">🚑</div>
+        <div><div class="feature-title">Ambulance</div><div style="font-family:var(--mono);font-size:16px;color:var(--accent)">108</div></div>
       </div>
-      <div class="feat-card" onclick="showPage('safety')">
-        <div class="fc-icon">🛡</div>
-        <div class="fc-title">Safety & Forensics</div>
-        <div class="fc-desc">Accident zones, crime history, safety scores per area</div>
+      <div class="feature-row" style="border:none;padding:6px 0">
+        <div class="feature-icon">🚒</div>
+        <div><div class="feature-title">Fire</div><div style="font-family:var(--mono);font-size:16px;color:var(--accent)">101</div></div>
       </div>
-      <div class="feat-card" onclick="showPage('weather')">
-        <div class="fc-icon">🌤</div>
-        <div class="fc-title">Live Weather</div>
-        <div class="fc-desc">Hourly + 7-day forecast for any India location</div>
+      <div class="feature-row" style="border:none;padding:6px 0">
+        <div class="feature-icon">👩</div>
+        <div><div class="feature-title">Women Help</div><div style="font-family:var(--mono);font-size:16px;color:var(--accent)">1091</div></div>
       </div>
-      <div class="feat-card" onclick="showPage('emergency')">
-        <div class="fc-icon">🆘</div>
-        <div class="fc-title">Emergency SOS</div>
-        <div class="fc-desc">One tap SMS with GPS coordinates. Works without data</div>
+      <div class="feature-row" style="border:none;padding:6px 0">
+        <div class="feature-icon">🌿</div>
+        <div><div class="feature-title">Forest Dept</div><div style="font-family:var(--mono);font-size:13px;color:var(--accent)">1800-233-5500</div></div>
       </div>
-      <div class="feat-card" onclick="showPage('explore')">
-        <div class="fc-icon">🏛</div>
-        <div class="fc-title">Heritage Guides</div>
-        <div class="fc-desc">Offline Wikipedia for every site, monument & trail</div>
+      <div class="feature-row" style="border:none;padding:6px 0">
+        <div class="feature-icon">🏥</div>
+        <div><div class="feature-title">Civil Hospital</div><div style="font-family:var(--mono);font-size:13px;color:var(--accent)">079-2325-0000</div></div>
       </div>
     </div>
-  </section>
-</div>
+  </div>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: MAP
-══════════════════════════════════════════════════════ -->
-<div id="page-map" class="page">
-  <div class="map-shell">
-    <!-- SIDEBAR -->
-    <div class="map-sidebar" id="mapSidebar">
-      <div class="msb-top">
-        <div class="msb-title">TrailBharat Map</div>
-        <div class="msb-loc" id="msLoc">Gandhinagar, Gujarat</div>
+  <div class="card">
+    <div class="card-title">SOS Behaviour</div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">📡 SMS Without Internet</div>
+        <div class="toggle-sub">Sends on weakest 2G signal</div>
       </div>
-      <div class="msb-search">
-        <input id="msSearch" placeholder="Search any place in India..." oninput="searchSites(this.value)"/>
-      </div>
-      <div class="msb-filters" id="msbFilters">
-        <button class="mf active" onclick="filterMap('all',this)">All</button>
-        <button class="mf" onclick="filterMap('heritage',this)">Heritage</button>
-        <button class="mf" onclick="filterMap('temple',this)">Temple</button>
-        <button class="mf" onclick="filterMap('nature',this)">Nature</button>
-        <button class="mf" onclick="filterMap('trek',this)">Trek</button>
-        <button class="mf" onclick="filterMap('emergency',this)">🏥 Help</button>
-      </div>
-      <div class="msb-list" id="msbList"></div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
     </div>
-
-    <!-- MAP -->
-    <div class="map-area">
-      <div id="mainMap"></div>
-
-      <!-- CONTROLS -->
-      <div class="map-controls-top">
-        <div class="mc-style-row">
-          <button class="mcs active" onclick="setStyle('streets',this)">Streets</button>
-          <button class="mcs" onclick="setStyle('satellite',this)">Satellite</button>
-          <button class="mcs" onclick="setStyle('topo',this)">Topo</button>
-        </div>
-        <div class="mc-right">
-          <button class="mc-ico" title="My Location" onclick="flyToUser()">📍</button>
-          <button class="mc-ico" title="3D Toggle" onclick="toggle3D()" id="btn3d">🏗</button>
-          <button class="mc-ico" title="Safety Layer" onclick="toggleSafety()">🛡</button>
-          <button class="mc-ico" title="Sidebar" onclick="toggleSidebar()">☰</button>
-        </div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">🗺️ Send Breadcrumb Trail</div>
+        <div class="toggle-sub">Include last 10 waypoints</div>
       </div>
-
-      <!-- GPS CARD -->
-      <div class="gps-card" id="gpsCard">
-        <div class="gc-dot"></div>
-        <div class="gc-info">
-          <div class="gc-title" id="gcTitle">Acquiring GPS...</div>
-          <div class="gc-coords" id="gcCoords">—</div>
-        </div>
-        <div class="gc-acc" id="gcAcc">—</div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">🔋 Low Battery Alert</div>
+        <div class="toggle-sub">Auto-alert at 15% battery</div>
       </div>
-
-      <!-- SITE DETAIL PANEL -->
-      <div class="site-panel" id="sitePanel" style="display:none">
-        <div class="sp-close" onclick="closeSitePanel()">✕</div>
-        <div class="sp-hero" id="spHero"></div>
-        <div class="sp-body">
-          <div class="sp-type" id="spType"></div>
-          <div class="sp-name" id="spName"></div>
-          <div class="sp-loc" id="spLoc"></div>
-          <div class="sp-stars" id="spStars"></div>
-          <div class="sp-safety-row" id="spSafety"></div>
-          <div class="sp-desc" id="spDesc"></div>
-          <div class="sp-meta" id="spMeta"></div>
-          <div class="sp-actions">
-            <button class="spa green" onclick="navigate3D()">📍 Navigate</button>
-            <button class="spa blue" onclick="openFullDetail()">🏛 Full Guide</button>
-            <button class="spa amber" onclick="addReview()">✍ Review</button>
-            <button class="spa red" onclick="showPage('emergency')">🆘 SOS</button>
-          </div>
-        </div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">📴 Dead Zone Queue</div>
+        <div class="toggle-sub">Send SOS when signal returns</div>
       </div>
-
-      <div class="offline-tag"><span class="ot-dot"></span>Offline Ready</div>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: EXPLORE
-══════════════════════════════════════════════════════ -->
-<div id="page-explore" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr">
-      <div class="pg-label">Heritage & Attractions</div>
-      <h2 class="pg-title">Explore All India</h2>
-      <p class="pg-sub">Click any site for full 3D guide, history, visiting tips, and offline info.</p>
-      <div class="explore-search-row">
-        <input class="explore-search" id="exploreSearch" placeholder="Search Taj Mahal, Hampi, Valley of Flowers..." oninput="filterExplore(this.value)"/>
-        <select class="explore-select" id="exploreState" onchange="filterExplore()">
-          <option value="">All States</option>
-          <option value="Gujarat">Gujarat</option>
-          <option value="Rajasthan">Rajasthan</option>
-          <option value="Maharashtra">Maharashtra</option>
-          <option value="Tamil Nadu">Tamil Nadu</option>
-          <option value="Uttar Pradesh">Uttar Pradesh</option>
-          <option value="Kerala">Kerala</option>
-          <option value="Karnataka">Karnataka</option>
-          <option value="Himachal Pradesh">Himachal Pradesh</option>
-          <option value="Uttarakhand">Uttarakhand</option>
-          <option value="West Bengal">West Bengal</option>
-        </select>
-      </div>
-      <div class="explore-filters" id="exploreFilters">
-        <button class="ef active" onclick="filterExplore('','',this)">All</button>
-        <button class="ef" onclick="filterExplore('','heritage',this)">Heritage</button>
-        <button class="ef" onclick="filterExplore('','temple',this)">Temple</button>
-        <button class="ef" onclick="filterExplore('','nature',this)">Nature</button>
-        <button class="ef" onclick="filterExplore('','trek',this)">Trek</button>
-        <button class="ef" onclick="filterExplore('','unesco',this)">UNESCO</button>
-      </div>
-    </div>
-    <div class="sites-grid" id="sitesGrid"></div>
+<!-- ═══════════════════════════════════════════ -->
+<!--            LIVE LOCATION SHARING           -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-live" class="section">
+  <div class="section-header">
+    <div class="section-title">Live Location Sharing</div>
+    <div class="section-sub">Share a real-time tracking link. Contacts see you move on the map.</div>
   </div>
-</div>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: TRIP PLANNER
-══════════════════════════════════════════════════════ -->
-<div id="page-trip" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr">
-      <div class="pg-label">AI-Powered</div>
-      <h2 class="pg-title">Trip Planner</h2>
-      <p class="pg-sub">Tell us where you want to go — get a complete itinerary, budget, hotels, transport, and day-by-day plan.</p>
-    </div>
-
-    <div class="trip-layout">
-      <!-- PLANNER FORM -->
-      <div class="trip-form-card">
-        <div class="tfc-title">🗺 Plan Your Trip</div>
-        <div class="trip-field">
-          <label>Where do you want to go?</label>
-          <input id="tripDest" placeholder="e.g. Rani ki Vav, Manali, Hampi, Varanasi..." class="trip-input"/>
-        </div>
-        <div class="trip-field">
-          <label>Travelling from?</label>
-          <input id="tripFrom" placeholder="e.g. Gandhinagar, Mumbai..." class="trip-input" value="Gandhinagar"/>
-        </div>
-        <div class="trip-row2">
-          <div class="trip-field">
-            <label>Start Date</label>
-            <input id="tripStart" type="date" class="trip-input"/>
-          </div>
-          <div class="trip-field">
-            <label>End Date</label>
-            <input id="tripEnd" type="date" class="trip-input"/>
-          </div>
-        </div>
-        <div class="trip-row2">
-          <div class="trip-field">
-            <label>Travellers</label>
-            <select id="tripPeople" class="trip-input">
-              <option>1 (Solo)</option><option>2 (Couple)</option><option selected>3-5 (Group)</option><option>6+ (Large)</option>
-            </select>
-          </div>
-          <div class="trip-field">
-            <label>Budget</label>
-            <select id="tripBudget" class="trip-input">
-              <option>Budget (₹1k-3k/day)</option><option selected>Mid (₹3k-8k/day)</option><option>Luxury (₹8k+/day)</option>
-            </select>
-          </div>
-        </div>
-        <div class="trip-field">
-          <label>Interests (select all that apply)</label>
-          <div class="trip-interests" id="tripInterests">
-            <span class="ti active" onclick="toggleInterest(this)">🏛 Heritage</span>
-            <span class="ti active" onclick="toggleInterest(this)">🏔 Trekking</span>
-            <span class="ti" onclick="toggleInterest(this)">🍛 Food</span>
-            <span class="ti" onclick="toggleInterest(this)">📸 Photography</span>
-            <span class="ti" onclick="toggleInterest(this)">🏖 Beach</span>
-            <span class="ti" onclick="toggleInterest(this)">🌿 Nature</span>
-            <span class="ti" onclick="toggleInterest(this)">🛍 Shopping</span>
-            <span class="ti" onclick="toggleInterest(this)">🧘 Spiritual</span>
-          </div>
-        </div>
-        <button class="btn-green full" onclick="generateTrip()">✈ Generate My Trip Plan</button>
-      </div>
-
-      <!-- AI CHAT + RESULT -->
-      <div class="trip-right">
-        <div class="trip-result" id="tripResult" style="display:none"></div>
-
-        <!-- AI CHAT -->
-        <div class="ai-chat-card">
-          <div class="acc-header">
-            <div class="acc-icon">🤖</div>
-            <div>
-              <div class="acc-title">TrailBot — AI Travel Assistant</div>
-              <div class="acc-sub">Ask anything about Indian travel, sites, routes, safety...</div>
-            </div>
-            <div class="acc-live">Live</div>
-          </div>
-          <div class="chat-messages" id="chatMessages">
-            <div class="chat-msg bot">
-              <div class="cm-avatar">🤖</div>
-              <div class="cm-bubble">Namaste! 🙏 I'm TrailBot. Ask me anything — "Best places near Gandhinagar", "Is Spiti Valley safe in December", "Plan 3 days in Varanasi", or anything else about travelling in India!</div>
-            </div>
-          </div>
-          <div class="chat-input-row">
-            <input id="chatInput" placeholder="Ask TrailBot..." onkeydown="if(event.key==='Enter')sendChat()"/>
-            <button onclick="sendChat()">Send</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="status-bar">
+    <div class="dot" id="live-dot"></div>
+    <span id="live-status">GPS not started</span>
+    <span style="margin-left:auto;font-size:12px;font-family:var(--mono);color:var(--text3)" id="live-acc"></span>
   </div>
-</div>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: SAFETY
-══════════════════════════════════════════════════════ -->
-<div id="page-safety" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr">
-      <div class="pg-label">Forensic Intelligence</div>
-      <h2 class="pg-title">Safety & Risk Dashboard</h2>
-      <p class="pg-sub">Accident-prone zones, crime history, safety scores, and area-level risk analysis for every location in India.</p>
-    </div>
-    <div class="safety-search-row">
-      <input id="safetySearch" class="trip-input" placeholder="Enter any place in India to check safety..." style="flex:1"/>
-      <button class="btn-green" onclick="checkSafety()">Check Safety</button>
-    </div>
-    <div id="safetyResult" class="safety-result" style="display:none"></div>
-    <div class="safety-grid" id="safetyGrid"></div>
-  </div>
-</div>
+  <div class="card">
+    <div class="card-title">Your Live Position</div>
+    <div class="coord-box" id="live-coords">Press "Start Sharing" to get your position</div>
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: WEATHER
-══════════════════════════════════════════════════════ -->
-<div id="page-weather" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr">
-      <div class="pg-label">Live Conditions</div>
-      <h2 class="pg-title">Weather for Any India Location</h2>
-      <p class="pg-sub">Real-time conditions, 7-day forecast, trekking advisories, and offline cached weather for your downloaded regions.</p>
-    </div>
-    <div class="weather-search-row">
-      <input id="weatherCity" class="trip-input" placeholder="Gandhinagar, Manali, Jaipur..." value="Gandhinagar"/>
-      <button class="btn-green" onclick="fetchWeather()">Get Weather</button>
-    </div>
-    <div id="weatherDisplay" class="weather-display"></div>
-  </div>
-</div>
+    <label>Session Name (optional)</label>
+    <input type="text" id="session-name" placeholder="e.g. Sabarmati Morning Trek">
 
-<!-- ══════════════════════════════════════════════════════
-     PAGE: EMERGENCY
-══════════════════════════════════════════════════════ -->
-<div id="page-emergency" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr" style="text-align:center">
-      <div class="pg-label" style="justify-content:center">Safety · Always On</div>
-      <h2 class="pg-title">Emergency SOS</h2>
-      <p class="pg-sub">One tap sends your exact GPS location via SMS — works on 2G, no internet needed.</p>
-    </div>
-    <div class="sos-layout">
-      <div class="sos-device">
-        <div class="sos-notch"></div>
-        <div class="sos-screen">
-          <div class="sos-screen-bar">
-            <span>TrailBharat SOS</span><span id="sosTime"></span>
-          </div>
-          <div class="sos-loc-card">
-            <div class="slc-lbl">Your Location</div>
-            <div class="slc-coords" id="sosCoords">Acquiring GPS...</div>
-            <div class="slc-place" id="sosPlace">Gandhinagar, Gujarat</div>
-          </div>
-          <div class="sos-mini-map">
-            <div class="smm-pin">📍</div>
-            <div class="smm-ring r1"></div>
-            <div class="smm-ring r2"></div>
-          </div>
-          <button class="sos-main" id="sosMainBtn" onclick="triggerSOS()">
-            <div class="sos-icon">🆘</div>
-            <div class="sos-label">SEND SOS</div>
-            <div class="sos-hint">Sends GPS + route history via SMS</div>
-          </button>
-          <div class="sos-contacts" id="sosContactsDiv">
-            <div class="scc-title">Emergency Contacts</div>
-            <div class="scc-item" id="sosc0">
-              <div class="sci-av g">M</div>
-              <div><div class="sci-nm">Mom</div><div class="sci-ph">+91 XXXXX XXXXX</div></div>
-              <div class="sci-st" id="ss0">Primary</div>
-            </div>
-            <div class="scc-item" id="sosc1">
-              <div class="sci-av b">R</div>
-              <div><div class="sci-nm">Rahul</div><div class="sci-ph">+91 XXXXX XXXXX</div></div>
-              <div class="sci-st" id="ss1">Friend</div>
-            </div>
-            <div class="scc-item" id="sosc2">
-              <div class="sci-av r">P</div>
-              <div><div class="sci-nm">Police</div><div class="sci-ph">100</div></div>
-              <div class="sci-st" id="ss2">Emergency</div>
-            </div>
-          </div>
-          <button class="add-contact-btn" onclick="addSosContact()">+ Add Contact</button>
-        </div>
-      </div>
-      <div class="sos-info">
-        <div class="sos-nums-title">Emergency Numbers — All India</div>
-        <div class="sos-nums-grid">
-          <div class="sng red" onclick="callNum('100')"><div>🚔</div><div>Police</div><b>100</b></div>
-          <div class="sng orange" onclick="callNum('101')"><div>🚒</div><div>Fire</div><b>101</b></div>
-          <div class="sng green" onclick="callNum('108')"><div>🚑</div><div>Ambulance</div><b>108</b></div>
-          <div class="sng blue" onclick="callNum('1091')"><div>👩</div><div>Women</div><b>1091</b></div>
-          <div class="sng purple" onclick="callNum('1800-11-0001')"><div>🏔</div><div>Tourist</div><b>1800-11-0001</b></div>
-          <div class="sng teal" onclick="callNum('1926')"><div>🌿</div><div>Forest</div><b>1926</b></div>
-        </div>
-        <div class="sos-features">
-          <div class="sf-item"><div class="sf-ico">📡</div><div><b>SMS Without Internet</b><p>Works on 2G. Sends coordinates, last 10 waypoints, battery level, nearest landmark.</p></div></div>
-          <div class="sf-item"><div class="sf-ico">🗺</div><div><b>Breadcrumb Trail</b><p>GPS path saved every 30 seconds. Contacts get a Google Maps link with your full route history.</p></div></div>
-          <div class="sf-item"><div class="sf-ico">🔋</div><div><b>Low Battery Alert</b><p>At 15% battery, auto-reduces GPS frequency and alerts your contacts immediately.</p></div></div>
-          <div class="sf-item"><div class="sf-ico">📴</div><div><b>Dead Zone Queue</b><p>If zero signal, SOS is queued and fires the moment even 1 bar of signal appears.</p></div></div>
-          <div class="sf-item"><div class="sf-ico">📧</div><div><b>Email Alerts</b><p>Emergency alert also sent to your registered email and to admin@trailbharat.in for monitoring.</p></div></div>
-        </div>
-        <!-- CONTACT FORM / EMAIL -->
-        <div class="contact-section">
-          <div class="cs-title">📧 Contact Us / Report an Issue</div>
-          <div class="cs-sub">Messages sent here reach directly to <b>vasanth.trailbharat@gmail.com</b></div>
-          <input id="contactName" class="trip-input" placeholder="Your name"/>
-          <input id="contactEmail" class="trip-input" placeholder="Your email"/>
-          <textarea id="contactMsg" class="trip-input" placeholder="Your message, query or feedback..." rows="4"></textarea>
-          <button class="btn-green full" onclick="sendContactEmail()">Send Message ✉</button>
-          <div id="contactSent" style="display:none;color:var(--green);font-weight:700;margin-top:8px;text-align:center">✅ Message sent! We'll respond within 24 hours.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     PAGE: REWARDS
-══════════════════════════════════════════════════════ -->
-<div id="page-rewards" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr" style="text-align:center">
-      <div class="pg-label" style="justify-content:center">Community</div>
-      <h2 class="pg-title">TrailPoints Rewards</h2>
-      <p class="pg-sub">Contribute to the community and earn rewards. Every review, route fix, and photo earns points.</p>
-    </div>
-    <div class="rewards-layout">
-      <div class="pts-card">
-        <div class="pc-row"><div class="pc-lbl">Your Points</div><div class="pc-badge" id="pcBadge">Silver</div></div>
-        <div class="pc-num" id="pcNum">1,840</div>
-        <div class="pc-bar-wrap"><div class="pc-bar"><div class="pc-fill" id="pcFill" style="width:61%"></div></div></div>
-        <div class="pc-prog" id="pcProg">1,840 / 3,000 to Gold</div>
-        <div class="pc-actions">
-          <button class="pca-btn" onclick="earnPoints(10,'Wrote a review')">✍ Review +10</button>
-          <button class="pca-btn" onclick="earnPoints(50,'Added missing route')">🗺 Route +50</button>
-          <button class="pca-btn" onclick="earnPoints(15,'Uploaded a photo')">📸 Photo +15</button>
-          <button class="pca-btn" onclick="earnPoints(20,'Fixed wrong info')">🔧 Fix +20</button>
-          <button class="pca-btn" onclick="earnPoints(100,'Completed a trek')">🥾 Trek +100</button>
-          <button class="pca-btn" onclick="earnPoints(30,'Added safety report')">🛡 Safety +30</button>
-        </div>
-        <div class="pc-log" id="pcLog"></div>
-      </div>
-      <div class="rewards-right">
-        <div class="badges-grid">
-          <div class="bdg-card"><div class="bdg-ico">🥉</div><div class="bdg-name">Bronze</div><div class="bdg-pts">0 pts</div><div class="bdg-perk">Free Gujarat map pack</div><div class="bdg-status earned">✓ Earned</div></div>
-          <div class="bdg-card active"><div class="bdg-ico">🥈</div><div class="bdg-name">Silver</div><div class="bdg-pts">500 pts</div><div class="bdg-perk">10% hotel discounts</div><div class="bdg-status earned">✓ Current</div></div>
-          <div class="bdg-card"><div class="bdg-ico">🥇</div><div class="bdg-name">Gold</div><div class="bdg-pts">3,000 pts</div><div class="bdg-perk">ASI entry waivers</div><div class="bdg-status locked" id="goldStatus">1,160 away</div></div>
-          <div class="bdg-card"><div class="bdg-ico">💎</div><div class="bdg-name">Diamond</div><div class="bdg-pts">10,000 pts</div><div class="bdg-perk">Free stay + guide</div><div class="bdg-status locked">Locked</div></div>
-        </div>
-        <div class="redeem-title">Redeem Rewards</div>
-        <div class="redeem-grid">
-          <div class="rd-card"><div class="rd-ico">🗺</div><div class="rd-name">Rajasthan Map Pack</div><div class="rd-cost">200 pts</div><button class="rd-btn" onclick="redeem(200,'Rajasthan Map')">Redeem</button></div>
-          <div class="rd-card"><div class="rd-ico">🏨</div><div class="rd-name">Hotel Discount 10%</div><div class="rd-cost">500 pts</div><button class="rd-btn" onclick="redeem(500,'Hotel 10%')">Redeem</button></div>
-          <div class="rd-card"><div class="rd-ico">🎟</div><div class="rd-name">ASI Entry Waiver</div><div class="rd-cost">800 pts</div><button class="rd-btn" onclick="redeem(800,'ASI Entry')">Redeem</button></div>
-          <div class="rd-card"><div class="rd-ico">🎧</div><div class="rd-name">Audio Guide Premium</div><div class="rd-cost">300 pts</div><button class="rd-btn" onclick="redeem(300,'Audio Guide')">Redeem</button></div>
-          <div class="rd-card"><div class="rd-ico">📦</div><div class="rd-name">Full India Offline Pack</div><div class="rd-cost">1,500 pts</div><button class="rd-btn" onclick="redeem(1500,'India Offline')">Redeem</button></div>
-          <div class="rd-card"><div class="rd-ico">🤖</div><div class="rd-name">TrailBot Pro (1 Month)</div><div class="rd-cost">400 pts</div><button class="rd-btn" onclick="redeem(400,'TrailBot Pro')">Redeem</button></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════
-     PAGE: ACCOUNT
-══════════════════════════════════════════════════════ -->
-<div id="page-account" class="page">
-  <div class="pg-wrap">
-    <div class="pg-hdr">
-      <div class="pg-label">My Profile</div>
-      <h2 class="pg-title">Explorer Account</h2>
-    </div>
-    <div class="account-layout">
-      <div class="acc-profile-card">
-        <div class="apc-avatar" id="apcAvatar">?</div>
-        <div class="apc-name" id="apcName">Guest Explorer</div>
-        <div class="apc-email" id="apcEmail">Not signed in</div>
-        <div class="apc-badge" id="apcBadge">🥉 Bronze</div>
-        <div class="apc-pts" id="apcPts">1,840 pts</div>
-        <button class="btn-outline full" onclick="showAuth()" id="authActionBtn">Sign In / Register</button>
-        <button class="btn-outline full" onclick="logout()" id="logoutBtn" style="display:none;color:#dc2626;border-color:#dc2626">Sign Out</button>
-      </div>
-      <div class="acc-details">
-        <div class="acc-section-title">My Trips</div>
-        <div id="myTrips" class="my-trips-list">
-          <div class="empty-state">No saved trips yet. <span onclick="showPage('trip')" style="color:var(--green);cursor:pointer">Plan one now →</span></div>
-        </div>
-        <div class="acc-section-title" style="margin-top:2rem">My Reviews</div>
-        <div id="myReviews" class="my-trips-list">
-          <div class="empty-state">No reviews yet. <span onclick="showPage('explore')" style="color:var(--green);cursor:pointer">Explore sites →</span></div>
-        </div>
-        <div class="acc-section-title" style="margin-top:2rem">Settings</div>
-        <div class="settings-list">
-          <div class="sl-item"><span>Dark Mode</span><label class="toggle-sw"><input type="checkbox" id="darkToggle" onchange="toggleTheme()"/><span class="ts-slider"></span></label></div>
-          <div class="sl-item"><span>GPS Auto-Track</span><label class="toggle-sw"><input type="checkbox" checked/><span class="ts-slider"></span></label></div>
-          <div class="sl-item"><span>Offline Map Notifications</span><label class="toggle-sw"><input type="checkbox" checked/><span class="ts-slider"></span></label></div>
-          <div class="sl-item"><span>SOS Auto-Alert at 15% Battery</span><label class="toggle-sw"><input type="checkbox" checked/><span class="ts-slider"></span></label></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ FULL SITE DETAIL MODAL ══ -->
-<div id="fullDetailModal" class="modal-overlay" style="display:none" onclick="closeFullDetail(event)">
-  <div class="fd-box">
-    <button class="fd-close" onclick="closeFullDetail()">✕</button>
-    <div class="fd-hero" id="fdHero"></div>
-    <div class="fd-content">
-      <div class="fd-badges" id="fdBadges"></div>
-      <h2 id="fdTitle"></h2>
-      <div id="fdLocation" class="fd-loc"></div>
-      <div class="fd-safety-row" id="fdSafety"></div>
-      <div class="fd-tabs">
-        <button class="fdt active" onclick="fdTab('info',this)">📋 Info</button>
-        <button class="fdt" onclick="fdTab('history',this)">📜 History</button>
-        <button class="fdt" onclick="fdTab('visiting',this)">🗓 Visiting</button>
-        <button class="fdt" onclick="fdTab('safety',this)">🛡 Safety</button>
-        <button class="fdt" onclick="fdTab('reviews',this)">⭐ Reviews</button>
-      </div>
-      <div id="fdTabContent"></div>
-      <div class="fd-actions">
-        <button class="btn-green" onclick="navigate3D()">📍 Navigate</button>
-        <button class="btn-outline" onclick="showPage('trip')">✈ Plan Trip Here</button>
-        <button class="btn-outline" onclick="closeFullDetail()">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ REVIEW MODAL ══ -->
-<div id="reviewModal" class="modal-overlay" style="display:none" onclick="closeReview(event)">
-  <div class="rv-box">
-    <button class="fd-close" onclick="closeReview()">✕</button>
-    <h3 id="rvTitle">Write a Review</h3>
-    <div class="rv-stars">
-      <span onclick="setStars(1)" class="rvs" data-s="1">★</span>
-      <span onclick="setStars(2)" class="rvs" data-s="2">★</span>
-      <span onclick="setStars(3)" class="rvs" data-s="3">★</span>
-      <span onclick="setStars(4)" class="rvs" data-s="4">★</span>
-      <span onclick="setStars(5)" class="rvs" data-s="5">★</span>
-    </div>
-    <textarea id="rvText" placeholder="Share your experience — what was special, what to watch out for..." rows="5"></textarea>
-    <select id="rvCondition" class="trip-input">
-      <option value="">Condition at visit</option>
-      <option>Excellent — well maintained</option>
-      <option>Good — minor issues</option>
-      <option>Okay — needs attention</option>
-      <option>Poor — significant damage</option>
-      <option>Crowded — go early/late</option>
+    <label>Expires After</label>
+    <select id="session-duration">
+      <option value="1">1 hour</option>
+      <option value="4" selected>4 hours</option>
+      <option value="8">8 hours</option>
+      <option value="24">24 hours</option>
     </select>
-    <button class="btn-green full" onclick="submitReview()">Submit Review +10 pts</button>
+
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="start-share-btn" onclick="startLiveShare()">📡 Start Sharing</button>
+      <button class="btn btn-outline" id="stop-share-btn" onclick="stopLiveShare()" style="display:none">⏹ Stop</button>
+    </div>
+  </div>
+
+  <div class="card" id="share-link-card" style="display:none">
+    <div class="card-title">Your Shareable Link</div>
+    <div class="share-link">
+      <span id="share-url" style="flex:1">https://trailbharat.app/live/xxxx</span>
+      <button class="copy-btn" onclick="copyShareLink()">Copy</button>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="shareWhatsApp()">📲 WhatsApp</button>
+      <button class="btn btn-outline" onclick="shareSMS()">💬 SMS</button>
+      <button class="btn btn-outline" onclick="shareNative()">⬆️ Share</button>
+    </div>
+    <div style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text3);margin-bottom:4px">
+        <span>Session expires in</span>
+        <span id="expires-in" style="color:var(--text2)">4h 00m</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="session-progress" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Live Share Features</div>
+    <div class="feature-row">
+      <div class="feature-icon">🗺️</div>
+      <div>
+        <div class="feature-title">Real-time map link</div>
+        <div class="feature-desc">Contact sees you moving on OpenStreetMap — no app needed</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">📍</div>
+      <div>
+        <div class="feature-title">Breadcrumb history</div>
+        <div class="feature-desc">Full path recorded every 30 seconds — visible in share link</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">🔋</div>
+      <div>
+        <div class="feature-title">Battery status included</div>
+        <div class="feature-desc">Your battery % is shown to contacts in real-time</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">⏰</div>
+      <div>
+        <div class="feature-title">Auto-expiry</div>
+        <div class="feature-desc">Link stops working after your set duration — privacy first</div>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-icon">📴</div>
+      <div>
+        <div class="feature-title">Offline sync on reconnect</div>
+        <div class="feature-desc">Points recorded offline are uploaded when signal returns</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ══ TOAST ══ -->
-<div id="toast" class="toast"></div>
+<!-- ═══════════════════════════════════════════ -->
+<!--              AI TRIP PLANNER               -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-ai" class="section">
+  <div class="section-header">
+    <div class="section-title">AI Trip Planner</div>
+    <div class="section-sub">Claude plans your Gandhinagar & Ahmedabad itinerary — offline-ready, trail-aware.</div>
+  </div>
 
-<script src="js/data.js"></script>
-<script src="js/app.js"></script>
+  <div class="card">
+    <div class="card-title">Plan Your Trip</div>
+
+    <label>Starting Point</label>
+    <input type="text" id="ai-start" placeholder="e.g. Gandhinagar Sector 21" value="Gandhinagar">
+
+    <label>Duration</label>
+    <select id="ai-days">
+      <option value="1">Half day (4–5 hrs)</option>
+      <option value="2" selected>Full day (7–8 hrs)</option>
+      <option value="3">Weekend (2 days)</option>
+      <option value="4">3-day itinerary</option>
+    </select>
+
+    <label>Travel Mode</label>
+    <select id="ai-mode">
+      <option value="walking">Walking / Trekking</option>
+      <option value="cycling">Cycling</option>
+      <option value="auto" selected>Auto / Bike</option>
+      <option value="public">Public Transport</option>
+    </select>
+
+    <label>Interests (select all that apply)</label>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px" id="interest-chips">
+      <button class="chip active" data-val="heritage" onclick="toggleChip(this)">🏛 Heritage</button>
+      <button class="chip" data-val="trekking" onclick="toggleChip(this)">🥾 Trekking</button>
+      <button class="chip" data-val="temples" onclick="toggleChip(this)">⛩️ Temples</button>
+      <button class="chip active" data-val="nature" onclick="toggleChip(this)">🌿 Nature</button>
+      <button class="chip" data-val="food" onclick="toggleChip(this)">🍽 Street Food</button>
+      <button class="chip" data-val="photography" onclick="toggleChip(this)">📸 Photography</button>
+      <button class="chip" data-val="budget" onclick="toggleChip(this)">💰 Budget Travel</button>
+      <button class="chip" data-val="family" onclick="toggleChip(this)">👨‍👩‍👧 Family Trip</button>
+    </div>
+
+    <label>Special Requests</label>
+    <textarea id="ai-special" placeholder="e.g. Include Adalaj Vav, avoid crowds, suggest early morning start..."></textarea>
+
+    <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="generateItinerary()">✨ Generate AI Itinerary</button>
+  </div>
+
+  <div class="ai-typing" id="ai-typing">
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+    Claude is planning your trail...
+  </div>
+
+  <div class="ai-response" id="ai-result"></div>
+
+  <div class="card" id="ai-quick-prompts" style="margin-top:4px">
+    <div class="card-title">Quick Prompts</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-outline btn-full" onclick="quickPrompt('sunrise trek')">🌅 Best sunrise trek near Gandhinagar</button>
+      <button class="btn btn-outline btn-full" onclick="quickPrompt('weekend heritage')">🏛 Weekend heritage tour Ahmedabad</button>
+      <button class="btn btn-outline btn-full" onclick="quickPrompt('monsoon safe')">🌧 Monsoon-safe trails to explore</button>
+      <button class="btn btn-outline btn-full" onclick="quickPrompt('solo women')">👩 Solo women-friendly day trip</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--            TRAIL FORENSICS                 -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="tab-forensic" class="section">
+  <div class="section-header">
+    <div class="section-title">Trail Forensics</div>
+    <div class="section-sub">Analyse your route, detect anomalies, review last-known positions.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Current Session Stats</div>
+    <div class="grid2">
+      <div class="forensic-stat">
+        <div class="forensic-stat-val" id="f-distance">0.0 km</div>
+        <div class="forensic-stat-label">Distance</div>
+      </div>
+      <div class="forensic-stat">
+        <div class="forensic-stat-val" id="f-points">0</div>
+        <div class="forensic-stat-label">Waypoints</div>
+      </div>
+      <div class="forensic-stat">
+        <div class="forensic-stat-val" id="f-duration">00:00</div>
+        <div class="forensic-stat-label">Duration</div>
+      </div>
+      <div class="forensic-stat">
+        <div class="forensic-stat-val" id="f-speed">0 km/h</div>
+        <div class="forensic-stat-label">Avg Speed</div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:14px" onclick="startForensic()">📡 Start Recording Trail</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hazard Detection</div>
+    <div id="hazard-list">
+      <div class="feature-row">
+        <div class="feature-icon" style="background:rgba(255,185,48,0.12)">⚠️</div>
+        <div>
+          <div class="feature-title" style="color:var(--warn)">Steep drop detected</div>
+          <div class="feature-desc">Elevation change >30m in last 200m — slow pace advised</div>
+        </div>
+        <span class="badge badge-warn" style="margin-left:auto">Demo</span>
+      </div>
+      <div class="feature-row">
+        <div class="feature-icon" style="background:rgba(77,166,255,0.12)">💧</div>
+        <div>
+          <div class="feature-title" style="color:var(--blue)">Water source nearby</div>
+          <div class="feature-desc">River crossing ~400m ahead — check seasonal flow</div>
+        </div>
+        <span class="badge badge-blue" style="margin-left:auto">Demo</span>
+      </div>
+      <div class="feature-row">
+        <div class="feature-icon" style="background:rgba(61,224,151,0.12)">✅</div>
+        <div>
+          <div class="feature-title" style="color:var(--accent)">On-trail — no deviation</div>
+          <div class="feature-desc">Your path matches known TrailBharat route data</div>
+        </div>
+        <span class="badge badge-green" style="margin-left:auto">Live</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">AI Route Analysis</div>
+    <textarea id="forensic-notes" placeholder="Describe what you observed on trail — unsafe sections, broken paths, new shortcuts..."></textarea>
+    <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="analyseRoute()">🔍 Analyse with AI</button>
+    <div class="ai-typing" id="forensic-typing" style="margin-top:12px">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      Analysing trail data...
+    </div>
+    <div class="ai-response" id="forensic-result" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Last Known Positions Log</div>
+    <div id="lkp-log">
+      <div class="log-line">
+        <span class="log-time">08:14:22</span>
+        <span class="log-event">Session started · Gandhinagar Sector 21</span>
+        <span class="log-badge"><span class="badge badge-green">OK</span></span>
+      </div>
+      <div class="log-line">
+        <span class="log-time">08:31:05</span>
+        <span class="log-event">Checkpoint · Akshardham Garden Gate</span>
+        <span class="log-badge"><span class="badge badge-green">OK</span></span>
+      </div>
+      <div class="log-line">
+        <span class="log-time">09:03:47</span>
+        <span class="log-event">Signal lost · Lasted 2m 14s</span>
+        <span class="log-badge"><span class="badge badge-warn">Gap</span></span>
+      </div>
+      <div class="log-line">
+        <span class="log-time">09:05:58</span>
+        <span class="log-event">Signal restored · Near Adalaj Vav</span>
+        <span class="log-badge"><span class="badge badge-green">OK</span></span>
+      </div>
+      <div class="log-line">
+        <span class="log-time">09:42:11</span>
+        <span class="log-event">SOS queued (no signal) · Sent at 09:43:02</span>
+        <span class="log-badge"><span class="badge badge-red">SOS</span></span>
+      </div>
+    </div>
+    <button class="btn btn-outline btn-full" style="margin-top:14px" onclick="exportLog()">⬇️ Export Log (JSON)</button>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<!-- ── CHIP STYLE ── -->
+<style>
+.chip {
+  padding: 6px 14px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--bg3);
+  color: var(--text3); font-family: var(--font); font-size: 13px;
+  cursor: pointer; transition: all 0.15s;
+}
+.chip.active {
+  background: rgba(61,224,151,0.12);
+  border-color: var(--accent3); color: var(--accent);
+}
+</style>
+
+<script>
+// ── GLOBAL STATE ──
+let gpsCoords = null;
+let gpsWatcher = null;
+let liveShareActive = false;
+let liveShareInterval = null;
+let sessionStart = null;
+let sessionDurationMs = 4 * 3600 * 1000;
+let forensicWatcher = null;
+let forensicStart = null;
+let forensicPoints = [];
+let forensicInterval = null;
+const SHARE_TOKEN = Math.random().toString(36).substr(2,8).toUpperCase();
+
+// ── TOAST ──
+function toast(msg, dur=2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ── TAB NAVIGATION ──
+function showTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── GPS CORE ──
+function startGPS(onSuccess, onError) {
+  if (!navigator.geolocation) {
+    if (onError) onError('Geolocation not supported');
+    return null;
+  }
+  return navigator.geolocation.watchPosition(
+    pos => { gpsCoords = pos.coords; if (onSuccess) onSuccess(pos); },
+    err => { if (onError) onError(err.message || 'GPS error'); },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function fmtCoords(coords) {
+  return `${coords.latitude.toFixed(6)}°N  ${coords.longitude.toFixed(6)}°E  ±${Math.round(coords.accuracy)}m`;
+}
+
+// ── SOS MODULE ──
+(function initSOS() {
+  const dot = document.getElementById('sos-dot');
+  const statusText = document.getElementById('sos-status-text');
+  const coordsEl = document.getElementById('sos-coords');
+
+  gpsWatcher = startGPS(
+    pos => {
+      dot.className = 'dot green';
+      statusText.textContent = 'GPS Lock · Ready to Send SOS';
+      statusText.style.color = 'var(--accent)';
+      coordsEl.textContent = fmtCoords(pos.coords);
+    },
+    err => {
+      dot.className = 'dot warn';
+      statusText.textContent = 'GPS error — check permissions';
+      coordsEl.textContent = 'Location unavailable';
+    }
+  );
+})();
+
+function triggerSOS() {
+  const contacts = Array.from(document.querySelectorAll('.contact-row'))
+    .map(r => r.querySelector('.contact-num')?.textContent?.trim())
+    .filter(n => n && n !== '100');
+
+  let msg = '🆘 EMERGENCY SOS from TrailBharat\n';
+  if (gpsCoords) {
+    msg += `📍 Location: ${gpsCoords.latitude.toFixed(6)},${gpsCoords.longitude.toFixed(6)}\n`;
+    msg += `🗺️ Maps: https://maps.google.com/?q=${gpsCoords.latitude},${gpsCoords.longitude}\n`;
+    msg += `🎯 Accuracy: ±${Math.round(gpsCoords.accuracy)}m\n`;
+  } else {
+    msg += '📍 GPS unavailable — last known: Gandhinagar, Gujarat\n';
+  }
+  msg += `⏰ Time: ${new Date().toLocaleTimeString('en-IN')}\n`;
+  msg += '🏔 Via TrailBharat';
+
+  const primaryNum = contacts[0] || '';
+  const smsUrl = `sms:${primaryNum}?body=${encodeURIComponent(msg)}`;
+  window.location.href = smsUrl;
+  toast('📲 Opening SMS to send SOS...');
+}
+
+function addContact() {
+  const name = document.getElementById('new-contact-name').value.trim();
+  const num = document.getElementById('new-contact-num').value.trim();
+  if (!name || !num) { toast('Enter name and number'); return; }
+
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().substr(0,2);
+  const list = document.getElementById('contacts-list');
+  const row = document.createElement('div');
+  row.className = 'contact-row';
+  row.innerHTML = `
+    <div class="avatar">${initials}</div>
+    <div><div class="contact-name">${name}</div><div class="contact-num">${num}</div></div>
+    <div class="contact-tag"><span class="badge badge-purple">Added</span></div>`;
+  list.appendChild(row);
+
+  document.getElementById('new-contact-name').value = '';
+  document.getElementById('new-contact-num').value = '';
+  toast('✅ Contact added');
+}
+
+// ── LIVE SHARE MODULE ──
+function startLiveShare() {
+  const dot = document.getElementById('live-dot');
+  const status = document.getElementById('live-status');
+  const acc = document.getElementById('live-acc');
+  const coordsEl = document.getElementById('live-coords');
+
+  liveShareActive = true;
+  sessionStart = Date.now();
+  sessionDurationMs = parseInt(document.getElementById('session-duration').value) * 3600 * 1000;
+
+  dot.className = 'dot green';
+  status.textContent = 'Sharing live · updating every 30s';
+  status.style.color = 'var(--accent)';
+
+  const shareCard = document.getElementById('share-link-card');
+  const startBtn = document.getElementById('start-share-btn');
+  const stopBtn = document.getElementById('stop-share-btn');
+
+  shareCard.style.display = 'block';
+  startBtn.style.display = 'none';
+  stopBtn.style.display = 'inline-flex';
+
+  const sessionName = document.getElementById('session-name').value || 'trail';
+  const url = `https://trailbharat.app/live/${SHARE_TOKEN}?s=${encodeURIComponent(sessionName)}`;
+  document.getElementById('share-url').textContent = url;
+
+  startGPS(pos => {
+    const c = pos.coords;
+    coordsEl.textContent = fmtCoords(c);
+    acc.textContent = `±${Math.round(c.accuracy)}m`;
+  }, () => {
+    coordsEl.textContent = 'Location unavailable — check permissions';
+  });
+
+  liveShareInterval = setInterval(updateExpiry, 15000);
+  updateExpiry();
+  toast('📡 Live sharing started!');
+}
+
+function stopLiveShare() {
+  liveShareActive = false;
+  clearInterval(liveShareInterval);
+  document.getElementById('live-dot').className = 'dot';
+  document.getElementById('live-status').textContent = 'Sharing stopped';
+  document.getElementById('live-status').style.color = 'var(--text3)';
+  document.getElementById('start-share-btn').style.display = 'inline-flex';
+  document.getElementById('stop-share-btn').style.display = 'none';
+  toast('⏹ Live sharing stopped');
+}
+
+function updateExpiry() {
+  if (!sessionStart) return;
+  const elapsed = Date.now() - sessionStart;
+  const remaining = Math.max(0, sessionDurationMs - elapsed);
+  const h = Math.floor(remaining / 3600000);
+  const m = Math.floor((remaining % 3600000) / 60000);
+  document.getElementById('expires-in').textContent = `${h}h ${String(m).padStart(2,'0')}m`;
+  const pct = (remaining / sessionDurationMs) * 100;
+  document.getElementById('session-progress').style.width = pct + '%';
+}
+
+function copyShareLink() {
+  const url = document.getElementById('share-url').textContent;
+  navigator.clipboard.writeText(url).then(() => toast('✅ Link copied!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    toast('✅ Link copied!');
+  });
+}
+
+function shareWhatsApp() {
+  const url = document.getElementById('share-url').textContent;
+  const msg = encodeURIComponent(`🏔 Track me live on TrailBharat: ${url}`);
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function shareSMS() {
+  const url = document.getElementById('share-url').textContent;
+  window.location.href = `sms:?body=${encodeURIComponent('Track me live: ' + url)}`;
+}
+
+function shareNative() {
+  const url = document.getElementById('share-url').textContent;
+  if (navigator.share) {
+    navigator.share({ title: 'Track me on TrailBharat', url });
+  } else copyShareLink();
+}
+
+// ── AI PLANNER MODULE ──
+function toggleChip(el) { el.classList.toggle('active'); }
+
+function getSelectedInterests() {
+  return Array.from(document.querySelectorAll('.chip.active'))
+    .map(c => c.dataset.val).join(', ');
+}
+
+async function generateItinerary() {
+  const start = document.getElementById('ai-start').value || 'Gandhinagar';
+  const daysOpt = document.getElementById('ai-days');
+  const duration = daysOpt.options[daysOpt.selectedIndex].text;
+  const mode = document.getElementById('ai-mode').value;
+  const interests = getSelectedInterests() || 'general';
+  const special = document.getElementById('ai-special').value;
+
+  const typing = document.getElementById('ai-typing');
+  const result = document.getElementById('ai-result');
+  const quickPrompts = document.getElementById('ai-quick-prompts');
+
+  typing.classList.add('visible');
+  result.classList.remove('visible');
+  result.textContent = '';
+  quickPrompts.style.display = 'none';
+
+  const prompt = `You are TrailBharat's AI trip planner for Gandhinagar and Ahmedabad, India.
+
+Plan a ${duration} trip with these details:
+- Starting point: ${start}
+- Travel mode: ${mode}
+- Interests: ${interests}
+- Special requests: ${special || 'None'}
+
+Give a practical, day-by-day itinerary with:
+1. Specific site names (Akshardham, Adalaj Vav, Sabarmati Ashram, etc.)
+2. Approximate timing for each stop
+3. Travel tips between locations
+4. One safety/trail note per day
+5. Best photo spot of the day
+
+Keep it concise, trail-focused, and specific to Gujarat culture. Use emojis sparingly.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || 'Could not generate itinerary. Try again.';
+    typing.classList.remove('visible');
+    result.textContent = text;
+    result.classList.add('visible');
+  } catch(e) {
+    typing.classList.remove('visible');
+    result.textContent = `⚡ Demo Itinerary (AI offline)\n\nDay 1 — Gandhinagar Heritage Circuit\n\n07:00 · Akshardham Temple Complex — Arrive early, avoid queues. Best photos at the stepped water feature facing east.\n\n09:30 · Adalaj Vav — The stepwell is stunning in morning light. Descend all 5 levels. Cool, shaded — great monsoon stop.\n\n12:00 · Lunch at Sector 21 Market — Try dhokla and khandvi at local stalls (₹60–120)\n\n14:00 · Gandhi Ashram, Sabarmati — Walk the riverside promenade. Museum closes at 17:30.\n\n16:30 · Hutheesing Jain Temple — Evening puja at 18:00 is meditative.\n\n🛡 Safety note: Carry 1.5L water. Temperatures peak at 38°C by noon in summer — plan accordingly.\n\n📸 Best shot: Adalaj Vav from the bottom looking up at 09:45.`;
+    result.classList.add('visible');
+  }
+}
+
+async function quickPrompt(type) {
+  const prompts = {
+    'sunrise trek': 'What is the best sunrise trek or viewpoint near Gandhinagar for an early morning experience? Give 3 specific spots with timing and directions.',
+    'weekend heritage': 'Plan a 2-day weekend heritage tour of Ahmedabad for a solo traveller — include pols, stepwells, and Mughal-era sites. Be specific.',
+    'monsoon safe': 'Which trails and heritage sites near Gandhinagar and Ahmedabad are safe and beautiful to visit during monsoon (July–September)? List 5 with reasons.',
+    'solo women': 'Plan a solo women-friendly 1-day trip from Gandhinagar — safe areas, crowded public spots, and trustworthy local transport tips.'
+  };
+
+  document.getElementById('ai-special').value = prompts[type] || type;
+  document.getElementById('ai-days').value = '2';
+  await generateItinerary();
+}
+
+// ── FORENSICS MODULE ──
+function startForensic() {
+  forensicStart = Date.now();
+  forensicPoints = [];
+
+  if (forensicWatcher) navigator.geolocation.clearWatch(forensicWatcher);
+  if (forensicInterval) clearInterval(forensicInterval);
+
+  forensicWatcher = navigator.geolocation.watchPosition(pos => {
+    forensicPoints.push({
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude,
+      acc: pos.coords.accuracy,
+      t: Date.now()
+    });
+    updateForensicStats();
+    addLKPEntry(`Waypoint #${forensicPoints.length}`, 'OK');
+  }, null, { enableHighAccuracy: true });
+
+  forensicInterval = setInterval(updateForensicStats, 10000);
+  toast('📡 Trail recording started');
+}
+
+function updateForensicStats() {
+  const pts = forensicPoints.length;
+  document.getElementById('f-points').textContent = pts;
+
+  if (forensicStart) {
+    const elapsed = Date.now() - forensicStart;
+    const m = Math.floor(elapsed / 60000);
+    const s = Math.floor((elapsed % 60000) / 1000);
+    document.getElementById('f-duration').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  if (pts >= 2) {
+    let dist = 0;
+    for (let i = 1; i < forensicPoints.length; i++) {
+      dist += haversine(forensicPoints[i-1], forensicPoints[i]);
+    }
+    document.getElementById('f-distance').textContent = dist.toFixed(2) + ' km';
+    const elapsed = (Date.now() - forensicStart) / 3600000;
+    document.getElementById('f-speed').textContent = (dist / elapsed).toFixed(1) + ' km/h';
+  }
+}
+
+function haversine(a, b) {
+  const R = 6371;
+  const dLat = (b.lat - a.lat) * Math.PI / 180;
+  const dLng = (b.lng - a.lng) * Math.PI / 180;
+  const x = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
+}
+
+function addLKPEntry(event, status) {
+  const log = document.getElementById('lkp-log');
+  const badgeClass = status === 'OK' ? 'badge-green' : status === 'SOS' ? 'badge-red' : 'badge-warn';
+  const time = new Date().toLocaleTimeString('en-IN', { hour12: false });
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `<span class="log-time">${time}</span><span class="log-event">${event}</span><span class="log-badge"><span class="badge ${badgeClass}">${status}</span></span>`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function analyseRoute() {
+  const notes = document.getElementById('forensic-notes').value.trim();
+  if (!notes) { toast('Add your trail observations first'); return; }
+
+  const typing = document.getElementById('forensic-typing');
+  const result = document.getElementById('forensic-result');
+  typing.classList.add('visible');
+  result.classList.remove('visible');
+
+  const prompt = `You are TrailBharat's forensic trail analyst for Gujarat, India.
+
+A trekker has shared these trail observations:
+"${notes}"
+
+Trail data: ${forensicPoints.length} waypoints recorded, duration ${document.getElementById('f-duration').textContent}, distance ${document.getElementById('f-distance').textContent}.
+
+Provide:
+1. Safety assessment (is the described condition dangerous?)
+2. Recommended action for current/future trekkers
+3. Whether this should be flagged as a trail hazard in the community database
+4. 1-2 alternative routes if the described path is unsafe
+
+Be direct, practical, and specific to Gandhinagar/Ahmedabad geography.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || 'Analysis unavailable.';
+    typing.classList.remove('visible');
+    result.textContent = text;
+    result.classList.add('visible');
+  } catch(e) {
+    typing.classList.remove('visible');
+    result.textContent = `🔍 Demo Analysis (AI offline)\n\n⚠️ Safety Assessment: Moderate concern — based on your description, the section shows signs of seasonal erosion common in post-monsoon Gujarat terrain.\n\n✅ Recommended Action: Use the alternate riverside path (50m west of the main trail). This route is wider, has better drainage, and is visible on TrailBharat's offline map.\n\n🚩 Community Flag: YES — this should be reported as a "Seasonal Hazard" in the database. Other trekkers will be notified.\n\n🗺️ Alternative Routes:\n1. Adalaj bypass path via Sector 7 road (adds 15 min, fully paved)\n2. Riverbed route from Gandhinagar bridge — safe in dry season only`;
+    result.classList.add('visible');
+  }
+}
+
+function exportLog() {
+  const rows = Array.from(document.querySelectorAll('.log-line')).map(r => ({
+    time: r.querySelector('.log-time')?.textContent,
+    event: r.querySelector('.log-event')?.textContent,
+    status: r.querySelector('.badge')?.textContent
+  }));
+  const blob = new Blob([JSON.stringify({ session: SHARE_TOKEN, log: rows, points: forensicPoints }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `trailbharat-log-${SHARE_TOKEN}.json`;
+  a.click();
+  toast('⬇️ Log exported');
+}
+</script>
 </body>
 </html>
