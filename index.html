@@ -1,359 +1,619 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>TrailBharat — Explore Gandhinagar & Ahmedabad</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>TrailBharat — Explore India in 3D</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet"/>
-<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.css" rel="stylesheet"/>
+<script src="https://unpkg.com/maplibre-gl@4.1.2/dist/maplibre-gl.js"></script>
 <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 
-<!-- ═══════════════ NAV ═══════════════ -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">
-    <div class="nav-logo-mark">TB</div>
-    <span class="nav-logo-text">TrailBharat</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="#" onclick="showSection('mapSection')">🗺 Live Map</a></li>
-    <li><a href="#" onclick="showSection('sitesSection')">🏛 Sites</a></li>
-    <li><a href="#" onclick="showSection('trekSection')">🥾 Treks</a></li>
-    <li><a href="#" onclick="showSection('emergencySection')">🆘 Emergency</a></li>
-    <li><a href="#" onclick="showSection('rewardsSection')">⭐ Rewards</a></li>
-  </ul>
-  <div class="nav-right">
-    <div class="gps-indicator" id="gpsIndicator" onclick="centerOnUser()">
-      <div class="gps-dot"></div>
-      <span id="gpsLabel">Locating...</span>
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">TB</div>
+    <div class="splash-name">TrailBharat</div>
+    <div class="splash-tagline">Explore India in 3D · Offline Ready</div>
+    <div class="splash-bar"><div class="splash-fill" id="splashFill"></div></div>
+    <div class="splash-status" id="splashStatus">Loading India's heritage...</div>
+  </div>
+</div>
+
+<!-- ══ AUTH MODAL ══ -->
+<div id="authModal" class="modal-overlay" style="display:none">
+  <div class="auth-box">
+    <div class="auth-logo">TB</div>
+    <h2 class="auth-title" id="authTitle">Welcome to TrailBharat</h2>
+    <p class="auth-sub" id="authSub">Create your explorer account</p>
+    <div id="authRegFields">
+      <input class="auth-input" id="regName" placeholder="Full Name" type="text"/>
+      <input class="auth-input" id="regEmail" placeholder="Email address" type="email"/>
+      <input class="auth-input" id="regPass" placeholder="Password" type="password"/>
+      <input class="auth-input" id="regPhone" placeholder="Phone (for SOS)" type="tel"/>
     </div>
-    <button class="sos-nav-btn" onclick="showSection('emergencySection')">SOS</button>
+    <div id="authLoginFields" style="display:none">
+      <input class="auth-input" id="loginEmail" placeholder="Email address" type="email"/>
+      <input class="auth-input" id="loginPass" placeholder="Password" type="password"/>
+    </div>
+    <button class="auth-btn" id="authSubmitBtn" onclick="authSubmit()">Create Account</button>
+    <div class="auth-toggle" id="authToggle">Already have an account? <span onclick="toggleAuth()">Sign In</span></div>
+    <button class="auth-skip" onclick="skipAuth()">Continue as Guest →</button>
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo" onclick="showPage('home')">
+    <div class="nav-mark">TB</div>
+    <span class="nav-name">TrailBharat</span>
+  </a>
+  <div class="nav-center">
+    <button class="nav-btn" onclick="showPage('map')">🗺 Map</button>
+    <button class="nav-btn" onclick="showPage('explore')">🏛 Explore</button>
+    <button class="nav-btn" onclick="showPage('trip')">✈ Trip Planner</button>
+    <button class="nav-btn" onclick="showPage('safety')">🛡 Safety</button>
+    <button class="nav-btn" onclick="showPage('weather')">🌤 Weather</button>
+    <button class="nav-btn" onclick="showPage('rewards')">⭐ Rewards</button>
+  </div>
+  <div class="nav-right">
+    <div class="gps-pill" id="gpsPill" onclick="showPage('map')">
+      <div class="gps-dot" id="gpsDot"></div>
+      <span id="gpsText">GPS</span>
+    </div>
+    <button class="sos-btn" onclick="showPage('emergency')">🆘 SOS</button>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <div class="user-avatar" id="userAvatar" onclick="showPage('account')">?</div>
   </div>
   <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
 </nav>
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#" onclick="showSection('mapSection');closeMobile()">🗺 Live Map</a>
-  <a href="#" onclick="showSection('sitesSection');closeMobile()">🏛 Heritage Sites</a>
-  <a href="#" onclick="showSection('trekSection');closeMobile()">🥾 Treks & Trails</a>
-  <a href="#" onclick="showSection('emergencySection');closeMobile()">🆘 Emergency SOS</a>
-  <a href="#" onclick="showSection('rewardsSection');closeMobile()">⭐ Rewards</a>
+
+<div class="mobile-nav" id="mobileNav">
+  <button onclick="showPage('map');closeMobile()">🗺 Live Map</button>
+  <button onclick="showPage('explore');closeMobile()">🏛 Explore India</button>
+  <button onclick="showPage('trip');closeMobile()">✈ Trip Planner</button>
+  <button onclick="showPage('safety');closeMobile()">🛡 Safety & Forensics</button>
+  <button onclick="showPage('weather');closeMobile()">🌤 Weather</button>
+  <button onclick="showPage('rewards');closeMobile()">⭐ Rewards</button>
+  <button onclick="showPage('emergency');closeMobile()" style="color:#dc2626">🆘 Emergency SOS</button>
+  <button onclick="showPage('account');closeMobile()">👤 My Account</button>
 </div>
 
-<!-- ═══════════════ HERO ═══════════════ -->
-<section id="heroSection" class="hero-section">
-  <div class="hero-bg-animated"></div>
-  <div class="hero-content">
-    <div class="hero-badge"><div class="badge-dot"></div> Live in Gandhinagar & Ahmedabad</div>
-    <h1>Navigate India.<br><span class="accent-text">Offline. In 3D.</span></h1>
-    <p class="hero-sub">Real GPS tracking. Offline maps. Emergency SOS. Heritage guides. All working right now — no internet required in the field.</p>
-    <div class="hero-cta-row">
-      <button class="btn-primary" onclick="showSection('mapSection');startGPS()">
-        📍 Open Live Map
-      </button>
-      <button class="btn-outline" onclick="showSection('sitesSection')">
-        Explore Sites →
-      </button>
+<!-- ══════════════════════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="badge-pulse"></span> India's #1 Offline 3D Explorer</div>
+      <h1>Explore <span class="hl">Every Corner</span><br>of India in 3D</h1>
+      <p class="hero-p">Offline 3D maps · Heritage guides · Trip planner · AI assistant · Real-time safety · Emergency SOS — everything a traveller needs, no internet required in the field.</p>
+      <div class="hero-btns">
+        <button class="btn-green" onclick="showPage('map')">📍 Open 3D Map</button>
+        <button class="btn-outline" onclick="showPage('trip')">✈ Plan a Trip</button>
+        <button class="btn-outline" onclick="showPage('explore')">🏛 Explore Sites</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><div class="hnum">38,000+</div><div class="hlbl">Heritage Sites</div></div>
+        <div class="hstat"><div class="hnum">28</div><div class="hlbl">States Mapped</div></div>
+        <div class="hstat"><div class="hnum">0G</div><div class="hlbl">Internet Needed</div></div>
+        <div class="hstat"><div class="hnum">±3m</div><div class="hlbl">GPS Accuracy</div></div>
+        <div class="hstat"><div class="hnum">AI</div><div class="hlbl">Trip Planner</div></div>
+      </div>
     </div>
-    <div class="hero-live-stats">
-      <div class="live-stat"><div class="live-num" id="stat1">47</div><div class="live-lbl">Sites Mapped</div></div>
-      <div class="live-stat"><div class="live-num">2</div><div class="live-lbl">Cities Covered</div></div>
-      <div class="live-stat"><div class="live-num" id="stat2">0G</div><div class="live-lbl">Internet Needed</div></div>
-      <div class="live-stat"><div class="live-num">±3m</div><div class="live-lbl">GPS Accuracy</div></div>
+    <div class="hero-cards">
+      <div class="feat-card" onclick="showPage('map')">
+        <div class="fc-icon">🗺</div>
+        <div class="fc-title">Live 3D Map</div>
+        <div class="fc-desc">Real roads, buildings, monuments — all in 3D with GPS</div>
+      </div>
+      <div class="feat-card" onclick="showPage('trip')">
+        <div class="fc-icon">✈</div>
+        <div class="fc-title">AI Trip Planner</div>
+        <div class="fc-desc">Type a destination — get a full itinerary + bookings guide</div>
+      </div>
+      <div class="feat-card" onclick="showPage('safety')">
+        <div class="fc-icon">🛡</div>
+        <div class="fc-title">Safety & Forensics</div>
+        <div class="fc-desc">Accident zones, crime history, safety scores per area</div>
+      </div>
+      <div class="feat-card" onclick="showPage('weather')">
+        <div class="fc-icon">🌤</div>
+        <div class="fc-title">Live Weather</div>
+        <div class="fc-desc">Hourly + 7-day forecast for any India location</div>
+      </div>
+      <div class="feat-card" onclick="showPage('emergency')">
+        <div class="fc-icon">🆘</div>
+        <div class="fc-title">Emergency SOS</div>
+        <div class="fc-desc">One tap SMS with GPS coordinates. Works without data</div>
+      </div>
+      <div class="feat-card" onclick="showPage('explore')">
+        <div class="fc-icon">🏛</div>
+        <div class="fc-title">Heritage Guides</div>
+        <div class="fc-desc">Offline Wikipedia for every site, monument & trail</div>
+      </div>
     </div>
-  </div>
-  <div class="hero-map-preview" onclick="showSection('mapSection')">
-    <div class="preview-map-inner">
-      <div class="preview-map-label">Gandhinagar Capital Region</div>
-      <div class="preview-pin" style="left:45%;top:40%"><div class="pp-ring"></div><div class="pp-dot"></div><span>Akshardham</span></div>
-      <div class="preview-pin" style="left:60%;top:55%"><div class="pp-ring amber"></div><div class="pp-dot amber"></div><span>Adalaj Vav</span></div>
-      <div class="preview-pin" style="left:30%;top:60%"><div class="pp-ring blue"></div><div class="pp-dot blue"></div><span>Sabarmati</span></div>
-      <div class="preview-click">Click to open full map →</div>
-    </div>
-  </div>
-</section>
+  </section>
+</div>
 
-<!-- ═══════════════ LIVE MAP SECTION ═══════════════ -->
-<section id="mapSection" class="full-section" style="display:none;">
-  <div class="map-wrapper">
-    <!-- LEFT PANEL -->
+<!-- ══════════════════════════════════════════════════════
+     PAGE: MAP
+══════════════════════════════════════════════════════ -->
+<div id="page-map" class="page">
+  <div class="map-shell">
+    <!-- SIDEBAR -->
     <div class="map-sidebar" id="mapSidebar">
-      <div class="sidebar-header">
-        <div class="sh-title">TrailBharat Map</div>
-        <div class="sh-sub" id="locationText">Getting your location...</div>
+      <div class="msb-top">
+        <div class="msb-title">TrailBharat Map</div>
+        <div class="msb-loc" id="msLoc">Gandhinagar, Gujarat</div>
       </div>
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Search sites, trails, locations..." oninput="filterSites(this.value)"/>
+      <div class="msb-search">
+        <input id="msSearch" placeholder="Search any place in India..." oninput="searchSites(this.value)"/>
       </div>
-      <div class="filter-pills">
-        <button class="fpill active" onclick="filterByType('all',this)">All</button>
-        <button class="fpill" onclick="filterByType('heritage',this)">Heritage</button>
-        <button class="fpill" onclick="filterByType('trek',this)">Treks</button>
-        <button class="fpill" onclick="filterByType('temple',this)">Temples</button>
-        <button class="fpill" onclick="filterByType('nature',this)">Nature</button>
-        <button class="fpill" onclick="filterByType('emergency',this)">Emergency</button>
+      <div class="msb-filters" id="msbFilters">
+        <button class="mf active" onclick="filterMap('all',this)">All</button>
+        <button class="mf" onclick="filterMap('heritage',this)">Heritage</button>
+        <button class="mf" onclick="filterMap('temple',this)">Temple</button>
+        <button class="mf" onclick="filterMap('nature',this)">Nature</button>
+        <button class="mf" onclick="filterMap('trek',this)">Trek</button>
+        <button class="mf" onclick="filterMap('emergency',this)">🏥 Help</button>
       </div>
-      <div class="sidebar-sites" id="sidebarSites"></div>
+      <div class="msb-list" id="msbList"></div>
     </div>
 
-    <!-- MAP CONTAINER -->
-    <div class="map-container-wrap">
+    <!-- MAP -->
+    <div class="map-area">
       <div id="mainMap"></div>
 
-      <!-- MAP TOP CONTROLS -->
-      <div class="map-top-bar">
-        <div class="map-mode-row">
-          <button class="mmode active" onclick="setMapStyle('streets',this)">Streets</button>
-          <button class="mmode" onclick="setMapStyle('satellite',this)">Satellite</button>
-          <button class="mmode" onclick="setMapStyle('terrain',this)">Terrain</button>
+      <!-- CONTROLS -->
+      <div class="map-controls-top">
+        <div class="mc-style-row">
+          <button class="mcs active" onclick="setStyle('streets',this)">Streets</button>
+          <button class="mcs" onclick="setStyle('satellite',this)">Satellite</button>
+          <button class="mcs" onclick="setStyle('topo',this)">Topo</button>
         </div>
-        <div class="map-top-right">
-          <button class="map-icon-btn" onclick="centerOnUser()" title="My Location">📍</button>
-          <button class="map-icon-btn" onclick="toggleOfflineMode()" title="Offline Mode" id="offlineBtn">📶</button>
-          <button class="map-icon-btn" onclick="show3DBuildings()" title="3D View" id="btn3d">🏗</button>
+        <div class="mc-right">
+          <button class="mc-ico" title="My Location" onclick="flyToUser()">📍</button>
+          <button class="mc-ico" title="3D Toggle" onclick="toggle3D()" id="btn3d">🏗</button>
+          <button class="mc-ico" title="Safety Layer" onclick="toggleSafety()">🛡</button>
+          <button class="mc-ico" title="Sidebar" onclick="toggleSidebar()">☰</button>
         </div>
       </div>
 
-      <!-- GPS STATUS CARD -->
+      <!-- GPS CARD -->
       <div class="gps-card" id="gpsCard">
-        <div class="gps-card-icon">📡</div>
-        <div class="gps-card-info">
-          <div class="gps-card-title" id="gpsCardTitle">Acquiring GPS Signal...</div>
-          <div class="gps-card-coords" id="gpsCardCoords">Waiting for location...</div>
+        <div class="gc-dot"></div>
+        <div class="gc-info">
+          <div class="gc-title" id="gcTitle">Acquiring GPS...</div>
+          <div class="gc-coords" id="gcCoords">—</div>
         </div>
-        <div class="gps-accuracy-badge" id="gpsAccuracy">—</div>
+        <div class="gc-acc" id="gcAcc">—</div>
       </div>
 
-      <!-- SITE INFO PANEL -->
-      <div class="site-panel" id="sitePanel" style="display:none;">
-        <div class="site-panel-close" onclick="closePanel()">✕</div>
-        <div class="site-panel-img" id="sitePanelImg">
-          <div class="site-panel-img-overlay"></div>
-          <div class="site-panel-type" id="sitePanelType">Heritage</div>
-        </div>
-        <div class="site-panel-body">
-          <div class="site-panel-name" id="sitePanelName">Site Name</div>
-          <div class="site-panel-location" id="sitePanelLocation">Location</div>
-          <div class="site-panel-rating">
-            <span class="star-rating" id="sitePanelStars">★★★★★</span>
-            <span class="rating-count" id="sitePanelRatings">0 reviews</span>
-          </div>
-          <div class="site-panel-desc" id="sitePanelDesc">Description</div>
-          <div class="site-panel-meta" id="sitePanelMeta"></div>
-          <div class="site-panel-actions">
-            <button class="spa-btn spa-primary" onclick="navigateToSite()">📍 Navigate Here</button>
-            <button class="spa-btn spa-secondary" onclick="openSiteDetail()">ℹ Details</button>
-            <button class="spa-btn spa-sos" onclick="showSection('emergencySection')">🆘 SOS</button>
+      <!-- SITE DETAIL PANEL -->
+      <div class="site-panel" id="sitePanel" style="display:none">
+        <div class="sp-close" onclick="closeSitePanel()">✕</div>
+        <div class="sp-hero" id="spHero"></div>
+        <div class="sp-body">
+          <div class="sp-type" id="spType"></div>
+          <div class="sp-name" id="spName"></div>
+          <div class="sp-loc" id="spLoc"></div>
+          <div class="sp-stars" id="spStars"></div>
+          <div class="sp-safety-row" id="spSafety"></div>
+          <div class="sp-desc" id="spDesc"></div>
+          <div class="sp-meta" id="spMeta"></div>
+          <div class="sp-actions">
+            <button class="spa green" onclick="navigate3D()">📍 Navigate</button>
+            <button class="spa blue" onclick="openFullDetail()">🏛 Full Guide</button>
+            <button class="spa amber" onclick="addReview()">✍ Review</button>
+            <button class="spa red" onclick="showPage('emergency')">🆘 SOS</button>
           </div>
         </div>
       </div>
 
-      <!-- OFFLINE BADGE -->
-      <div class="offline-badge" id="offlineBadge">
-        <div class="ob-dot"></div> Maps Loaded · Offline Ready
-      </div>
+      <div class="offline-tag"><span class="ot-dot"></span>Offline Ready</div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ═══════════════ SITES SECTION ═══════════════ -->
-<section id="sitesSection" class="full-section" style="display:none;">
-  <div class="section-wrap">
-    <div class="sw-header">
-      <div class="sw-label">Heritage & Attractions</div>
-      <h2 class="sw-title">Gandhinagar & Ahmedabad</h2>
-      <p class="sw-sub">47 sites mapped with offline guides, entry routes, condition reports, and GPS navigation.</p>
-      <div class="sw-search">
-        <input type="text" placeholder="Search sites..." oninput="filterSiteCards(this.value)" id="siteCardSearch"/>
-        <div class="sw-filter-row">
-          <button class="sc-filter active" onclick="filterCards('all',this)">All Sites</button>
-          <button class="sc-filter" onclick="filterCards('heritage',this)">Heritage</button>
-          <button class="sc-filter" onclick="filterCards('temple',this)">Temples</button>
-          <button class="sc-filter" onclick="filterCards('nature',this)">Nature</button>
-          <button class="sc-filter" onclick="filterCards('trek',this)">Treks</button>
-        </div>
+<!-- ══════════════════════════════════════════════════════
+     PAGE: EXPLORE
+══════════════════════════════════════════════════════ -->
+<div id="page-explore" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr">
+      <div class="pg-label">Heritage & Attractions</div>
+      <h2 class="pg-title">Explore All India</h2>
+      <p class="pg-sub">Click any site for full 3D guide, history, visiting tips, and offline info.</p>
+      <div class="explore-search-row">
+        <input class="explore-search" id="exploreSearch" placeholder="Search Taj Mahal, Hampi, Valley of Flowers..." oninput="filterExplore(this.value)"/>
+        <select class="explore-select" id="exploreState" onchange="filterExplore()">
+          <option value="">All States</option>
+          <option value="Gujarat">Gujarat</option>
+          <option value="Rajasthan">Rajasthan</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="Tamil Nadu">Tamil Nadu</option>
+          <option value="Uttar Pradesh">Uttar Pradesh</option>
+          <option value="Kerala">Kerala</option>
+          <option value="Karnataka">Karnataka</option>
+          <option value="Himachal Pradesh">Himachal Pradesh</option>
+          <option value="Uttarakhand">Uttarakhand</option>
+          <option value="West Bengal">West Bengal</option>
+        </select>
+      </div>
+      <div class="explore-filters" id="exploreFilters">
+        <button class="ef active" onclick="filterExplore('','',this)">All</button>
+        <button class="ef" onclick="filterExplore('','heritage',this)">Heritage</button>
+        <button class="ef" onclick="filterExplore('','temple',this)">Temple</button>
+        <button class="ef" onclick="filterExplore('','nature',this)">Nature</button>
+        <button class="ef" onclick="filterExplore('','trek',this)">Trek</button>
+        <button class="ef" onclick="filterExplore('','unesco',this)">UNESCO</button>
       </div>
     </div>
     <div class="sites-grid" id="sitesGrid"></div>
   </div>
-</section>
+</div>
 
-<!-- ═══════════════ TREKS SECTION ═══════════════ -->
-<section id="trekSection" class="full-section" style="display:none;">
-  <div class="section-wrap">
-    <div class="sw-header">
-      <div class="sw-label">Trail Guide</div>
-      <h2 class="sw-title">Treks & Walking Trails</h2>
-      <p class="sw-sub">Curated trails with offline maps, difficulty ratings, waypoints, water sources, and GPS tracking.</p>
+<!-- ══════════════════════════════════════════════════════
+     PAGE: TRIP PLANNER
+══════════════════════════════════════════════════════ -->
+<div id="page-trip" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr">
+      <div class="pg-label">AI-Powered</div>
+      <h2 class="pg-title">Trip Planner</h2>
+      <p class="pg-sub">Tell us where you want to go — get a complete itinerary, budget, hotels, transport, and day-by-day plan.</p>
     </div>
-    <div class="treks-grid" id="treksGrid"></div>
-  </div>
-</section>
 
-<!-- ═══════════════ EMERGENCY SECTION ═══════════════ -->
-<section id="emergencySection" class="full-section" style="display:none;">
-  <div class="section-wrap">
-    <div class="sw-header" style="text-align:center;">
-      <div class="sw-label" style="justify-content:center;">Safety & Emergency</div>
-      <h2 class="sw-title">Emergency SOS System</h2>
-      <p class="sw-sub">One tap sends your GPS coordinates via SMS. Works without internet on 2G signal.</p>
-    </div>
-    <div class="emergency-layout">
-      <!-- SOS PHONE MOCKUP -->
-      <div class="sos-device">
-        <div class="sos-device-inner">
-          <div class="sos-device-notch"></div>
-          <div class="sos-screen">
-            <div class="sos-header-bar">
-              <span>TrailBharat SOS</span>
-              <span id="sosTime"></span>
-            </div>
-            <div class="sos-location-display">
-              <div class="sld-icon">📍</div>
-              <div class="sld-info">
-                <div class="sld-title">Your Location</div>
-                <div class="sld-coords" id="sosCoords">Getting GPS coordinates...</div>
-                <div class="sld-place" id="sosPlace">Gandhinagar, Gujarat</div>
-              </div>
-              <div class="sld-accuracy" id="sosAccuracy">GPS</div>
-            </div>
-            <div class="sos-map-mini" id="sosMiniMap">
-              <div class="smm-center-pin">📍</div>
-              <div class="smm-rings"><div class="smm-ring"></div><div class="smm-ring r2"></div></div>
-            </div>
-            <button class="sos-main-btn" id="sosMainBtn" onclick="triggerSOS()">
-              <div class="sos-btn-inner">
-                <div class="sos-btn-icon">🆘</div>
-                <div class="sos-btn-text">SEND SOS</div>
-                <div class="sos-btn-sub">Tap to send GPS location via SMS</div>
-              </div>
-            </button>
-            <div class="sos-contacts-list" id="sosContactsList">
-              <div class="scl-title">Emergency Contacts</div>
-              <div class="sos-contact-item" id="sosc1">
-                <div class="sci-avatar" style="background:rgba(29,158,117,0.2);color:#5DCAA5">M</div>
-                <div class="sci-info"><div class="sci-name">Mom</div><div class="sci-num">+91 XXXXX XXXXX</div></div>
-                <div class="sci-status" id="s1">Primary</div>
-              </div>
-              <div class="sos-contact-item" id="sosc2">
-                <div class="sci-avatar" style="background:rgba(24,95,165,0.2);color:#85B7EB">R</div>
-                <div class="sci-info"><div class="sci-name">Rahul</div><div class="sci-num">+91 XXXXX XXXXX</div></div>
-                <div class="sci-status" id="s2">Friend</div>
-              </div>
-              <div class="sos-contact-item" id="sosc3">
-                <div class="sci-avatar" style="background:rgba(216,90,48,0.2);color:#F09595">P</div>
-                <div class="sci-info"><div class="sci-name">Police Control</div><div class="sci-num">100</div></div>
-                <div class="sci-status" id="s3">Emergency</div>
-              </div>
-            </div>
-            <button class="add-contact-btn" onclick="addContact()">+ Add Emergency Contact</button>
+    <div class="trip-layout">
+      <!-- PLANNER FORM -->
+      <div class="trip-form-card">
+        <div class="tfc-title">🗺 Plan Your Trip</div>
+        <div class="trip-field">
+          <label>Where do you want to go?</label>
+          <input id="tripDest" placeholder="e.g. Rani ki Vav, Manali, Hampi, Varanasi..." class="trip-input"/>
+        </div>
+        <div class="trip-field">
+          <label>Travelling from?</label>
+          <input id="tripFrom" placeholder="e.g. Gandhinagar, Mumbai..." class="trip-input" value="Gandhinagar"/>
+        </div>
+        <div class="trip-row2">
+          <div class="trip-field">
+            <label>Start Date</label>
+            <input id="tripStart" type="date" class="trip-input"/>
+          </div>
+          <div class="trip-field">
+            <label>End Date</label>
+            <input id="tripEnd" type="date" class="trip-input"/>
           </div>
         </div>
-      </div>
-
-      <!-- EMERGENCY INFO CARDS -->
-      <div class="emergency-info">
-        <h3 class="ei-title">Emergency Numbers — Gandhinagar & Ahmedabad</h3>
-        <div class="emergency-numbers-grid">
-          <div class="en-card red"><div class="enc-icon">🚔</div><div class="enc-label">Police</div><div class="enc-num">100</div></div>
-          <div class="en-card orange"><div class="enc-icon">🚒</div><div class="enc-label">Fire</div><div class="enc-num">101</div></div>
-          <div class="en-card green"><div class="enc-icon">🚑</div><div class="enc-label">Ambulance</div><div class="enc-num">108</div></div>
-          <div class="en-card blue"><div class="enc-icon">👩</div><div class="enc-label">Women Help</div><div class="enc-num">1091</div></div>
-          <div class="en-card teal"><div class="enc-icon">🌿</div><div class="enc-label">Forest Dept</div><div class="enc-num">1800-233-5500</div></div>
-          <div class="en-card amber"><div class="enc-icon">🏥</div><div class="enc-label">Civil Hospital</div><div class="enc-num">079-2325-0000</div></div>
-        </div>
-        <div class="ei-features">
-          <div class="eif-item"><div class="eif-icon">📡</div><div><div class="eif-title">SMS Without Internet</div><div class="eif-desc">Works on weakest 2G signal. Sends exact GPS coordinates, last 10 waypoints, battery level, and nearest landmark.</div></div></div>
-          <div class="eif-item"><div class="eif-icon">🗺️</div><div><div class="eif-title">Breadcrumb Trail</div><div class="eif-desc">Your path is recorded every 30 seconds. Contacts receive a Google Maps link showing your entire route history.</div></div></div>
-          <div class="eif-item"><div class="eif-icon">🔋</div><div><div class="eif-title">Low Battery Mode</div><div class="eif-desc">At 15% battery, TrailBharat auto-reduces GPS frequency and sends a low-battery alert to your contacts.</div></div></div>
-          <div class="eif-item"><div class="eif-icon">📴</div><div><div class="eif-title">Dead Zone Protocol</div><div class="eif-desc">If signal drops to zero, the app queues the SOS and sends it the moment any signal — even 1 bar — is detected.</div></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════ REWARDS SECTION ═══════════════ -->
-<section id="rewardsSection" class="full-section" style="display:none;">
-  <div class="section-wrap">
-    <div class="sw-header" style="text-align:center;">
-      <div class="sw-label" style="justify-content:center;">Community Engine</div>
-      <h2 class="sw-title">TrailPoints Rewards</h2>
-      <p class="sw-sub">Earn points for every review, route fix, and photo. Redeem for real perks.</p>
-    </div>
-    <div class="rewards-layout">
-      <div class="points-card">
-        <div class="pc-header">
-          <div class="pc-label">Your TrailPoints</div>
-          <div class="pc-badge">Silver Explorer</div>
-        </div>
-        <div class="pc-points" id="totalPoints">1,840</div>
-        <div class="pc-progress-wrap">
-          <div class="pc-progress-bar"><div class="pc-progress-fill" style="width:61%"></div></div>
-          <div class="pc-progress-label">1,840 / 3,000 pts — Gold Explorer</div>
-        </div>
-        <div class="pc-actions">
-          <button class="pc-btn" onclick="addPoints(10,'Reviewed a site')">✍️ Write Review +10</button>
-          <button class="pc-btn" onclick="addPoints(50,'Submitted a missing route')">🗺️ Add Route +50</button>
-          <button class="pc-btn" onclick="addPoints(15,'Uploaded a photo')">📸 Add Photo +15</button>
-          <button class="pc-btn" onclick="addPoints(20,'Fixed incorrect info')">🔧 Fix Info +20</button>
-        </div>
-        <div class="pc-log" id="pointsLog"></div>
-      </div>
-      <div class="rewards-right">
-        <div class="rewards-earn-grid" id="rewardBadges">
-          <div class="reb-card"><div class="reb-icon">🥉</div><div class="reb-title">Bronze</div><div class="reb-pts">0 pts</div><div class="reb-desc">Free Gujarat map pack</div><div class="reb-status earned">Earned</div></div>
-          <div class="reb-card active"><div class="reb-icon">🥈</div><div class="reb-title">Silver</div><div class="reb-pts">500 pts</div><div class="reb-desc">10% off partner hotels</div><div class="reb-status earned">Earned</div></div>
-          <div class="reb-card"><div class="reb-icon">🥇</div><div class="reb-title">Gold</div><div class="reb-pts">3,000 pts</div><div class="reb-desc">ASI entry waivers</div><div class="reb-status locked">1,160 pts away</div></div>
-          <div class="reb-card"><div class="reb-icon">💎</div><div class="reb-title">Platinum</div><div class="reb-pts">10,000 pts</div><div class="reb-desc">Free guide + hotel stay</div><div class="reb-status locked">Locked</div></div>
-        </div>
-        <div class="redeem-section">
-          <div class="rs-title">Available Rewards</div>
-          <div class="redeem-grid">
-            <div class="redeem-card"><div class="rc-icon">🗺️</div><div class="rc-name">Rajasthan Map Pack</div><div class="rc-cost">200 pts</div><button class="rc-btn" onclick="redeemItem(200,'Rajasthan Map Pack')">Redeem</button></div>
-            <div class="redeem-card"><div class="rc-icon">🏨</div><div class="rc-name">Hotel Discount 10%</div><div class="rc-cost">500 pts</div><button class="rc-btn" onclick="redeemItem(500,'Hotel Discount')">Redeem</button></div>
-            <div class="redeem-card"><div class="rc-icon">🎟️</div><div class="rc-name">ASI Entry Waiver</div><div class="rc-cost">800 pts</div><button class="rc-btn" onclick="redeemItem(800,'ASI Entry Waiver')">Redeem</button></div>
-            <div class="redeem-card"><div class="rc-icon">🎧</div><div class="rc-name">Audio Guide Premium</div><div class="rc-cost">300 pts</div><button class="rc-btn" onclick="redeemItem(300,'Audio Guide Premium')">Redeem</button></div>
+        <div class="trip-row2">
+          <div class="trip-field">
+            <label>Travellers</label>
+            <select id="tripPeople" class="trip-input">
+              <option>1 (Solo)</option><option>2 (Couple)</option><option selected>3-5 (Group)</option><option>6+ (Large)</option>
+            </select>
+          </div>
+          <div class="trip-field">
+            <label>Budget</label>
+            <select id="tripBudget" class="trip-input">
+              <option>Budget (₹1k-3k/day)</option><option selected>Mid (₹3k-8k/day)</option><option>Luxury (₹8k+/day)</option>
+            </select>
           </div>
         </div>
+        <div class="trip-field">
+          <label>Interests (select all that apply)</label>
+          <div class="trip-interests" id="tripInterests">
+            <span class="ti active" onclick="toggleInterest(this)">🏛 Heritage</span>
+            <span class="ti active" onclick="toggleInterest(this)">🏔 Trekking</span>
+            <span class="ti" onclick="toggleInterest(this)">🍛 Food</span>
+            <span class="ti" onclick="toggleInterest(this)">📸 Photography</span>
+            <span class="ti" onclick="toggleInterest(this)">🏖 Beach</span>
+            <span class="ti" onclick="toggleInterest(this)">🌿 Nature</span>
+            <span class="ti" onclick="toggleInterest(this)">🛍 Shopping</span>
+            <span class="ti" onclick="toggleInterest(this)">🧘 Spiritual</span>
+          </div>
+        </div>
+        <button class="btn-green full" onclick="generateTrip()">✈ Generate My Trip Plan</button>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- ═══════════════ SITE DETAIL MODAL ═══════════════ -->
-<div class="modal-overlay" id="siteModal" onclick="closeSiteModal(event)">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeSiteModal()">✕</button>
-    <div class="modal-img" id="modalImg"></div>
-    <div class="modal-content">
-      <div class="modal-badges" id="modalBadges"></div>
-      <h2 class="modal-title" id="modalTitle"></h2>
-      <div class="modal-location" id="modalLocation"></div>
-      <div class="modal-tabs">
-        <button class="mtab active" onclick="switchTab('info',this)">Info</button>
-        <button class="mtab" onclick="switchTab('history',this)">History</button>
-        <button class="mtab" onclick="switchTab('visiting',this)">Visiting</button>
-        <button class="mtab" onclick="switchTab('reviews',this)">Reviews</button>
-      </div>
-      <div id="tabInfo" class="tab-content active"></div>
-      <div id="tabHistory" class="tab-content" style="display:none;"></div>
-      <div id="tabVisiting" class="tab-content" style="display:none;"></div>
-      <div id="tabReviews" class="tab-content" style="display:none;"></div>
-      <div class="modal-actions">
-        <button class="btn-primary" onclick="navigateToSiteFromModal()">📍 Navigate</button>
-        <button class="btn-outline" onclick="closeSiteModal()">Close</button>
+      <!-- AI CHAT + RESULT -->
+      <div class="trip-right">
+        <div class="trip-result" id="tripResult" style="display:none"></div>
+
+        <!-- AI CHAT -->
+        <div class="ai-chat-card">
+          <div class="acc-header">
+            <div class="acc-icon">🤖</div>
+            <div>
+              <div class="acc-title">TrailBot — AI Travel Assistant</div>
+              <div class="acc-sub">Ask anything about Indian travel, sites, routes, safety...</div>
+            </div>
+            <div class="acc-live">Live</div>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg bot">
+              <div class="cm-avatar">🤖</div>
+              <div class="cm-bubble">Namaste! 🙏 I'm TrailBot. Ask me anything — "Best places near Gandhinagar", "Is Spiti Valley safe in December", "Plan 3 days in Varanasi", or anything else about travelling in India!</div>
+            </div>
+          </div>
+          <div class="chat-input-row">
+            <input id="chatInput" placeholder="Ask TrailBot..." onkeydown="if(event.key==='Enter')sendChat()"/>
+            <button onclick="sendChat()">Send</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<!-- ══════════════════════════════════════════════════════
+     PAGE: SAFETY
+══════════════════════════════════════════════════════ -->
+<div id="page-safety" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr">
+      <div class="pg-label">Forensic Intelligence</div>
+      <h2 class="pg-title">Safety & Risk Dashboard</h2>
+      <p class="pg-sub">Accident-prone zones, crime history, safety scores, and area-level risk analysis for every location in India.</p>
+    </div>
+    <div class="safety-search-row">
+      <input id="safetySearch" class="trip-input" placeholder="Enter any place in India to check safety..." style="flex:1"/>
+      <button class="btn-green" onclick="checkSafety()">Check Safety</button>
+    </div>
+    <div id="safetyResult" class="safety-result" style="display:none"></div>
+    <div class="safety-grid" id="safetyGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: WEATHER
+══════════════════════════════════════════════════════ -->
+<div id="page-weather" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr">
+      <div class="pg-label">Live Conditions</div>
+      <h2 class="pg-title">Weather for Any India Location</h2>
+      <p class="pg-sub">Real-time conditions, 7-day forecast, trekking advisories, and offline cached weather for your downloaded regions.</p>
+    </div>
+    <div class="weather-search-row">
+      <input id="weatherCity" class="trip-input" placeholder="Gandhinagar, Manali, Jaipur..." value="Gandhinagar"/>
+      <button class="btn-green" onclick="fetchWeather()">Get Weather</button>
+    </div>
+    <div id="weatherDisplay" class="weather-display"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: EMERGENCY
+══════════════════════════════════════════════════════ -->
+<div id="page-emergency" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr" style="text-align:center">
+      <div class="pg-label" style="justify-content:center">Safety · Always On</div>
+      <h2 class="pg-title">Emergency SOS</h2>
+      <p class="pg-sub">One tap sends your exact GPS location via SMS — works on 2G, no internet needed.</p>
+    </div>
+    <div class="sos-layout">
+      <div class="sos-device">
+        <div class="sos-notch"></div>
+        <div class="sos-screen">
+          <div class="sos-screen-bar">
+            <span>TrailBharat SOS</span><span id="sosTime"></span>
+          </div>
+          <div class="sos-loc-card">
+            <div class="slc-lbl">Your Location</div>
+            <div class="slc-coords" id="sosCoords">Acquiring GPS...</div>
+            <div class="slc-place" id="sosPlace">Gandhinagar, Gujarat</div>
+          </div>
+          <div class="sos-mini-map">
+            <div class="smm-pin">📍</div>
+            <div class="smm-ring r1"></div>
+            <div class="smm-ring r2"></div>
+          </div>
+          <button class="sos-main" id="sosMainBtn" onclick="triggerSOS()">
+            <div class="sos-icon">🆘</div>
+            <div class="sos-label">SEND SOS</div>
+            <div class="sos-hint">Sends GPS + route history via SMS</div>
+          </button>
+          <div class="sos-contacts" id="sosContactsDiv">
+            <div class="scc-title">Emergency Contacts</div>
+            <div class="scc-item" id="sosc0">
+              <div class="sci-av g">M</div>
+              <div><div class="sci-nm">Mom</div><div class="sci-ph">+91 XXXXX XXXXX</div></div>
+              <div class="sci-st" id="ss0">Primary</div>
+            </div>
+            <div class="scc-item" id="sosc1">
+              <div class="sci-av b">R</div>
+              <div><div class="sci-nm">Rahul</div><div class="sci-ph">+91 XXXXX XXXXX</div></div>
+              <div class="sci-st" id="ss1">Friend</div>
+            </div>
+            <div class="scc-item" id="sosc2">
+              <div class="sci-av r">P</div>
+              <div><div class="sci-nm">Police</div><div class="sci-ph">100</div></div>
+              <div class="sci-st" id="ss2">Emergency</div>
+            </div>
+          </div>
+          <button class="add-contact-btn" onclick="addSosContact()">+ Add Contact</button>
+        </div>
+      </div>
+      <div class="sos-info">
+        <div class="sos-nums-title">Emergency Numbers — All India</div>
+        <div class="sos-nums-grid">
+          <div class="sng red" onclick="callNum('100')"><div>🚔</div><div>Police</div><b>100</b></div>
+          <div class="sng orange" onclick="callNum('101')"><div>🚒</div><div>Fire</div><b>101</b></div>
+          <div class="sng green" onclick="callNum('108')"><div>🚑</div><div>Ambulance</div><b>108</b></div>
+          <div class="sng blue" onclick="callNum('1091')"><div>👩</div><div>Women</div><b>1091</b></div>
+          <div class="sng purple" onclick="callNum('1800-11-0001')"><div>🏔</div><div>Tourist</div><b>1800-11-0001</b></div>
+          <div class="sng teal" onclick="callNum('1926')"><div>🌿</div><div>Forest</div><b>1926</b></div>
+        </div>
+        <div class="sos-features">
+          <div class="sf-item"><div class="sf-ico">📡</div><div><b>SMS Without Internet</b><p>Works on 2G. Sends coordinates, last 10 waypoints, battery level, nearest landmark.</p></div></div>
+          <div class="sf-item"><div class="sf-ico">🗺</div><div><b>Breadcrumb Trail</b><p>GPS path saved every 30 seconds. Contacts get a Google Maps link with your full route history.</p></div></div>
+          <div class="sf-item"><div class="sf-ico">🔋</div><div><b>Low Battery Alert</b><p>At 15% battery, auto-reduces GPS frequency and alerts your contacts immediately.</p></div></div>
+          <div class="sf-item"><div class="sf-ico">📴</div><div><b>Dead Zone Queue</b><p>If zero signal, SOS is queued and fires the moment even 1 bar of signal appears.</p></div></div>
+          <div class="sf-item"><div class="sf-ico">📧</div><div><b>Email Alerts</b><p>Emergency alert also sent to your registered email and to admin@trailbharat.in for monitoring.</p></div></div>
+        </div>
+        <!-- CONTACT FORM / EMAIL -->
+        <div class="contact-section">
+          <div class="cs-title">📧 Contact Us / Report an Issue</div>
+          <div class="cs-sub">Messages sent here reach directly to <b>vasanth.trailbharat@gmail.com</b></div>
+          <input id="contactName" class="trip-input" placeholder="Your name"/>
+          <input id="contactEmail" class="trip-input" placeholder="Your email"/>
+          <textarea id="contactMsg" class="trip-input" placeholder="Your message, query or feedback..." rows="4"></textarea>
+          <button class="btn-green full" onclick="sendContactEmail()">Send Message ✉</button>
+          <div id="contactSent" style="display:none;color:var(--green);font-weight:700;margin-top:8px;text-align:center">✅ Message sent! We'll respond within 24 hours.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: REWARDS
+══════════════════════════════════════════════════════ -->
+<div id="page-rewards" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr" style="text-align:center">
+      <div class="pg-label" style="justify-content:center">Community</div>
+      <h2 class="pg-title">TrailPoints Rewards</h2>
+      <p class="pg-sub">Contribute to the community and earn rewards. Every review, route fix, and photo earns points.</p>
+    </div>
+    <div class="rewards-layout">
+      <div class="pts-card">
+        <div class="pc-row"><div class="pc-lbl">Your Points</div><div class="pc-badge" id="pcBadge">Silver</div></div>
+        <div class="pc-num" id="pcNum">1,840</div>
+        <div class="pc-bar-wrap"><div class="pc-bar"><div class="pc-fill" id="pcFill" style="width:61%"></div></div></div>
+        <div class="pc-prog" id="pcProg">1,840 / 3,000 to Gold</div>
+        <div class="pc-actions">
+          <button class="pca-btn" onclick="earnPoints(10,'Wrote a review')">✍ Review +10</button>
+          <button class="pca-btn" onclick="earnPoints(50,'Added missing route')">🗺 Route +50</button>
+          <button class="pca-btn" onclick="earnPoints(15,'Uploaded a photo')">📸 Photo +15</button>
+          <button class="pca-btn" onclick="earnPoints(20,'Fixed wrong info')">🔧 Fix +20</button>
+          <button class="pca-btn" onclick="earnPoints(100,'Completed a trek')">🥾 Trek +100</button>
+          <button class="pca-btn" onclick="earnPoints(30,'Added safety report')">🛡 Safety +30</button>
+        </div>
+        <div class="pc-log" id="pcLog"></div>
+      </div>
+      <div class="rewards-right">
+        <div class="badges-grid">
+          <div class="bdg-card"><div class="bdg-ico">🥉</div><div class="bdg-name">Bronze</div><div class="bdg-pts">0 pts</div><div class="bdg-perk">Free Gujarat map pack</div><div class="bdg-status earned">✓ Earned</div></div>
+          <div class="bdg-card active"><div class="bdg-ico">🥈</div><div class="bdg-name">Silver</div><div class="bdg-pts">500 pts</div><div class="bdg-perk">10% hotel discounts</div><div class="bdg-status earned">✓ Current</div></div>
+          <div class="bdg-card"><div class="bdg-ico">🥇</div><div class="bdg-name">Gold</div><div class="bdg-pts">3,000 pts</div><div class="bdg-perk">ASI entry waivers</div><div class="bdg-status locked" id="goldStatus">1,160 away</div></div>
+          <div class="bdg-card"><div class="bdg-ico">💎</div><div class="bdg-name">Diamond</div><div class="bdg-pts">10,000 pts</div><div class="bdg-perk">Free stay + guide</div><div class="bdg-status locked">Locked</div></div>
+        </div>
+        <div class="redeem-title">Redeem Rewards</div>
+        <div class="redeem-grid">
+          <div class="rd-card"><div class="rd-ico">🗺</div><div class="rd-name">Rajasthan Map Pack</div><div class="rd-cost">200 pts</div><button class="rd-btn" onclick="redeem(200,'Rajasthan Map')">Redeem</button></div>
+          <div class="rd-card"><div class="rd-ico">🏨</div><div class="rd-name">Hotel Discount 10%</div><div class="rd-cost">500 pts</div><button class="rd-btn" onclick="redeem(500,'Hotel 10%')">Redeem</button></div>
+          <div class="rd-card"><div class="rd-ico">🎟</div><div class="rd-name">ASI Entry Waiver</div><div class="rd-cost">800 pts</div><button class="rd-btn" onclick="redeem(800,'ASI Entry')">Redeem</button></div>
+          <div class="rd-card"><div class="rd-ico">🎧</div><div class="rd-name">Audio Guide Premium</div><div class="rd-cost">300 pts</div><button class="rd-btn" onclick="redeem(300,'Audio Guide')">Redeem</button></div>
+          <div class="rd-card"><div class="rd-ico">📦</div><div class="rd-name">Full India Offline Pack</div><div class="rd-cost">1,500 pts</div><button class="rd-btn" onclick="redeem(1500,'India Offline')">Redeem</button></div>
+          <div class="rd-card"><div class="rd-ico">🤖</div><div class="rd-name">TrailBot Pro (1 Month)</div><div class="rd-cost">400 pts</div><button class="rd-btn" onclick="redeem(400,'TrailBot Pro')">Redeem</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE: ACCOUNT
+══════════════════════════════════════════════════════ -->
+<div id="page-account" class="page">
+  <div class="pg-wrap">
+    <div class="pg-hdr">
+      <div class="pg-label">My Profile</div>
+      <h2 class="pg-title">Explorer Account</h2>
+    </div>
+    <div class="account-layout">
+      <div class="acc-profile-card">
+        <div class="apc-avatar" id="apcAvatar">?</div>
+        <div class="apc-name" id="apcName">Guest Explorer</div>
+        <div class="apc-email" id="apcEmail">Not signed in</div>
+        <div class="apc-badge" id="apcBadge">🥉 Bronze</div>
+        <div class="apc-pts" id="apcPts">1,840 pts</div>
+        <button class="btn-outline full" onclick="showAuth()" id="authActionBtn">Sign In / Register</button>
+        <button class="btn-outline full" onclick="logout()" id="logoutBtn" style="display:none;color:#dc2626;border-color:#dc2626">Sign Out</button>
+      </div>
+      <div class="acc-details">
+        <div class="acc-section-title">My Trips</div>
+        <div id="myTrips" class="my-trips-list">
+          <div class="empty-state">No saved trips yet. <span onclick="showPage('trip')" style="color:var(--green);cursor:pointer">Plan one now →</span></div>
+        </div>
+        <div class="acc-section-title" style="margin-top:2rem">My Reviews</div>
+        <div id="myReviews" class="my-trips-list">
+          <div class="empty-state">No reviews yet. <span onclick="showPage('explore')" style="color:var(--green);cursor:pointer">Explore sites →</span></div>
+        </div>
+        <div class="acc-section-title" style="margin-top:2rem">Settings</div>
+        <div class="settings-list">
+          <div class="sl-item"><span>Dark Mode</span><label class="toggle-sw"><input type="checkbox" id="darkToggle" onchange="toggleTheme()"/><span class="ts-slider"></span></label></div>
+          <div class="sl-item"><span>GPS Auto-Track</span><label class="toggle-sw"><input type="checkbox" checked/><span class="ts-slider"></span></label></div>
+          <div class="sl-item"><span>Offline Map Notifications</span><label class="toggle-sw"><input type="checkbox" checked/><span class="ts-slider"></span></label></div>
+          <div class="sl-item"><span>SOS Auto-Alert at 15% Battery</span><label class="toggle-sw"><input type="checkbox" checked/><span class="ts-slider"></span></label></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FULL SITE DETAIL MODAL ══ -->
+<div id="fullDetailModal" class="modal-overlay" style="display:none" onclick="closeFullDetail(event)">
+  <div class="fd-box">
+    <button class="fd-close" onclick="closeFullDetail()">✕</button>
+    <div class="fd-hero" id="fdHero"></div>
+    <div class="fd-content">
+      <div class="fd-badges" id="fdBadges"></div>
+      <h2 id="fdTitle"></h2>
+      <div id="fdLocation" class="fd-loc"></div>
+      <div class="fd-safety-row" id="fdSafety"></div>
+      <div class="fd-tabs">
+        <button class="fdt active" onclick="fdTab('info',this)">📋 Info</button>
+        <button class="fdt" onclick="fdTab('history',this)">📜 History</button>
+        <button class="fdt" onclick="fdTab('visiting',this)">🗓 Visiting</button>
+        <button class="fdt" onclick="fdTab('safety',this)">🛡 Safety</button>
+        <button class="fdt" onclick="fdTab('reviews',this)">⭐ Reviews</button>
+      </div>
+      <div id="fdTabContent"></div>
+      <div class="fd-actions">
+        <button class="btn-green" onclick="navigate3D()">📍 Navigate</button>
+        <button class="btn-outline" onclick="showPage('trip')">✈ Plan Trip Here</button>
+        <button class="btn-outline" onclick="closeFullDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REVIEW MODAL ══ -->
+<div id="reviewModal" class="modal-overlay" style="display:none" onclick="closeReview(event)">
+  <div class="rv-box">
+    <button class="fd-close" onclick="closeReview()">✕</button>
+    <h3 id="rvTitle">Write a Review</h3>
+    <div class="rv-stars">
+      <span onclick="setStars(1)" class="rvs" data-s="1">★</span>
+      <span onclick="setStars(2)" class="rvs" data-s="2">★</span>
+      <span onclick="setStars(3)" class="rvs" data-s="3">★</span>
+      <span onclick="setStars(4)" class="rvs" data-s="4">★</span>
+      <span onclick="setStars(5)" class="rvs" data-s="5">★</span>
+    </div>
+    <textarea id="rvText" placeholder="Share your experience — what was special, what to watch out for..." rows="5"></textarea>
+    <select id="rvCondition" class="trip-input">
+      <option value="">Condition at visit</option>
+      <option>Excellent — well maintained</option>
+      <option>Good — minor issues</option>
+      <option>Okay — needs attention</option>
+      <option>Poor — significant damage</option>
+      <option>Crowded — go early/late</option>
+    </select>
+    <button class="btn-green full" onclick="submitReview()">Submit Review +10 pts</button>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div id="toast" class="toast"></div>
 
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
