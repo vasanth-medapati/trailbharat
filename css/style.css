@@ -1,92 +1,44 @@
-// 🔥 SERVICE WORKER (PWA)
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(() => console.log("Service Worker Registered"))
-    .catch(err => console.log(err));
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #fff;
+  color: #000;
 }
 
-
-// 🌙 DARK MODE
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
+header {
+  background: black;
+  color: white;
+  padding: 15px;
+  text-align: center;
 }
 
-
-// 📍 LIVE LOCATION
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(position => {
-      document.getElementById("location").innerText =
-        "Latitude: " + position.coords.latitude +
-        ", Longitude: " + position.coords.longitude;
-    });
-  } else {
-    alert("Geolocation not supported");
-  }
+.container {
+  padding: 20px;
 }
 
-
-// 🌦 WEATHER API
-function getWeather() {
-  const city = "Delhi"; // change dynamically later
-  const apiKey = "YOUR_API_KEY";
-
-  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById("weather").innerText =
-        `Temp: ${data.main.temp}°C, ${data.weather[0].description}`;
-    })
-    .catch(() => {
-      document.getElementById("weather").innerText = "Weather not available";
-    });
+.card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-
-// 🧠 FORENSIC SAFETY DATA
-const safetyData = {
-  Delhi: {
-    score: 6.5,
-    crime: "High",
-    accident: "NH48, Ring Road",
-    night: "Unsafe"
-  },
-  Ahmedabad: {
-    score: 7.8,
-    crime: "Medium",
-    accident: "SG Highway",
-    night: "Moderate"
-  },
-  Hyderabad: {
-    score: 8.2,
-    crime: "Low",
-    accident: "Outer Ring Road",
-    night: "Safe"
-  }
-};
-
-
-// 📌 SHOW PLACE DETAILS
-function showDetails(place) {
-  const data = safetyData[place];
-
-  document.getElementById("details").innerHTML = `
-    <h2>${place}</h2>
-    <p><b>Safety Score:</b> ${data.score}/10</p>
-    <p><b>Crime Level:</b> ${data.crime}</p>
-    <p><b>Accident Zones:</b> ${data.accident}</p>
-    <p><b>Night Safety:</b> ${data.night}</p>
-  `;
+.card:hover {
+  background: #f5f5f5;
 }
 
+button {
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
 
-// 🧳 BASIC TRIP PLANNER
-function generateTrip(days) {
-  let plan = [];
+.dark {
+  background: #111;
+  color: white;
+}
 
-  for (let i = 1; i <= days; i++) {
-    plan.push("Day " + i + ": Visit main attractions");
-  }
-
-  return plan;
+.dark .card {
+  border: 1px solid #444;
 }
