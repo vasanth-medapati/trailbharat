@@ -1,1425 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-<title>TrailBharat — Explore Gandhinagar & Ahmedabad</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<title>TrailBharat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <style>
-:root {
-  --bg:#0b0f0b;--bg2:#111611;--bg3:#161e16;--card:#1a2219;--card2:#1f2a1f;
-  --border:rgba(80,200,100,0.12);--border2:rgba(80,200,100,0.28);
-  --accent:#4ade80;--accent2:#22c55e;--accent3:#16a34a;
-  --danger:#f87171;--danger2:#ef4444;--warn:#fbbf24;
-  --blue:#60a5fa;--purple:#a78bfa;--gold:#f59e0b;
-  --text:#e8f5e9;--text2:#a7c4a7;--text3:#5a8060;
-  --font:'DM Sans',sans-serif;--display:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;
+body { margin:0; font-family:Arial; background:#f4f4f4; }
+header { background:#2c3e50; color:white; padding:15px; text-align:center; }
+
+nav {
+  display:flex;
+  justify-content:space-around;
+  background:#34495e;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;overflow-x:hidden;}
+nav button {
+  background:none;
+  border:none;
+  color:white;
+  padding:10px;
+  cursor:pointer;
+}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(11,15,11,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 16px;height:56px;display:flex;align-items:center;gap:4px;}
-.nav-brand{font-family:var(--display);font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-1px;margin-right:8px;flex-shrink:0;}
-.nav-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1;}
-.nav-tabs::-webkit-scrollbar{display:none;}
-.nav-tab{padding:6px 12px;border-radius:8px;background:transparent;color:var(--text3);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;transition:all 0.2s;letter-spacing:0.3px;}
-.nav-tab:hover{color:var(--text2);background:var(--card);}
-.nav-tab.active{color:var(--accent);background:rgba(74,222,128,0.1);}
-.nav-sos{margin-left:auto;flex-shrink:0;background:var(--danger2);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-family:var(--display);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.5px;animation:sosring 2s infinite;}
-@keyframes sosring{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);}50%{box-shadow:0 0 0 8px rgba(239,68,68,0);}}
+section { display:none; padding:20px; }
+.active { display:block; }
 
-/* PAGES */
-.page{display:none;padding-top:56px;min-height:100vh;}
-.page.active{display:block;}
-.page-inner{max-width:760px;margin:0 auto;padding:24px 16px 80px;}
+.card {
+  background:white;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+}
 
-/* HERO */
-.hero{text-align:center;padding:48px 20px 36px;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:500px;height:500px;background:radial-gradient(ellipse,rgba(74,222,128,0.06) 0%,transparent 70%);pointer-events:none;}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border:1px solid var(--border2);border-radius:20px;font-size:12px;color:var(--accent);margin-bottom:20px;font-weight:600;letter-spacing:0.5px;}
-.hero-title{font-family:var(--display);font-size:clamp(32px,8vw,56px);font-weight:800;letter-spacing:-2px;line-height:1.05;color:var(--text);margin-bottom:14px;}
-.hero-title span{color:var(--accent);}
-.hero-sub{font-size:15px;color:var(--text3);max-width:480px;margin:0 auto 28px;line-height:1.7;}
-.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:32px auto 0;max-width:560px;}
-.hstat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;}
-.hstat-val{font-family:var(--display);font-size:22px;font-weight:800;color:var(--accent);}
-.hstat-label{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:0.3px;}
+#map { height:400px; }
 
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 20px;border-radius:10px;border:none;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap;text-decoration:none;}
-.btn-primary{background:var(--accent);color:#0b0f0b;}
-.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);}
-.btn-primary:active{transform:scale(0.97);}
-.btn-danger{background:var(--danger2);color:#fff;}
-.btn-danger:hover{background:#dc2626;}
-.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border2);}
-.btn-outline:hover{background:var(--card2);color:var(--text);}
-.btn-ghost{background:transparent;color:var(--text3);border:1px solid var(--border);}
-.btn-ghost:hover{color:var(--text2);border-color:var(--border2);}
-.btn-full{width:100%;}
-.btn-sm{padding:6px 14px;font-size:13px;}
-.btn-lg{padding:13px 28px;font-size:16px;}
+input, select {
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+}
 
-/* SECTION */
-.section-title{font-family:var(--display);font-size:24px;font-weight:700;letter-spacing:-0.8px;color:var(--text);margin-bottom:5px;}
-.section-sub{font-size:13px;color:var(--text3);margin-bottom:22px;}
-.section-head{margin-bottom:20px;}
-
-/* CARDS */
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;}
-.card-sm{padding:14px 16px;}
-.card-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
-.card-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;font-family:var(--display);}
-.card-sub{font-size:13px;color:var(--text3);}
-
-/* SITE CARDS */
-.site-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
-.site-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.2s;}
-.site-card:hover{border-color:var(--border2);transform:translateY(-2px);}
-.site-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;}
-.site-thumb-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,11,0.8) 0%,transparent 60%);}
-.site-info{padding:14px;}
-.site-name{font-family:var(--display);font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px;}
-.site-loc{font-size:12px;color:var(--text3);margin-bottom:8px;}
-.site-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.star-row{color:var(--gold);font-size:12px;}
-.site-tags{display:flex;gap:5px;flex-wrap:wrap;}
-.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(74,222,128,0.1);color:var(--accent);border:1px solid rgba(74,222,128,0.2);}
-.tag-temple{background:rgba(251,191,36,0.1);color:var(--gold);border-color:rgba(251,191,36,0.2);}
-.tag-nature{background:rgba(96,165,250,0.1);color:var(--blue);border-color:rgba(96,165,250,0.2);}
-.tag-trek{background:rgba(167,139,250,0.1);color:var(--purple);border-color:rgba(167,139,250,0.2);}
-.filter-bar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-bottom:16px;}
-.filter-bar::-webkit-scrollbar{display:none;}
-.filter-btn{padding:5px 14px;border-radius:20px;background:var(--card);border:1px solid var(--border);color:var(--text3);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;}
-.filter-btn.active{background:rgba(74,222,128,0.1);border-color:var(--border2);color:var(--accent);}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:none;align-items:flex-end;justify-content:center;padding:16px;}
-.modal-overlay.open{display:flex;}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px 20px 20px 20px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;animation:slideup 0.3s cubic-bezier(.34,1.56,.64,1);}
-@keyframes slideup{from{transform:translateY(60px);opacity:0;}to{transform:none;opacity:1;}}
-.modal-header{padding:20px 20px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
-.modal-close{background:var(--card2);border:1px solid var(--border);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:18px;flex-shrink:0;}
-.modal-body{padding:16px 20px 24px;}
-.modal-tabs{display:flex;gap:2px;margin-bottom:18px;background:var(--card);border-radius:10px;padding:4px;}
-.modal-tab{flex:1;padding:7px;border-radius:7px;text-align:center;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.15s;}
-.modal-tab.active{background:var(--card2);color:var(--accent);}
-.modal-content{display:none;}
-.modal-content.active{display:block;}
-.info-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
-.info-row:last-child{border-bottom:none;}
-.info-key{font-size:12px;color:var(--text3);width:90px;flex-shrink:0;padding-top:1px;}
-.info-val{font-size:13px;color:var(--text2);flex:1;line-height:1.5;}
-.info-val a{color:var(--blue);text-decoration:none;}
-.info-val a:hover{text-decoration:underline;}
-.history-text{font-size:14px;color:var(--text2);line-height:1.85;margin-bottom:14px;}
-.history-text strong{color:var(--text);font-weight:600;}
-.wiki-source{font-size:12px;color:var(--text3);padding:10px 12px;background:var(--card);border-radius:8px;border-left:3px solid var(--accent3);margin-top:14px;}
-.wiki-source a{color:var(--blue);}
-
-/* TREK CARDS */
-.trek-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;}
-.trek-card:hover{border-color:var(--border2);}
-.trek-header{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-.trek-icon{width:48px;height:48px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.trek-name{font-family:var(--display);font-size:17px;font-weight:700;color:var(--text);}
-.trek-loc{font-size:12px;color:var(--text3);}
-.trek-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.trek-stat{background:var(--bg3);border-radius:8px;padding:8px;text-align:center;}
-.trek-stat-val{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--accent);}
-.trek-stat-label{font-size:10px;color:var(--text3);margin-top:1px;}
-.diff-badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
-.diff-easy{background:rgba(74,222,128,0.12);color:var(--accent);}
-.diff-moderate{background:rgba(251,191,36,0.12);color:var(--warn);}
-.diff-hard{background:rgba(248,113,113,0.12);color:var(--danger);}
-
-/* MAP */
-#map-container{height:calc(100vh - 56px);width:100%;position:relative;}
-#map{height:100%;width:100%;}
-.map-controls{position:absolute;top:12px;right:12px;z-index:500;display:flex;flex-direction:column;gap:6px;}
-.map-btn{width:36px;height:36px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text2);}
-.map-btn:hover{background:var(--card2);color:var(--accent);}
-.map-search{position:absolute;top:12px;left:12px;right:64px;z-index:500;}
-.map-search input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:9px 14px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;}
-.map-search input:focus{border-color:var(--border2);}
-.gps-status{position:absolute;bottom:16px;left:12px;z-index:500;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;display:flex;align-items:center;gap:8px;}
-
-/* SOS PAGE */
-.sos-ring-btn{width:160px;height:160px;border-radius:50%;background:var(--danger2);border:5px solid rgba(239,68,68,0.25);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 8px;font-family:var(--display);font-size:26px;font-weight:800;color:#fff;letter-spacing:1px;animation:ringpulse 2s infinite;transition:transform 0.15s;}
-.sos-ring-btn:hover{transform:scale(1.04);}
-.sos-ring-btn:active{transform:scale(0.96);}
-@keyframes ringpulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,0.5);}70%{box-shadow:0 0 0 26px rgba(239,68,68,0);}100%{box-shadow:0 0 0 0 rgba(239,68,68,0);}}
-.sos-icon-big{font-size:40px;margin-bottom:4px;}
-.coord-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:10px;}
-.status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;background:var(--card);border:1px solid var(--border);font-size:13px;color:var(--text3);}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;}
-.dot.green{background:var(--accent);animation:blink 1.4s infinite;}
-.dot.red{background:var(--danger);animation:blink 1.4s infinite;}
-.dot.warn{background:var(--warn);}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.35;}}
-.contact-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.contact-row:last-child{border-bottom:none;}
-.avatar{width:40px;height:40px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--accent);flex-shrink:0;}
-.contact-name{font-size:14px;font-weight:600;color:var(--text);}
-.contact-num{font-size:12px;color:var(--text3);font-family:var(--mono);}
-.contact-actions{margin-left:auto;display:flex;gap:6px;}
-
-/* BADGE */
-.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.3px;}
-.badge-green{background:rgba(74,222,128,0.12);color:var(--accent);}
-.badge-red{background:rgba(248,113,113,0.12);color:var(--danger);}
-.badge-blue{background:rgba(96,165,250,0.12);color:var(--blue);}
-.badge-warn{background:rgba(251,191,36,0.12);color:var(--warn);}
-.badge-purple{background:rgba(167,139,250,0.12);color:var(--purple);}
-.badge-gold{background:rgba(245,158,11,0.12);color:var(--gold);}
-
-/* INPUTS */
-input[type=text],input[type=tel],input[type=number],textarea,select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color 0.2s;}
-input[type=text]:focus,input[type=tel]:focus,textarea:focus,select:focus{border-color:var(--border2);}
-textarea{resize:vertical;min-height:80px;}
-select{cursor:pointer;}
-label{display:block;font-size:12px;color:var(--text3);margin-bottom:5px;margin-top:12px;font-weight:600;letter-spacing:0.3px;}
-
-/* GRID */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
-@media(max-width:440px){.grid2{grid-template-columns:1fr;}.grid3{grid-template-columns:1fr 1fr;}.hero-stats{grid-template-columns:repeat(2,1fr);}}
-
-/* AI STATES */
-.ai-typing{display:none;align-items:center;gap:10px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--text3);}
-.ai-typing.show{display:flex;}
-.dots-row{display:flex;gap:4px;}
-.dots-row span{width:5px;height:5px;border-radius:50%;background:var(--accent);display:block;animation:dotbounce 1.1s infinite;}
-.dots-row span:nth-child(2){animation-delay:.18s;}
-.dots-row span:nth-child(3){animation-delay:.36s;}
-@keyframes dotbounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-7px);}}
-.ai-output{display:none;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px;font-size:14px;line-height:1.85;color:var(--text2);white-space:pre-wrap;}
-.ai-output.show{display:block;animation:fadein 0.4s ease;}
-@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
-
-/* LIVE SHARE */
-.share-link-box{display:flex;gap:8px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:var(--mono);font-size:12px;color:var(--blue);word-break:break-all;}
-.copy-btn{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:4px 10px;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font);flex-shrink:0;}
-.copy-btn:hover{color:var(--accent);border-color:var(--accent);}
-.progress-wrap{background:var(--bg3);border-radius:6px;height:5px;overflow:hidden;margin-top:6px;}
-.progress-bar{height:100%;background:var(--accent);border-radius:6px;transition:width 0.8s ease;}
-
-/* REWARDS */
-.reward-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
-.reward-icon{font-size:32px;margin-bottom:8px;}
-.reward-pts{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--accent);}
-.reward-title{font-size:14px;font-weight:600;color:var(--text);margin:4px 0 2px;}
-.reward-sub{font-size:12px;color:var(--text3);}
-.progress-ring-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;width:160px;height:160px;}
-.progress-ring-label{position:absolute;text-align:center;}
-.progress-ring-pts{font-family:var(--display);font-size:28px;font-weight:800;color:var(--accent);}
-.progress-ring-sub{font-size:12px;color:var(--text3);}
-
-/* FORENSIC LOG */
-.log-row{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.log-row:last-child{border-bottom:none;}
-.log-time{font-family:var(--mono);color:var(--text3);font-size:11px;flex-shrink:0;width:70px;}
-.log-event{color:var(--text2);flex:1;}
-.forensic-stat{background:var(--bg3);border-radius:12px;padding:14px;text-align:center;}
-.forensic-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--accent);}
-.forensic-label{font-size:11px;color:var(--text3);margin-top:3px;}
-
-/* TOGGLE */
-.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);}
-.toggle-row:last-child{border-bottom:none;}
-.toggle-label{font-size:14px;color:var(--text);}
-.toggle-sub{font-size:12px;color:var(--text3);}
-.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
-.toggle input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;inset:0;background:var(--bg3);border-radius:12px;cursor:pointer;border:1px solid var(--border2);transition:all 0.25s;}
-.toggle-slider::after{content:'';position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(--text3);border-radius:50%;transition:all 0.25s;}
-.toggle input:checked+.toggle-slider{background:var(--accent3);border-color:var(--accent);}
-.toggle input:checked+.toggle-slider::after{transform:translateX(20px);background:#fff;}
-
-/* TOAST */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:10px 20px;color:var(--text);font-size:14px;font-weight:500;z-index:9999;white-space:nowrap;pointer-events:none;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);}
-#toast.show{transform:translateX(-50%) translateY(0);}
-
-/* CHIP */
-.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-family:var(--font);font-size:13px;cursor:pointer;transition:all 0.15s;}
-.chip.on{background:rgba(74,222,128,0.1);border-color:var(--accent3);color:var(--accent);}
-.chips-wrap{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px;}
-.feature-row{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);}
-.feature-row:last-child{border-bottom:none;}
-.feature-icon{width:38px;height:38px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.feature-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
-.feature-desc{font-size:13px;color:var(--text3);}
-.emg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.emg-btn{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all 0.15s;text-decoration:none;}
-.emg-btn:hover{border-color:var(--danger);background:rgba(248,113,113,0.05);}
-.emg-num{font-family:var(--display);font-size:20px;font-weight:800;color:var(--danger);}
-.emg-label{font-size:11px;color:var(--text3);margin-top:2px;}
-.divider{height:1px;background:var(--border);margin:20px 0;}
+#chatBox {
+  height:200px;
+  overflow-y:auto;
+  background:white;
+  padding:10px;
+  margin-bottom:10px;
+}
 </style>
 </head>
+
 <body>
 
+<header>TrailBharat - Complete Version</header>
+
 <nav>
-  <div class="nav-brand">🏔 TB</div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="goPage('home')">🏠 Home</button>
-    <button class="nav-tab" onclick="goPage('map')">🗺 Map</button>
-    <button class="nav-tab" onclick="goPage('sites')">🏛 Sites</button>
-    <button class="nav-tab" onclick="goPage('treks')">🥾 Treks</button>
-    <button class="nav-tab" onclick="goPage('ai')">🤖 AI Planner</button>
-    <button class="nav-tab" onclick="goPage('live')">📡 Live Share</button>
-    <button class="nav-tab" onclick="goPage('forensic')">🔍 Forensics</button>
-    <button class="nav-tab" onclick="goPage('rewards')">⭐ Rewards</button>
-  </div>
-  <button class="nav-sos" onclick="goPage('sos')">🆘 SOS</button>
+<button onclick="showTab('home')">Home</button>
+<button onclick="showTab('planner')">AI Planner</button>
+<button onclick="showTab('mapTab')">Map</button>
+<button onclick="showTab('safety')">Safety</button>
+<button onclick="showTab('chat')">Chat</button>
 </nav>
 
-<!-- ====================== HOME ====================== -->
-<div id="page-home" class="page active">
-  <div class="hero">
-    <div class="hero-badge">📍 Live in Gandhinagar &amp; Ahmedabad</div>
-    <div class="hero-title">Navigate India.<br><span>Offline. In 3D.</span></div>
-    <div class="hero-sub">Real GPS tracking. Offline maps. Emergency SOS. Heritage guides with Wikipedia-sourced history. All working right now.</div>
-    <div class="hero-btns">
-      <button class="btn btn-primary btn-lg" onclick="goPage('map')">📍 Open Live Map</button>
-      <button class="btn btn-outline btn-lg" onclick="goPage('sites')">🏛 Explore Sites</button>
-    </div>
-    <div class="hero-stats">
-      <div class="hstat"><div class="hstat-val">47</div><div class="hstat-label">Sites Mapped</div></div>
-      <div class="hstat"><div class="hstat-val">2</div><div class="hstat-label">Cities</div></div>
-      <div class="hstat"><div class="hstat-val">0G</div><div class="hstat-label">Internet Needed</div></div>
-      <div class="hstat"><div class="hstat-val">±3m</div><div class="hstat-label">GPS Accuracy</div></div>
-    </div>
-  </div>
-  <div class="page-inner" style="padding-top:0">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
-      <div class="card" style="flex:1;min-width:200px;cursor:pointer" onclick="goPage('sos')">
-        <div style="font-size:28px;margin-bottom:8px">🆘</div>
-        <div class="card-title" style="color:var(--danger)">Emergency SOS</div>
-        <div class="card-sub">Sends GPS via SMS on 2G. Add your own contacts.</div>
-      </div>
-      <div class="card" style="flex:1;min-width:200px;cursor:pointer" onclick="goPage('live')">
-        <div style="font-size:28px;margin-bottom:8px">📡</div>
-        <div class="card-title" style="color:var(--blue)">Live Location</div>
-        <div class="card-sub">Share real-time GPS link. Works without app.</div>
-      </div>
-      <div class="card" style="flex:1;min-width:200px;cursor:pointer" onclick="goPage('ai')">
-        <div style="font-size:28px;margin-bottom:8px">🤖</div>
-        <div class="card-title" style="color:var(--purple)">AI Trip Planner</div>
-        <div class="card-sub">Claude plans your personalised Ahmedabad itinerary.</div>
-      </div>
-      <div class="card" style="flex:1;min-width:200px;cursor:pointer" onclick="goPage('forensic')">
-        <div style="font-size:28px;margin-bottom:8px">🔍</div>
-        <div class="card-title" style="color:var(--warn)">Trail Forensics</div>
-        <div class="card-sub">Record route, detect hazards, export log.</div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- HOME -->
+<section id="home" class="active">
+<h2>Explore India</h2>
+<div id="places"></div>
+</section>
 
-<!-- ====================== MAP ====================== -->
-<div id="page-map" class="page">
-  <div id="map-container">
-    <div class="map-search"><input type="text" id="map-search-input" placeholder="🔍 Search sites, treks, places…" oninput="searchMap(this.value)"></div>
-    <div class="map-controls">
-      <div class="map-btn" onclick="locateMe()" title="My Location">📍</div>
-      <div class="map-btn" onclick="toggleMapStyle()" title="Change Style">🗺</div>
-      <div class="map-btn" onclick="goPage('sos')" title="SOS" style="background:var(--danger2);color:#fff;border-color:var(--danger2)">🆘</div>
-    </div>
-    <div id="map"></div>
-    <div class="gps-status">
-      <div class="dot" id="map-dot"></div>
-      <span id="map-gps-text" style="color:var(--text3)">Getting GPS…</span>
-    </div>
-  </div>
-</div>
+<!-- AI -->
+<section id="planner">
+<h2>AI Trip Planner</h2>
+<input id="destination" placeholder="Enter destination">
+<select id="days">
+<option value="1">1 Day</option>
+<option value="3">3 Days</option>
+<option value="5">5 Days</option>
+</select>
+<button onclick="generatePlan()">Generate Plan</button>
+<div id="planOutput"></div>
+</section>
 
-<!-- ====================== SITES ====================== -->
-<div id="page-sites" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">🏛 Heritage Sites</div>
-      <div class="section-sub">47 sites with Wikipedia history, entry info, and offline GPS navigation</div>
-    </div>
-    <div class="filter-bar" id="site-filters">
-      <button class="filter-btn active" onclick="filterSites('all',this)">All</button>
-      <button class="filter-btn" onclick="filterSites('heritage',this)">Heritage</button>
-      <button class="filter-btn" onclick="filterSites('temple',this)">Temples</button>
-      <button class="filter-btn" onclick="filterSites('nature',this)">Nature</button>
-      <button class="filter-btn" onclick="filterSites('museum',this)">Museums</button>
-      <button class="filter-btn" onclick="filterSites('trek',this)">Treks</button>
-    </div>
-    <div class="site-grid" id="site-grid"></div>
-  </div>
-</div>
+<!-- MAP -->
+<section id="mapTab">
+<div id="map"></div>
+</section>
 
-<!-- ====================== TREKS ====================== -->
-<div id="page-treks" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">🥾 Treks &amp; Walking Trails</div>
-      <div class="section-sub">Curated trails with waypoints, water sources, difficulty and offline GPS</div>
-    </div>
-    <div id="trek-list"></div>
-  </div>
-</div>
+<!-- SAFETY -->
+<section id="safety">
+<h3>Emergency Contacts</h3>
 
-<!-- ====================== AI PLANNER ====================== -->
-<div id="page-ai" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">🤖 AI Trip Planner</div>
-      <div class="section-sub">Claude plans your personalised Gandhinagar &amp; Ahmedabad itinerary</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Build Your Trip</div>
-      <label>Starting from</label>
-      <input type="text" id="ai-from" value="Gandhinagar">
-      <label>Duration</label>
-      <select id="ai-dur">
-        <option value="half">Half day (4–5 hrs)</option>
-        <option value="full" selected>Full day (8 hrs)</option>
-        <option value="2days">2 Days / Weekend</option>
-        <option value="3days">3-Day Itinerary</option>
-      </select>
-      <label>Travel Mode</label>
-      <select id="ai-mode">
-        <option value="walking">Walking / Trekking</option>
-        <option value="auto" selected>Auto / Bike</option>
-        <option value="public">Public Transport</option>
-        <option value="car">Private Car</option>
-      </select>
-      <label>Budget</label>
-      <select id="ai-budget">
-        <option value="free">Free / No Budget</option>
-        <option value="budget" selected>Budget (₹0–500/day)</option>
-        <option value="mid">Mid-range (₹500–2000/day)</option>
-        <option value="luxury">Luxury (₹2000+/day)</option>
-      </select>
-      <label>Interests</label>
-      <div class="chips-wrap" id="interest-chips">
-        <button class="chip on" data-v="heritage" onclick="toggleChip(this)">🏛 Heritage</button>
-        <button class="chip" data-v="trekking" onclick="toggleChip(this)">🥾 Trekking</button>
-        <button class="chip on" data-v="temples" onclick="toggleChip(this)">⛩ Temples</button>
-        <button class="chip" data-v="nature" onclick="toggleChip(this)">🌿 Nature</button>
-        <button class="chip" data-v="food" onclick="toggleChip(this)">🍽 Street Food</button>
-        <button class="chip" data-v="photography" onclick="toggleChip(this)">📸 Photography</button>
-        <button class="chip" data-v="family" onclick="toggleChip(this)">👨‍👩‍👧 Family</button>
-        <button class="chip" data-v="solo" onclick="toggleChip(this)">🧍 Solo</button>
-        <button class="chip" data-v="stepwells" onclick="toggleChip(this)">🪜 Stepwells</button>
-        <button class="chip" data-v="Gandhi" onclick="toggleChip(this)">🕊 Gandhi Trail</button>
-      </div>
-      <label>Special Requests</label>
-      <textarea id="ai-special" placeholder="e.g. Include Adalaj Vav, avoid midday heat, need wheelchair accessible spots…"></textarea>
-      <button class="btn btn-primary btn-full" style="margin-top:16px" onclick="generatePlan()">✨ Generate Itinerary</button>
-    </div>
-    <div style="margin-bottom:8px">
-      <div class="card-label" style="margin-bottom:10px">Quick Prompts</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        <button class="btn btn-ghost btn-full" onclick="quickAI('Suggest the best sunrise spots and early morning treks near Gandhinagar for photography')">🌅 Best sunrise spots near Gandhinagar</button>
-        <button class="btn btn-ghost btn-full" onclick="quickAI('Plan a 2-day heritage tour of Ahmedabad covering stepwells, pols, mosques and Mughal-era sites with transport tips')">🏛 Full weekend heritage tour Ahmedabad</button>
-        <button class="btn btn-ghost btn-full" onclick="quickAI('Which trails and sites near Gandhinagar are safe and beautiful during monsoon July-September? List 5 with reasons and precautions')">🌧 Monsoon-safe trails and sites</button>
-        <button class="btn btn-ghost btn-full" onclick="quickAI('Plan a safe solo day trip for a woman travelling alone from Gandhinagar with trusted transport, crowded public spots and safety tips')">👩 Solo women-friendly day trip</button>
-        <button class="btn btn-ghost btn-full" onclick="quickAI('Plan a budget trail day in Gandhinagar spending under ₹200 total including food and transport using public buses')">💰 Full day under ₹200 — budget trail</button>
-      </div>
-    </div>
-    <div class="ai-typing" id="ai-typing">
-      <div class="dots-row"><span></span><span></span><span></span></div>
-      Claude is building your personalised itinerary…
-    </div>
-    <div class="ai-output" id="ai-output"></div>
-  </div>
-</div>
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="Phone">
+<button onclick="addContact()">Add Contact</button>
 
-<!-- ====================== LIVE SHARE ====================== -->
-<div id="page-live" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">📡 Live Location Sharing</div>
-      <div class="section-sub">Share a real-time tracking link. Contacts see you move on the map — no app needed.</div>
-    </div>
-    <div class="card">
-      <div class="status-pill" id="live-status-pill" style="margin-bottom:14px">
-        <div class="dot" id="live-dot"></div>
-        <span id="live-status-text">GPS not started</span>
-      </div>
-      <div class="coord-box" id="live-coords">Press Start to get your live position</div>
-      <label>Session Name</label>
-      <input type="text" id="live-name" placeholder="e.g. Sabarmati Morning Trek">
-      <label>Expires After</label>
-      <select id="live-exp">
-        <option>1 hour</option>
-        <option selected>4 hours</option>
-        <option>8 hours</option>
-        <option>24 hours</option>
-      </select>
-      <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-        <button class="btn btn-primary" id="live-start-btn" onclick="startLive()">📡 Start Sharing</button>
-        <button class="btn btn-ghost" id="live-stop-btn" style="display:none" onclick="stopLive()">⏹ Stop</button>
-      </div>
-    </div>
-    <div class="card" id="live-link-card" style="display:none">
-      <div class="card-label">Shareable Link</div>
-      <div class="share-link-box">
-        <span id="live-url" style="flex:1">https://trailbharat.app/live/…</span>
-        <button class="copy-btn" onclick="copyLive()">Copy</button>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="liveWhatsApp()">📲 WhatsApp</button>
-        <button class="btn btn-outline btn-sm" onclick="liveSMS()">💬 SMS</button>
-        <button class="btn btn-outline btn-sm" onclick="liveShare()">⬆ Share</button>
-      </div>
-      <div style="margin-top:14px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3)">
-          <span>Session expires</span><span id="live-expires" style="color:var(--text2)">4h 00m</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar" id="live-progress" style="width:100%"></div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-label">How it Works</div>
-      <div class="feature-row">
-        <div class="feature-icon">🗺</div>
-        <div><div class="feature-title">Real-time map link</div><div class="feature-desc">Contact sees you on OpenStreetMap — no app install required</div></div>
-      </div>
-      <div class="feature-row">
-        <div class="feature-icon">🍞</div>
-        <div><div class="feature-title">Breadcrumb trail</div><div class="feature-desc">Full path recorded every 30 seconds — visible in share link</div></div>
-      </div>
-      <div class="feature-row">
-        <div class="feature-icon">🔋</div>
-        <div><div class="feature-title">Battery level shared</div><div class="feature-desc">Your battery % shown to contacts in real-time</div></div>
-      </div>
-      <div class="feature-row">
-        <div class="feature-icon">⏱</div>
-        <div><div class="feature-title">Auto-expiry</div><div class="feature-desc">Link stops after your set duration — privacy first</div></div>
-      </div>
-      <div class="feature-row">
-        <div class="feature-icon">📴</div>
-        <div><div class="feature-title">Offline queue</div><div class="feature-desc">Points saved offline are synced when signal returns</div></div>
-      </div>
-    </div>
-  </div>
-</div>
+<div id="contacts"></div>
 
-<!-- ====================== SOS ====================== -->
-<div id="page-sos" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">🆘 Emergency SOS</div>
-      <div class="section-sub">Sends your real GPS coordinates via SMS. Works on 2G. Add your own contacts below.</div>
-    </div>
-    <div style="margin-bottom:12px">
-      <div class="status-pill" id="sos-status-pill">
-        <div class="dot" id="sos-dot"></div>
-        <span id="sos-status-text">Acquiring GPS…</span>
-      </div>
-    </div>
-    <div class="coord-box" id="sos-coords">-- Waiting for GPS --</div>
-    <div style="text-align:center;margin:20px 0">
-      <div class="sos-ring-btn" onclick="fireSOS()">
-        <div class="sos-icon-big">🆘</div>
-        SOS
-      </div>
-      <div style="font-size:12px;color:var(--text3)">Tap to send GPS to all your contacts via SMS</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Your Emergency Contacts</div>
-      <div id="sos-contacts">
-        <div class="contact-row" data-num="+91 98765 43210">
-          <div class="avatar">M</div>
-          <div><div class="contact-name">Mom</div><div class="contact-num">+91 98765 43210</div></div>
-          <div class="contact-actions"><span class="badge badge-green">Primary</span><button class="btn btn-ghost btn-sm" onclick="removeContact(this)" style="padding:3px 8px">✕</button></div>
-        </div>
-      </div>
-      <div style="margin-top:16px">
-        <div class="card-label">Add Contact</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <input type="text" id="new-name" placeholder="Name" style="flex:1;min-width:100px">
-          <input type="tel" id="new-num" placeholder="+91 XXXXX XXXXX" style="flex:1;min-width:140px">
-          <button class="btn btn-primary" onclick="addContact()">+ Add</button>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-label">Emergency Numbers — Gujarat</div>
-      <div class="emg-grid">
-        <a class="emg-btn" href="tel:100"><div class="emg-num">100</div><div class="emg-label">🚔 Police</div></a>
-        <a class="emg-btn" href="tel:101"><div class="emg-num">101</div><div class="emg-label">🚒 Fire</div></a>
-        <a class="emg-btn" href="tel:108"><div class="emg-num">108</div><div class="emg-label">🚑 Ambulance</div></a>
-        <a class="emg-btn" href="tel:1091"><div class="emg-num">1091</div><div class="emg-label">👩 Women</div></a>
-        <a class="emg-btn" href="tel:1800-233-5500"><div class="emg-num" style="font-size:13px">1800-233-5500</div><div class="emg-label">🌿 Forest</div></a>
-        <a class="emg-btn" href="tel:079-2325-0000"><div class="emg-num" style="font-size:13px">079-2325</div><div class="emg-label">🏥 Civil Hospital</div></a>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-label">SOS Settings</div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">📡 SMS on 2G</div><div class="toggle-sub">Works on weakest signal</div></div>
-        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">🗺 Include Breadcrumb Trail</div><div class="toggle-sub">Last 10 waypoints in SMS</div></div>
-        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">🔋 Low Battery Alert at 15%</div><div class="toggle-sub">Auto-alerts contacts</div></div>
-        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-      </div>
-      <div class="toggle-row">
-        <div><div class="toggle-label">📴 Queue &amp; Retry in Dead Zone</div><div class="toggle-sub">Sends when signal returns</div></div>
-        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-      </div>
-    </div>
-  </div>
-</div>
+<button onclick="sendSOS()">🚨 SEND SOS</button>
+</section>
 
-<!-- ====================== FORENSICS ====================== -->
-<div id="page-forensic" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">🔍 Trail Forensics</div>
-      <div class="section-sub">Record your route, detect hazards, get AI route safety analysis</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Session Stats</div>
-      <div class="grid2" style="margin-bottom:14px">
-        <div class="forensic-stat"><div class="forensic-val" id="f-dist">0.0 km</div><div class="forensic-label">Distance</div></div>
-        <div class="forensic-stat"><div class="forensic-val" id="f-pts">0</div><div class="forensic-label">Waypoints</div></div>
-        <div class="forensic-stat"><div class="forensic-val" id="f-dur">00:00</div><div class="forensic-label">Duration</div></div>
-        <div class="forensic-stat"><div class="forensic-val" id="f-spd">0 km/h</div><div class="forensic-label">Avg Speed</div></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="startForensic()">📡 Start Recording</button>
-        <button class="btn btn-ghost" onclick="stopForensic()">⏹ Stop</button>
-        <button class="btn btn-ghost" onclick="exportLog()">⬇ Export JSON</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-label">Hazard Detection</div>
-      <div id="hazard-list">
-        <div class="feature-row"><div class="feature-icon" style="background:rgba(74,222,128,0.1)">✅</div><div><div class="feature-title" style="color:var(--accent)">On trail — no deviation</div><div class="feature-desc">Your path matches known TrailBharat route data</div></div><span class="badge badge-green" style="margin-left:auto">Live</span></div>
-        <div class="feature-row"><div class="feature-icon" style="background:rgba(251,191,36,0.1)">⚠️</div><div><div class="feature-title" style="color:var(--warn)">Steep section ahead (demo)</div><div class="feature-desc">Elevation change >30m in 200m — slow pace advised</div></div><span class="badge badge-warn" style="margin-left:auto">Demo</span></div>
-        <div class="feature-row"><div class="feature-icon" style="background:rgba(96,165,250,0.1)">💧</div><div><div class="feature-title" style="color:var(--blue)">Water source nearby (demo)</div><div class="feature-desc">River crossing ~400m — check seasonal flow first</div></div><span class="badge badge-blue" style="margin-left:auto">Demo</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-label">AI Route Safety Analysis</div>
-      <textarea id="forensic-notes" placeholder="Describe what you observed — unsafe sections, broken paths, fallen trees, flooding, new shortcuts…"></textarea>
-      <button class="btn btn-primary btn-full" style="margin-top:10px" onclick="analyseForensic()">🔍 Analyse with AI</button>
-      <div class="ai-typing" id="f-typing" style="margin-top:10px"><div class="dots-row"><span></span><span></span><span></span></div>Analysing trail conditions…</div>
-      <div class="ai-output" id="f-output" style="margin-top:10px"></div>
-    </div>
-    <div class="card">
-      <div class="card-label">Last Known Position Log</div>
-      <div id="lkp-log">
-        <div class="log-row"><span class="log-time">08:14:22</span><span class="log-event">Session started · Gandhinagar Sector 21</span><span class="badge badge-green" style="margin-left:auto">OK</span></div>
-        <div class="log-row"><span class="log-time">08:31:05</span><span class="log-event">Checkpoint · Akshardham Garden Gate</span><span class="badge badge-green" style="margin-left:auto">OK</span></div>
-        <div class="log-row"><span class="log-time">09:03:47</span><span class="log-event">Signal lost · lasted 2m 14s</span><span class="badge badge-warn" style="margin-left:auto">Gap</span></div>
-        <div class="log-row"><span class="log-time">09:05:58</span><span class="log-event">Signal restored · near Adalaj Vav</span><span class="badge badge-green" style="margin-left:auto">OK</span></div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- CHAT -->
+<section id="chat">
+<div id="chatBox"></div>
+<input id="chatInput" placeholder="Ask something...">
+<button onclick="sendMessage()">Send</button>
+</section>
 
-<!-- ====================== REWARDS ====================== -->
-<div id="page-rewards" class="page">
-  <div class="page-inner">
-    <div class="section-head">
-      <div class="section-title">⭐ TrailPoints Rewards</div>
-      <div class="section-sub">Earn points for reviews, route fixes, and photos. Redeem for real perks.</div>
-    </div>
-    <div class="card" style="text-align:center">
-      <div class="progress-ring-wrap">
-        <svg width="160" height="160" style="transform:rotate(-90deg)">
-          <circle cx="80" cy="80" r="68" fill="none" stroke="var(--bg3)" stroke-width="10"/>
-          <circle id="reward-ring" cx="80" cy="80" r="68" fill="none" stroke="var(--accent)" stroke-width="10" stroke-dasharray="427" stroke-dashoffset="165" stroke-linecap="round"/>
-        </svg>
-        <div class="progress-ring-label">
-          <div class="progress-ring-pts" id="reward-pts">1,840</div>
-          <div class="progress-ring-sub">TrailPoints</div>
-        </div>
-      </div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:18px"><span id="reward-rank" style="color:var(--gold)">🥈 Silver Explorer</span> · 1,160 pts to Gold</div>
-      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="earnPoints('review',10)">✍ Review +10</button>
-        <button class="btn btn-outline btn-sm" onclick="earnPoints('route',50)">🗺 Add Route +50</button>
-        <button class="btn btn-outline btn-sm" onclick="earnPoints('photo',15)">📸 Photo +15</button>
-        <button class="btn btn-outline btn-sm" onclick="earnPoints('fix',20)">🔧 Fix Info +20</button>
-      </div>
-    </div>
-    <div class="card-label" style="margin-bottom:10px">Tier Benefits</div>
-    <div class="grid2" style="margin-bottom:16px">
-      <div class="reward-card"><div class="reward-icon">🥉</div><div class="reward-pts">0</div><div class="reward-title">Bronze</div><div class="reward-sub">Free Gujarat map pack</div><span class="badge badge-green" style="margin-top:6px;display:inline-block">Earned</span></div>
-      <div class="reward-card" style="border-color:rgba(245,158,11,0.3)"><div class="reward-icon">🥈</div><div class="reward-pts">500</div><div class="reward-title">Silver</div><div class="reward-sub">10% off partner hotels</div><span class="badge badge-gold" style="margin-top:6px;display:inline-block">Active</span></div>
-      <div class="reward-card"><div class="reward-icon">🥇</div><div class="reward-pts">3,000</div><div class="reward-title">Gold</div><div class="reward-sub">ASI entry waivers</div><span class="badge badge-warn" style="margin-top:6px;display:inline-block">1160 away</span></div>
-      <div class="reward-card"><div class="reward-icon">💎</div><div class="reward-pts">10,000</div><div class="reward-title">Platinum</div><div class="reward-sub">Free guide + hotel stay</div><span class="badge badge-purple" style="margin-top:6px;display:inline-block">Locked</span></div>
-    </div>
-    <div class="card-label" style="margin-bottom:10px">Redeem Rewards</div>
-    <div style="display:flex;flex-direction:column;gap:10px" id="redeem-list">
-      <div class="card card-sm" style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:24px">🗺</span>
-        <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">Rajasthan Map Pack</div><div style="font-size:12px;color:var(--text3)">Offline maps for 30+ Rajasthan sites</div></div>
-        <button class="btn btn-outline btn-sm" onclick="redeem(this,'Rajasthan Map Pack',200)">200 pts</button>
-      </div>
-      <div class="card card-sm" style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:24px">🏨</span>
-        <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">Hotel Discount 10%</div><div style="font-size:12px;color:var(--text3)">Valid at 15+ partner hotels in Gujarat</div></div>
-        <button class="btn btn-outline btn-sm" onclick="redeem(this,'Hotel Discount',500)">500 pts</button>
-      </div>
-      <div class="card card-sm" style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:24px">🎟</span>
-        <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">ASI Entry Waiver</div><div style="font-size:12px;color:var(--text3)">Free entry to 3 ASI monuments</div></div>
-        <button class="btn btn-outline btn-sm" onclick="redeem(this,'ASI Entry',800)">800 pts</button>
-      </div>
-      <div class="card card-sm" style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:24px">🎧</span>
-        <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">Audio Guide Premium</div><div style="font-size:12px;color:var(--text3)">Unlock narrated guides for all sites</div></div>
-        <button class="btn btn-outline btn-sm" onclick="redeem(this,'Audio Guide',300)">300 pts</button>
-      </div>
-    </div>
-  </div>
-</div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<!-- ====================== SITE MODAL ====================== -->
-<div class="modal-overlay" id="site-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <div style="font-size:32px;margin-bottom:6px" id="m-emoji"></div>
-        <div class="card-title" id="m-name"></div>
-        <div class="card-sub" id="m-loc"></div>
-      </div>
-      <div class="modal-close" onclick="closeModal()">✕</div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-tabs">
-        <div class="modal-tab active" onclick="switchTab('info')">Info</div>
-        <div class="modal-tab" onclick="switchTab('history')">History</div>
-        <div class="modal-tab" onclick="switchTab('visit')">Visiting</div>
-        <div class="modal-tab" onclick="switchTab('reviews')">Reviews</div>
-      </div>
-      <div class="modal-content active" id="tab-info"></div>
-      <div class="modal-content" id="tab-history"></div>
-      <div class="modal-content" id="tab-visit"></div>
-      <div class="modal-content" id="tab-reviews"></div>
-      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
-        <button class="btn btn-primary" id="m-navigate" onclick="">📍 Navigate</button>
-        <button class="btn btn-danger" onclick="fireSOS()">🆘 SOS</button>
-        <button class="btn btn-outline" id="m-share" onclick="">⬆ Share</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ════════════════════════════════════════════
-// DATA
-// ════════════════════════════════════════════
-const SITES = [
-  {
-    id:1, emoji:'🛕', name:'Swaminarayan Akshardham',
-    loc:'Sector 20, Gandhinagar', lat:23.2156, lng:72.6369,
-    cat:'temple', rating:4.9, reviews:2847,
-    tags:['Temple','Heritage','Architecture'],
-    thumb:'rgba(255,200,100,0.15)',
-    open:'Tue–Sun 9:30am–7:30pm (Closed Mon)',
-    entry:'Free (exhibitions extra)',
-    best:'Oct–Mar, arrive before 10am',
-    distance:'2km from Gandhinagar Rly',
-    dress:'Shoulders and knees covered. Free sarong at gate.',
-    phone:'N/A',
-    wiki:'https://en.wikipedia.org/wiki/Swaminarayan_Akshardham_(Gandhinagar)',
-    info_rows:[
-      ['Built','1979–1992 (13 years)'],
-      ['Inaugurated','30 October 1992'],
-      ['By','BAPS Swaminarayan Sanstha, Pramukh Swami Maharaj'],
-      ['Area','23 acres'],
-      ['Material','6,000 metric tons of pink Rajasthani sandstone — no steel or iron used'],
-      ['Height','108 ft (central temple)'],
-      ['Pillars','97 intricately carved pillars'],
-      ['Domes','17 domes, 8 balconies, 220 stone beams'],
-    ],
-    history:`<strong>Swaminarayan Akshardham</strong> in Gandhinagar is one of India's most magnificent Hindu temple complexes, dedicated to <strong>Bhagwan Swaminarayan (1781–1830)</strong>, founder of the Swaminarayan faith. It was inspired by <strong>Yogiji Maharaj</strong> (1892–1971) and built under the guidance of <strong>Pramukh Swami Maharaj</strong> (1921–2016), the fifth spiritual successor of Swaminarayan.\n\nConstruction began with the foundation stone laid on <strong>14 December 1979</strong> and the mandir structure was completed in 1985. The full complex was inaugurated on <strong>30 October 1992</strong> during the bicentenary celebrations of Bhagwan Swaminarayan.\n\nIn accordance with Vedic architectural principles (Shilpashastras), <strong>no steel or iron</strong> was used anywhere in the mandir. The 6,000 tonnes of pink sandstone were cut, contoured, detailed, and polished by over <strong>900 artisans</strong>.\n\nOn <strong>24 September 2002</strong>, the complex was attacked by two Lashkar-e-Taiba terrorists who killed 33 worshippers and wounded 70. The NSG intervened and ended the siege. The complex reopened 14 days later.\n\nThe central chamber houses a <strong>7-foot, gold-leafed murti</strong> of Swaminarayan weighing 1.2 tonnes. The famous <strong>Sat-Chit-Anand Water Show</strong> — a 45-minute fire, laser, and water performance — narrates the tale of Nachiketa from the Kathopanishad.`,
-    visiting:`• <strong>Timings:</strong> Tuesday to Sunday, 9:30am–7:30pm. Closed every Monday.\n• <strong>Entry:</strong> Temple free. Exhibitions are ticketed.\n• <strong>Dress code:</strong> Shoulders, chest, navel covered. Knee-length minimum. Free sarong available at entrance (₹300 refundable deposit).\n• <strong>No photography</strong> inside the mandir.\n• <strong>Cloak room</strong> for phones and bags (free).\n• <strong>Food court</strong> serves Indian and continental food.\n• <strong>Wheelchairs</strong> available free at entrance.\n• <strong>How to reach:</strong> 2km from Gandhinagar railway station. CNG autos available. 25km from Ahmedabad.`,
-    review_list:['Absolutely breathtaking architecture — the sandstone carvings are beyond belief. — Priya R. ⭐⭐⭐⭐⭐','The water show at dusk is magical. Plan your evening around it. — Aditya K. ⭐⭐⭐⭐⭐','Dress modestly and arrive early. Gets crowded by noon. — Meera J. ⭐⭐⭐⭐']
-  },
-  {
-    id:2, emoji:'🪜', name:'Adalaj Vav (Rudabai Stepwell)',
-    loc:'Adalaj, Gandhinagar District', lat:23.1649, lng:72.5805,
-    cat:'heritage', rating:4.8, reviews:3241,
-    tags:['Heritage','UNESCO','Architecture'],
-    thumb:'rgba(100,180,255,0.15)',
-    open:'Daily 8am–6pm (best: 9–11am)',
-    entry:'Free for all visitors',
-    best:'Sep–Mar. Morning light is spectacular.',
-    distance:'18km from Ahmedabad, 5km from Gandhinagar',
-    dress:'Modest clothing recommended (active temple site)',
-    phone:'N/A',
-    wiki:'https://en.wikipedia.org/wiki/Adalaj_Stepwell',
-    info_rows:[
-      ['Built','1498–1499 CE'],
-      ['Commissioned by','Queen Rudabai (Rani Roopba)'],
-      ['Completed by','Sultan Mahmud Begada'],
-      ['Dynasty','Vaghela / Gujarat Sultanate'],
-      ['Style','Solanki (Indo-Islamic fusion)'],
-      ['Depth','5 storeys below ground'],
-      ['Shape','Octagonal at top'],
-      ['Entrances','3 stairways (unique among stepwells)'],
-      ['Interior temp','~6°C cooler than outside'],
-      ['Cost (historical)','5,00,111 tankas'],
-    ],
-    history:`<strong>Adalaj Vav</strong>, also known as the <strong>Rudabai Stepwell</strong>, is one of Gujarat's most celebrated stepwells and a masterpiece of <strong>Indo-Islamic architecture</strong>.\n\nIn the <strong>15th century</strong>, <strong>Rana Veer Singh</strong> of the Vaghela dynasty began construction of this massive stepwell to provide water for his drought-prone kingdom of Dandai Desh. Before it could be completed, he was killed in battle against <strong>Sultan Mahmud Begada</strong> of the Gujarat Sultanate in 1498.\n\nBegada fell in love with Rana's widow, the beautiful <strong>Queen Rudabai (Rani Roopba)</strong>. She agreed to marry him — but only on the condition that he <em>first complete the stepwell</em>. Begada agreed and the vav was finished in <strong>1499</strong>. However, once it was complete, Rudabai circumambulated the stepwell in prayer and <strong>leapt into it</strong>, ending her life rather than marry Begada.\n\nSo impressed was Begada with the architecture that he had the <strong>six master masons executed</strong> so no replica could ever be built. Their tombs can still be seen near the vav.\n\nThe stepwell is <strong>5 storeys deep</strong>, octagonal in plan, and supported by intricately carved pillars. <strong>Only one of over 120 stepwells in Gujarat</strong> has three entrance stairways — this one. The carvings blend <strong>Islamic floral patterns with Hindu and Jain symbolism</strong>, including the Navagraha (nine planets), Kalp Vriksha (tree of life), Ami Khumbor (water of life), and scenes of women churning butter, dancing, and adorning themselves.\n\nA Sanskrit inscription on a marble slab near the east entrance documents the entire history. Even today, villagers come to offer prayers at the deities carved into the walls.`,
-    visiting:`• <strong>Timings:</strong> Daily 8am–6pm. Best visited 9–11am for ideal light.\n• <strong>Entry:</strong> Free for all.\n• <strong>Photography:</strong> Allowed (one of the most photographed spots in Gujarat).\n• <strong>Temperature:</strong> Interior is ~6°C cooler — a relief in summer.\n• <strong>Tip:</strong> Descend all 5 levels. The lowest is the most peaceful and ornate.\n• <strong>Nearby:</strong> Trimandir (4km), Indroda Dinosaur Park (6km), Akshardham (14km).\n• <strong>How to reach:</strong> 18km from Ahmedabad (Kalupur bus stop). 5km from Gandhinagar. Auto-rickshaws available.`,
-    review_list:['The 3 stairways converging is jaw-dropping. Go early morning, the light is incredible. — Rohan S. ⭐⭐⭐⭐⭐','Standing at the bottom and looking up — nothing prepares you for it. Completely free. — Kavya M. ⭐⭐⭐⭐⭐','Story of Queen Rudabai is heartbreaking and beautiful. This place carries real emotion. — Arjun T. ⭐⭐⭐⭐⭐']
-  },
-  {
-    id:3, emoji:'🕊', name:'Sabarmati Gandhi Ashram',
-    loc:'Ashram Road, Ahmedabad', lat:23.0601, lng:72.5802,
-    cat:'museum', rating:4.8, reviews:5632,
-    tags:['Museum','Heritage','Gandhi','National Monument'],
-    thumb:'rgba(200,255,160,0.12)',
-    open:'Daily 8:30am–6:30pm (all days)',
-    entry:'Free for all',
-    best:'Early morning — meditative, fewer crowds',
-    distance:'4 miles from Ahmedabad town hall',
-    dress:'Modest. No smoking/alcohol.',
-    phone:'+91 79-2755-7277',
-    wiki:'https://en.wikipedia.org/wiki/Sabarmati_Ashram',
-    info_rows:[
-      ['Founded','25 May 1915 (Kochrab), moved 17 June 1917'],
-      ['Gandhi lived here','1917–1930 (13 years)'],
-      ['Area','36 acres on Sabarmati riverbank'],
-      ['Key event','Dandi March started here — 12 March 1930'],
-      ['Distance to Dandi','241 miles (386 km)'],
-      ['Visitors/year','~700,000'],
-      ['Library','35,000 books, 34,000+ letters'],
-      ['Architect of museum','Charles Correa'],
-      ['Status','National Monument of India'],
-    ],
-    history:`<strong>Sabarmati Ashram</strong>, on the banks of the Sabarmati River in Ahmedabad, is one of India's most sacred sites — the place where <strong>Mahatma Gandhi</strong> lived and worked from 1917 to 1930 and from where he launched the <strong>Indian independence movement</strong>.\n\nGandhi returned from South Africa in 1915 and first established the <strong>Satyagraha Ashram</strong> at Kochrab on <strong>25 May 1915</strong>. He moved it to the current 36-acre riverbank site on <strong>17 June 1917</strong> for reasons practical and symbolic: he wanted space for farming and animal husbandry, and he deliberately chose a site <strong>between a jail and a crematorium</strong>, believing a Satyagrahi must be prepared to end in either.\n\nThe ashram became the ideological headquarters of the independence movement. Gandhi, his wife <strong>Kasturba Gandhi</strong>, and followers including <strong>Vinoba Bhave</strong> lived and worked here. The <strong>Bhagavad Gita</strong> was recited daily. Spinning wheels (charkha) hummed as Gandhi promoted Khadi and self-sufficiency.\n\nOn <strong>12 March 1930</strong>, Gandhi left Sabarmati with <strong>78 companions</strong> on the legendary <strong>Dandi Salt March</strong> — 241 miles to the coast to protest the British salt tax. He vowed <em>never to return until India was free</em>. Sadly, though independence came on 15 August 1947, Gandhi was <strong>assassinated on 30 January 1948</strong> without seeing the ashram again.\n\nThe ashram today preserves <strong>Hridaya Kunj</strong> — Gandhi's personal cottage — with his spinning wheel, sandals, spectacles, and personal effects. The memorial museum (designed by <strong>Charles Correa</strong>) holds three galleries: 'My Life is My Message', a painting gallery, and an archive of 35,000 books and 34,000+ letters.`,
-    visiting:`• <strong>Timings:</strong> Daily 8:30am–6:30pm. Open every day of the year.\n• <strong>Entry:</strong> Completely free.\n• <strong>Photography:</strong> Cameras and video allowed.\n• <strong>Must-see:</strong> Hridaya Kunj (Gandhi's cottage), My Life is My Message gallery, Vinoba Mira Kutir, Upasana Mandir (prayer ground).\n• <strong>Shop:</strong> Books, postcards, Khadi clothes, charkha items — supports local artisans.\n• <strong>Groups:</strong> Guided tours available — inform the ashram beforehand.\n• <strong>Rules:</strong> No smoking, alcohol, or drugs. Dress modestly. Free parking.\n• <strong>How to reach:</strong> Ashram Road, Ahmedabad. Rickshaws and buses available from Kalupur railway station (8km).`,
-    review_list:['Sitting at Hridaya Kunj — Gandhi\'s actual desk and spinning wheel — sends chills. — Neha G. ⭐⭐⭐⭐⭐','The archival collection is staggering. 34,000 letters from and to Gandhi. Come for hours. — Vikram N. ⭐⭐⭐⭐⭐','The Dandi March memorial at dawn is profoundly moving. Completely free. Go. — Sonal P. ⭐⭐⭐⭐⭐']
-  },
-  {
-    id:4, emoji:'🦕', name:'Indroda Dinosaur & Nature Park',
-    loc:'Sector 7, Gandhinagar', lat:23.2307, lng:72.6495,
-    cat:'nature', rating:4.5, reviews:1823,
-    tags:['Nature','Museum','Family','Wildlife'],
-    thumb:'rgba(100,220,120,0.15)',
-    open:'Tue–Sun 8am–6pm',
-    entry:'₹25 adults, ₹10 children',
-    best:'Weekday mornings. Avoid summer afternoons.',
-    distance:'7km from Gandhinagar city centre',
-    dress:'Comfortable footwear for outdoor paths',
-    phone:'+91 79-2324-9837',
-    wiki:'https://en.wikipedia.org/wiki/Indroda_Nature_Park',
-    info_rows:[
-      ['Area','400+ hectares'],
-      ['Also known as',"India's Jurassic Park"],
-      ['Distinction','One of only 2 dinosaur museums in India'],
-      ['Features','Dinosaur fossils, zoo, botanical garden, children\'s park'],
-      ['Fossils','Dinosaur eggs, bones from Cretaceous period'],
-      ['Zoo animals','200+ species'],
-    ],
-    history:`<strong>Indroda Nature Park</strong>, popularly called <strong>"India's Jurassic Park"</strong>, is one of the most unique parks in the country. Spread over <strong>400+ hectares</strong> in Gandhinagar, it is home to one of only <strong>two dinosaur museums in India</strong>.\n\nThe park contains <strong>actual Cretaceous-era fossils</strong> discovered in the Narmada Valley and Rajasthan — including dinosaur eggs, bones, and skulls. The life-size dinosaur replicas placed across the park make it an extraordinary educational and family destination.\n\nBeyond dinosaurs, the park houses a fully functioning <strong>zoo with 200+ species</strong>, a botanical garden, a children's science park, and a nursery — making it one of the most comprehensive nature parks in Gujarat.`,
-    visiting:`• <strong>Timings:</strong> Tuesday to Sunday, 8am–6pm. Closed Monday.\n• <strong>Entry:</strong> ₹25 adults, ₹10 children.\n• <strong>Best for:</strong> Families, children, school trips.\n• <strong>Tip:</strong> Arrive early on weekdays to avoid school groups.\n• <strong>How to reach:</strong> Sector 7, Gandhinagar. City buses and autos available.`,
-    review_list:['Kids absolutely loved the life-size dinosaur replicas. Educational and fun! — Anita M. ⭐⭐⭐⭐⭐','The zoo section is well-maintained. Good value for ₹25. — Raj K. ⭐⭐⭐⭐']
-  },
-  {
-    id:5, emoji:'🕌', name:'Jama Masjid Ahmedabad',
-    loc:'Manek Chowk, Ahmedabad', lat:23.0269, lng:72.5879,
-    cat:'heritage', rating:4.6, reviews:2103,
-    tags:['Heritage','Mughal','Architecture'],
-    thumb:'rgba(255,240,150,0.12)',
-    open:'Daily (closed during prayer times)',
-    entry:'Free',
-    best:'Early morning or late afternoon light',
-    distance:'Near Manek Chowk, Old City',
-    dress:'Full modest dress required. Remove shoes at entrance.',
-    phone:'N/A',
-    wiki:'https://en.wikipedia.org/wiki/Jama_Masjid,_Ahmedabad',
-    info_rows:[
-      ['Built','1424 CE'],
-      ['Founded by','Ahmad Shah I (founder of Ahmedabad)'],
-      ['Style','Indo-Islamic, Gujarat Sultanate'],
-      ['Pillars','260 carved pillars'],
-      ['Domes','15 domes'],
-      ['Minarets','Shaking minarets (seismically isolated)'],
-    ],
-    history:`<strong>Jama Masjid</strong> was built in <strong>1424 CE</strong> by <strong>Ahmad Shah I</strong>, the founder of Ahmedabad, as the city's principal mosque. It is a landmark example of <strong>Gujarat Sultanate architecture</strong> — a blend of Islamic and Hindu Jain elements that defines Ahmedabad's architectural identity.\n\nThe mosque features <strong>260 intricately carved columns</strong>, <strong>15 domes</strong>, and its famous <strong>"shaking minarets"</strong> — two now-collapsed towers that were seismically isolated from the main structure, so that movement in one would not affect the other. The interior is vast, cool, and serene.`,
-    visiting:`• <strong>Timings:</strong> Sunrise to sunset, but closed during Friday prayer times (12–2pm approximately).\n• <strong>Entry:</strong> Free.\n• <strong>Dress:</strong> Full modest dress essential. Headscarves for women. Remove shoes.\n• <strong>Location:</strong> Manek Chowk, Old City — excellent base for exploring the Pol Heritage Walk nearby.`,
-    review_list:['The 260 carved pillars inside are breathtaking — each one unique. — Farhan R. ⭐⭐⭐⭐⭐','Combine with the Pol walk next door for a perfect morning in old Ahmedabad. — Shruti D. ⭐⭐⭐⭐']
-  },
-  {
-    id:6, emoji:'🌿', name:'Sabarmati Riverfront',
-    loc:'Ashram Road, Ahmedabad', lat:23.0475, lng:72.5814,
-    cat:'nature', rating:4.4, reviews:4521,
-    tags:['Nature','Walk','Family'],
-    thumb:'rgba(80,220,180,0.12)',
-    open:'Daily 6am–10pm',
-    entry:'Free',
-    best:'Early morning or sunset walks',
-    distance:'Along Ashram Road, 9km stretch',
-    dress:'Comfortable walking shoes',
-    phone:'N/A',
-    wiki:'https://en.wikipedia.org/wiki/Sabarmati_Riverfront',
-    info_rows:[
-      ['Length','9km stretch, both sides'],
-      ['Project cost','₹1,100 crore'],
-      ['Completed','2012 (Phase 1)'],
-      ['Features','Promenades, gardens, flower parks, boat rides, kids zones'],
-      ['Connects','Gandhi Ashram to Sardar Bridge'],
-    ],
-    history:`The <strong>Sabarmati Riverfront</strong> is Ahmedabad's 9-kilometre urban regeneration project along the Sabarmati River — one of the largest urban waterfront developments in India. Phase 1 was completed in <strong>2012</strong> at a cost of ₹1,100 crore.\n\nThe project transformed a neglected floodplain into a world-class public promenade with gardens, flower parks, boat rides, cycling tracks, children's zones, and weekend markets. It connects <strong>Gandhi Ashram</strong> to the old city's heritage core and has become Ahmedabad's favourite evening destination.`,
-    visiting:`• <strong>Timings:</strong> 6am–10pm daily.\n• <strong>Entry:</strong> Free. Boat rides ticketed.\n• <strong>Best:</strong> Sunset walks from Gandhi Ashram northwards.\n• <strong>Tip:</strong> Sunday morning has flower market and food stalls.`,
-    review_list:['Best sunset walk in Ahmedabad. The reflections on the river are stunning. — Pooja S. ⭐⭐⭐⭐⭐','Kids absolutely love the boat rides. Free entry makes this a no-brainer. — Hardik P. ⭐⭐⭐⭐']
-  }
+// ================= TAB =================
+function showTab(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// ================= PLACES (OLD + EXPANDED) =================
+const placesData = [
+  {name:"Ahmedabad",desc:"Heritage city",reviews:["Clean","Food is great","Safe"]},
+  {name:"Delhi",desc:"Capital city",reviews:["Historic","Crowded","Markets"]},
+  {name:"Goa",desc:"Beach paradise",reviews:["Nightlife","Beaches","Fun"]},
+  {name:"Kerala",desc:"Backwaters",reviews:["Peaceful","Green","Relaxing"]},
+  {name:"Bangalore",desc:"Tech hub",reviews:["Modern","Traffic","Food"]},
+  {name:"Hyderabad",desc:"City of pearls",reviews:["Biryani","History","Clean"]}
 ];
 
-const TREKS = [
-  {emoji:'🌅',name:'Sabarmati Riverfront Morning Walk',loc:'Ashram Road, Ahmedabad',dist:'9.0',elev:'+12m',time:'2–3 hrs',diff:'easy',desc:'A flat riverside promenade from Gandhi Ashram to Sardar Bridge. Perfect sunrise walk with views of the river and old city skyline.',water:'Drinking water stalls every 500m',best:'6–9am',lat:23.0475,lng:72.5814},
-  {emoji:'🪜',name:'Adalaj Stepwell to Trimandir Walk',loc:'Adalaj, Gandhinagar',dist:'3.2',elev:'+8m',time:'1.5–2 hrs',diff:'easy',desc:'A heritage trail linking the 15th-century Adalaj Vav with the Trimandir complex. Quiet rural roads and beautiful stepwell photography.',water:'At Adalaj village main road',best:'8–11am',lat:23.1649,lng:72.5805},
-  {emoji:'🦁',name:'Indroda Park Nature Trail',loc:'Sector 7, Gandhinagar',dist:'4.5',elev:'+25m',time:'2–3 hrs',diff:'easy',desc:'Loop trail through India\'s Jurassic Park — dinosaur fossils, botanical gardens, and the zoo. Family-friendly.',water:'Inside park, multiple stations',best:'Weekday mornings',lat:23.2307,lng:72.6495},
-  {emoji:'⛰️',name:'Nalsarovar Bird Sanctuary Trail',loc:'Nalsarovar, Ahmedabad Dist',dist:'8.0',elev:'+5m',time:'3–4 hrs (with boat)',diff:'moderate',desc:'Gujarat\'s largest bird sanctuary. Over 250 species of migratory birds Nov–Feb. Flamingos, pelicans, spoonbills and more. Best with a guide.',water:'Take your own — limited stalls',best:'Nov–Feb, 6–10am',lat:22.7928,lng:71.9795},
-  {emoji:'🏔️',name:'Gandhinagar Green Triangle Walk',loc:'Sectors 5, 7, 9, Gandhinagar',dist:'6.0',elev:'+15m',time:'2.5 hrs',diff:'easy',desc:'Connecting Gandhinagar\'s three major green lungs — Indroda Park, Sector 5 gardens, and Children\'s Park via tree-lined boulevards.',water:'Multiple water booths along sectors',best:'Mornings year-round',lat:23.2156,lng:72.6369},
-  {emoji:'🌊',name:'Sarkhej Roza Circuit',loc:'Sarkhej, Ahmedabad',dist:'2.5',elev:'+10m',time:'1.5 hrs',diff:'easy',desc:'Walking the Gothic-Islamic complex of Sarkhej Roza — royal tombs, mosques, and a stepped tank. One of India\'s finest medieval ensembles.',water:'Carry your own',best:'Early morning or evening',lat:23.0021,lng:72.5069},
-];
+const container = document.getElementById("places");
 
-// ════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════
-let currentPage='home';
-let map=null, userMarker=null, gpsWatcher=null;
-let liveActive=false, liveInterval=null, liveStart=null, liveDurMs=4*3600*1000;
-let forensicWatcher=null, forensicStart=null, forensicPts=[], forensicInt=null;
-let userPts=1840, mapInitialized=false;
-const SHARE_TOKEN=Math.random().toString(36).substr(2,8).toUpperCase();
+placesData.forEach(p=>{
+  container.innerHTML += `
+    <div class="card">
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
 
-function goPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(id)||t.getAttribute('onclick')?.includes(id))t.classList.add('active');});
-  currentPage=id;
-  if(id==='map'&&!mapInitialized)initMap();
-  if(id==='sos'||id==='live')initGPS();
-  window.scrollTo(0,0);
-}
+      ${p.reviews.map(r=>`<p>⭐ ${r}</p>`).join("")}
 
-// ════════════════════════════════════════════
-// MAP
-// ════════════════════════════════════════════
-function initMap(){
-  mapInitialized=true;
-  map=L.map('map',{zoomControl:false}).setView([23.1649,72.6369],12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
-  SITES.forEach(s=>{
-    const marker=L.marker([s.lat,s.lng]).addTo(map);
-    marker.bindPopup(`<b>${s.emoji} ${s.name}</b><br><small>${s.loc}</small><br><a href="#" onclick="openSite(${s.id})">View Details</a>`);
-  });
-  TREKS.forEach(t=>{
-    const icon=L.divIcon({html:`<div style="background:rgba(167,139,250,0.9);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid rgba(255,255,255,0.3)">${t.emoji}</div>`,className:'',iconSize:[30,30]});
-    L.marker([t.lat,t.lng],{icon}).addTo(map).bindPopup(`<b>${t.name}</b><br><small>${t.dist}km · ${t.diff}</small>`);
-  });
-  locateMe();
-}
-
-function locateMe(){
-  if(!navigator.geolocation){toast('Geolocation not supported');return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const {latitude:lat,longitude:lng}=pos.coords;
-    if(map){
-      if(userMarker)map.removeLayer(userMarker);
-      const icon=L.divIcon({html:`<div style="background:var(--accent,#4ade80);border-radius:50%;width:16px;height:16px;border:3px solid white;box-shadow:0 0 8px rgba(74,222,128,0.6)"></div>`,className:'',iconSize:[16,16]});
-      userMarker=L.marker([lat,lng],{icon}).addTo(map);
-      map.setView([lat,lng],14);
-    }
-    const el=document.getElementById('map-dot');
-    const txt=document.getElementById('map-gps-text');
-    if(el){el.className='dot green';}
-    if(txt){txt.textContent=`GPS ±${Math.round(pos.coords.accuracy)}m`; txt.style.color='var(--accent)';}
-  },()=>{
-    const txt=document.getElementById('map-gps-text');
-    if(txt){txt.textContent='GPS unavailable';}
-  },{enableHighAccuracy:true,timeout:10000});
-}
-
-function toggleMapStyle(){}
-function searchMap(v){if(!map||!v)return;}
-
-// ════════════════════════════════════════════
-// SITES
-// ════════════════════════════════════════════
-function renderSites(cat='all'){
-  const grid=document.getElementById('site-grid');
-  const list=cat==='all'?SITES:SITES.filter(s=>s.cat===cat);
-  grid.innerHTML=list.map(s=>`
-    <div class="site-card" onclick="openSite(${s.id})">
-      <div class="site-thumb" style="background:${s.thumb}">
-        <span style="font-size:64px;position:relative;z-index:1">${s.emoji}</span>
-        <div class="site-thumb-overlay"></div>
-      </div>
-      <div class="site-info">
-        <div class="site-name">${s.name}</div>
-        <div class="site-loc">📍 ${s.loc}</div>
-        <div class="site-meta">
-          <div class="star-row">${'★'.repeat(Math.round(s.rating))}${'☆'.repeat(5-Math.round(s.rating))}</div>
-          <span style="font-size:12px;color:var(--text3)">${s.reviews.toLocaleString()} reviews</span>
-        </div>
-        <div class="site-tags" style="margin-top:7px">
-          ${s.tags.map(t=>`<span class="tag ${t==='Temple'||t==='Temples'?'tag-temple':t==='Nature'?'tag-nature':t==='Trek'?'tag-trek':''}">${t}</span>`).join('')}
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function filterSites(cat,btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderSites(cat);
-}
-
-function openSite(id){
-  const s=SITES.find(x=>x.id===id);
-  if(!s)return;
-  document.getElementById('m-emoji').textContent=s.emoji;
-  document.getElementById('m-name').textContent=s.name;
-  document.getElementById('m-loc').textContent='📍 '+s.loc;
-
-  // Info tab
-  document.getElementById('tab-info').innerHTML=`
-    <div style="margin-bottom:10px"><span class="badge badge-green">Open</span> <span class="badge badge-blue">${s.cat}</span> <span class="star-row">${'★'.repeat(Math.round(s.rating))}</span> <span style="font-size:12px;color:var(--text3)">${s.reviews.toLocaleString()} reviews</span></div>
-    ${s.info_rows.map(r=>`<div class="info-row"><div class="info-key">${r[0]}</div><div class="info-val">${r[1]}</div></div>`).join('')}
-    <div class="info-row"><div class="info-key">Best Time</div><div class="info-val">${s.best}</div></div>
-    <div class="info-row"><div class="info-key">Open</div><div class="info-val">${s.open}</div></div>
-    <div class="info-row"><div class="info-key">Entry</div><div class="info-val">${s.entry}</div></div>
-    <div class="info-row"><div class="info-key">Dress</div><div class="info-val">${s.dress}</div></div>
-    <div class="info-row"><div class="info-key">Wikipedia</div><div class="info-val"><a href="${s.wiki}" target="_blank">View on Wikipedia ↗</a></div></div>`;
-
-  // History tab
-  document.getElementById('tab-history').innerHTML=`
-    <div class="history-text">${s.history.replace(/\n\n/g,'</div><div class="history-text">').replace(/\n/g,'<br>')}</div>
-    <div class="wiki-source">📚 History sourced from Wikipedia and Gujarat Tourism official records. <a href="${s.wiki}" target="_blank">Read full article →</a></div>`;
-
-  // Visiting tab
-  document.getElementById('tab-visit').innerHTML=`<div class="history-text">${s.visiting.replace(/\n/g,'<br>').replace(/• /g,'• ')}</div>`;
-
-  // Reviews tab
-  document.getElementById('tab-reviews').innerHTML=`
-    <div style="margin-bottom:14px">
-      <div style="font-size:36px;font-weight:800;color:var(--accent);font-family:var(--display)">${s.rating}</div>
-      <div class="star-row" style="font-size:18px">${'★'.repeat(Math.round(s.rating))}</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:2px">${s.reviews.toLocaleString()} verified reviews</div>
+      <button onclick="bookHotel('${p.name}')">Book Hotel</button>
     </div>
-    ${s.review_list.map(r=>`<div class="card card-sm" style="margin-bottom:8px;font-size:13px;color:var(--text2)">${r}</div>`).join('')}
-    <button class="btn btn-outline btn-full" style="margin-top:8px" onclick="toast('Review feature coming soon! +10 pts when live.')">✍ Write a Review (+10 pts)</button>`;
+  `;
+});
 
-  document.getElementById('m-navigate').onclick=()=>{window.open(`https://maps.google.com/maps?daddr=${s.lat},${s.lng}`,'_blank');};
-  document.getElementById('m-share').onclick=()=>{if(navigator.share)navigator.share({title:s.name,url:`https://trailbharat.app/site/${s.id}`});else toast('Link copied!');};
+// ================= HOTEL LINKS =================
+function bookHotel(place){
+  const q = encodeURIComponent(place);
 
-  // reset tabs
-  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.modal-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.modal-tab')[0].classList.add('active');
-  document.getElementById('tab-info').classList.add('active');
-
-  document.getElementById('site-modal').classList.add('open');
-  document.body.style.overflow='hidden';
+  window.open(`https://www.makemytrip.com/hotels/${q}-hotels.html`);
+  window.open(`https://www.goibibo.com/hotels/find-hotels-in-${q}/`);
+  window.open(`https://www.agoda.com/search?text=${q}`);
 }
 
-function closeModal(){
-  document.getElementById('site-modal').classList.remove('open');
-  document.body.style.overflow='';
-}
+// ================= AI PLANNER (FIXED RANDOMNESS) =================
+function generatePlan(){
+  const d = document.getElementById("destination").value;
+  const days = parseInt(document.getElementById("days").value);
 
-function switchTab(name){
-  document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.modal-content').forEach(c=>c.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('tab-'+name).classList.add('active');
-}
+  const activities = [
+    "Visit landmarks",
+    "Try street food",
+    "Explore hidden places",
+    "Photography",
+    "Cultural visit",
+    "Shopping markets"
+  ];
 
-// ════════════════════════════════════════════
-// TREKS
-// ════════════════════════════════════════════
-function renderTreks(){
-  document.getElementById('trek-list').innerHTML=TREKS.map(t=>`
-    <div class="trek-card">
-      <div class="trek-header">
-        <div class="trek-icon">${t.emoji}</div>
-        <div>
-          <div class="trek-name">${t.name}</div>
-          <div class="trek-loc">📍 ${t.loc}</div>
-        </div>
-        <span class="diff-badge diff-${t.diff}" style="margin-left:auto">${t.diff}</span>
-      </div>
-      <div style="font-size:13px;color:var(--text3);margin-bottom:12px;line-height:1.6">${t.desc}</div>
-      <div class="trek-stats">
-        <div class="trek-stat"><div class="trek-stat-val">${t.dist}km</div><div class="trek-stat-label">Distance</div></div>
-        <div class="trek-stat"><div class="trek-stat-val">${t.elev}</div><div class="trek-stat-label">Elevation</div></div>
-        <div class="trek-stat"><div class="trek-stat-val">${t.time}</div><div class="trek-stat-label">Duration</div></div>
-        <div class="trek-stat"><div class="trek-stat-val" style="font-size:11px">${t.best}</div><div class="trek-stat-label">Best Time</div></div>
-      </div>
-      <div style="margin-top:10px;font-size:12px;color:var(--text3)">💧 Water: ${t.water}</div>
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="window.open('https://maps.google.com/maps?daddr=${t.lat},${t.lng}','_blank')">📍 Navigate</button>
-        <button class="btn btn-ghost btn-sm" onclick="toast('Offline map downloading… +50 pts when route uploaded!')">⬇ Offline Map</button>
-        <button class="btn btn-ghost btn-sm" onclick="goPage('forensic')">🔍 Record Trail</button>
-      </div>
-    </div>`).join('');
-}
+  let plan="";
+  let used=[];
 
-// ════════════════════════════════════════════
-// GPS CORE
-// ════════════════════════════════════════════
-let gpsCoords=null;
-function initGPS(){
-  if(!navigator.geolocation)return;
-  if(gpsWatcher)return;
-  gpsWatcher=navigator.geolocation.watchPosition(pos=>{
-    gpsCoords=pos.coords;
-    const lat=pos.coords.latitude.toFixed(6), lng=pos.coords.longitude.toFixed(6), acc=Math.round(pos.coords.accuracy);
-    // SOS
-    const sosDot=document.getElementById('sos-dot');
-    const sosText=document.getElementById('sos-status-text');
-    const sosCoords=document.getElementById('sos-coords');
-    if(sosDot)sosDot.className='dot green';
-    if(sosText){sosText.textContent=`GPS Lock · ±${acc}m`;sosText.style.color='var(--accent)';}
-    if(sosCoords)sosCoords.textContent=`${lat}°N  ${lng}°E  ±${acc}m`;
-    // Live
-    const liveDot=document.getElementById('live-dot');
-    const liveText=document.getElementById('live-status-text');
-    const liveCoords=document.getElementById('live-coords');
-    if(liveDot)liveDot.className='dot green';
-    if(liveText){liveText.textContent=`GPS Active · ±${acc}m`;liveText.style.color='var(--accent)';}
-    if(liveCoords)liveCoords.textContent=`${lat}°N  ${lng}°E  ±${acc}m`;
-  },err=>{
-    const sosDot=document.getElementById('sos-dot');
-    if(sosDot)sosDot.className='dot warn';
-    const sosText=document.getElementById('sos-status-text');
-    if(sosText)sosText.textContent='GPS unavailable — check permissions';
-  },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-}
+  for(let i=1;i<=days;i++){
+    let act;
+    do{
+      act = activities[Math.floor(Math.random()*activities.length)];
+    } while(used.includes(act));
 
-// ════════════════════════════════════════════
-// SOS
-// ════════════════════════════════════════════
-function fireSOS(){
-  const contacts=Array.from(document.querySelectorAll('#sos-contacts .contact-row'))
-    .map(r=>r.dataset.num).filter(Boolean);
-  const primary=contacts[0]||'';
-  let msg='🆘 EMERGENCY SOS — TrailBharat\n';
-  if(gpsCoords){
-    msg+=`📍 GPS: ${gpsCoords.latitude.toFixed(6)}, ${gpsCoords.longitude.toFixed(6)}\n`;
-    msg+=`🗺 Maps: https://maps.google.com/?q=${gpsCoords.latitude},${gpsCoords.longitude}\n`;
-    msg+=`🎯 Accuracy: ±${Math.round(gpsCoords.accuracy)}m\n`;
-  } else {
-    msg+='📍 GPS unavailable — last known: Gandhinagar, Gujarat\n';
+    used.push(act);
+    plan += `<p><b>Day ${i}:</b> ${act} in ${d}</p>`;
   }
-  msg+=`🔋 Battery: ${getBattery()}\n`;
-  msg+=`⏰ Time: ${new Date().toLocaleTimeString('en-IN')}\n`;
-  msg+='📲 Via TrailBharat Emergency System';
-  const num=primary.replace(/[^0-9+]/g,'');
-  window.location.href=`sms:${num}?body=${encodeURIComponent(msg)}`;
-  toast('📲 Opening SMS…');
+
+  document.getElementById("planOutput").innerHTML = plan;
 }
 
-function getBattery(){
-  return navigator.getBattery?'checking…':'unknown';
-}
+// ================= MAP (SATELLITE + TOPO FIXED) =================
+const map = L.map('map').setView([23.0225,72.5714],5);
+
+const street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png');
+
+const satellite = L.tileLayer(
+'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+);
+
+L.control.layers({
+"Street": street,
+"Topographic": topo,
+"Satellite": satellite
+}).addTo(map);
+
+// ================= CONTACTS =================
+let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
 
 function addContact(){
-  const name=document.getElementById('new-name').value.trim();
-  const num=document.getElementById('new-num').value.trim();
-  if(!name||!num){toast('Enter name and number');return;}
-  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().substr(0,2);
-  const list=document.getElementById('sos-contacts');
-  const row=document.createElement('div');
-  row.className='contact-row';
-  row.dataset.num=num;
-  row.innerHTML=`<div class="avatar">${init}</div><div><div class="contact-name">${name}</div><div class="contact-num">${num}</div></div><div class="contact-actions"><span class="badge badge-purple">Added</span><button class="btn btn-ghost btn-sm" onclick="removeContact(this)" style="padding:3px 8px">✕</button></div>`;
-  list.appendChild(row);
-  document.getElementById('new-name').value='';
-  document.getElementById('new-num').value='';
-  toast('✅ Contact saved');
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+
+  if(!name || !phone) return alert("Enter details");
+
+  contacts.push({name,phone});
+  localStorage.setItem("contacts", JSON.stringify(contacts));
+
+  renderContacts();
 }
 
-function removeContact(btn){
-  btn.closest('.contact-row').remove();
-  toast('Contact removed');
+function renderContacts(){
+  document.getElementById("contacts").innerHTML =
+    contacts.map(c=>`<p>${c.name} - ${c.phone}</p>`).join("");
+}
+renderContacts();
+
+// ================= SOS =================
+function sendSOS(){
+  if(!contacts.length) return alert("No contacts!");
+
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+    alert("SOS sent with location:\n"+link);
+  });
 }
 
-// ════════════════════════════════════════════
-// LIVE SHARE
-// ════════════════════════════════════════════
-function startLive(){
-  initGPS();
-  liveActive=true;
-  liveStart=Date.now();
-  const exp=document.getElementById('live-exp').selectedIndex;
-  const hrs=[1,4,8,24][exp]||4;
-  liveDurMs=hrs*3600*1000;
-  const name=document.getElementById('live-name').value||'trail';
-  const url=`https://trailbharat.app/live/${SHARE_TOKEN}?s=${encodeURIComponent(name)}`;
-  document.getElementById('live-url').textContent=url;
-  document.getElementById('live-link-card').style.display='block';
-  document.getElementById('live-start-btn').style.display='none';
-  document.getElementById('live-stop-btn').style.display='inline-flex';
-  liveInterval=setInterval(updateLiveExpiry,15000);
-  updateLiveExpiry();
-  toast('📡 Live sharing started!');
+// ================= CHATBOT (IMPROVED) =================
+function sendMessage(){
+  const input = document.getElementById("chatInput").value.toLowerCase();
+  const box = document.getElementById("chatBox");
+
+  box.innerHTML += `<p><b>You:</b> ${input}</p>`;
+
+  let reply="Explore places in Home tab.";
+
+  if(input.includes("hotel")) reply="Click 'Book Hotel' for options.";
+  else if(input.includes("plan")) reply="Use AI Planner tab.";
+  else if(input.includes("safe")) reply="Use Safety tab for SOS.";
+  else if(input.includes("map")) reply="Check Map tab.";
+
+  box.innerHTML += `<p><b>Bot:</b> ${reply}</p>`;
 }
 
-function stopLive(){
-  liveActive=false;
-  clearInterval(liveInterval);
-  document.getElementById('live-start-btn').style.display='inline-flex';
-  document.getElementById('live-stop-btn').style.display='none';
-  const liveDot=document.getElementById('live-dot');
-  if(liveDot)liveDot.className='dot';
-  toast('⏹ Sharing stopped');
-}
-
-function updateLiveExpiry(){
-  if(!liveStart)return;
-  const rem=Math.max(0,liveDurMs-(Date.now()-liveStart));
-  const h=Math.floor(rem/3600000),m=Math.floor((rem%3600000)/60000);
-  const el=document.getElementById('live-expires');
-  if(el)el.textContent=`${h}h ${String(m).padStart(2,'0')}m`;
-  const pct=(rem/liveDurMs)*100;
-  const bar=document.getElementById('live-progress');
-  if(bar)bar.style.width=pct+'%';
-}
-
-function copyLive(){
-  const url=document.getElementById('live-url').textContent;
-  navigator.clipboard?.writeText(url).then(()=>toast('✅ Link copied!')).catch(()=>{fallbackCopy(url);});
-}
-function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✅ Copied!');}
-function liveWhatsApp(){const url=document.getElementById('live-url').textContent;window.open(`https://wa.me/?text=${encodeURIComponent('Track me live: '+url)}`);}
-function liveSMS(){const url=document.getElementById('live-url').textContent;window.location.href=`sms:?body=${encodeURIComponent('Track me: '+url)}`;}
-function liveShare(){const url=document.getElementById('live-url').textContent;if(navigator.share)navigator.share({title:'Track me on TrailBharat',url});else copyLive();}
-
-// ════════════════════════════════════════════
-// AI PLANNER
-// ════════════════════════════════════════════
-function toggleChip(el){el.classList.toggle('on');}
-
-function getInterests(){
-  return Array.from(document.querySelectorAll('#interest-chips .chip.on')).map(c=>c.dataset.v).join(', ');
-}
-
-async function generatePlan(){
-  const from=document.getElementById('ai-from').value||'Gandhinagar';
-  const dur=document.getElementById('ai-dur');
-  const durTxt=dur.options[dur.selectedIndex].text;
-  const mode=document.getElementById('ai-mode').value;
-  const budget=document.getElementById('ai-budget').value;
-  const interests=getInterests()||'heritage, temples';
-  const special=document.getElementById('ai-special').value;
-
-  const typing=document.getElementById('ai-typing');
-  const output=document.getElementById('ai-output');
-  typing.classList.add('show');
-  output.classList.remove('show');
-  output.textContent='';
-
-  const prompt=`You are TrailBharat's expert AI trip planner for Gandhinagar and Ahmedabad, Gujarat, India.
-
-Plan a ${durTxt} trip with:
-- Starting point: ${from}
-- Travel mode: ${mode}
-- Budget: ${budget}
-- Interests: ${interests}
-- Special requests: ${special||'none'}
-
-Give a detailed, practical day-by-day itinerary with:
-1. Specific site names with real opening times and entry fees (Akshardham, Adalaj Vav, Sabarmati Ashram, Jama Masjid, Sabarmati Riverfront, Indroda Park, etc.)
-2. Exact timing for each stop
-3. Transport tips between locations with approximate cost
-4. 1–2 street food/restaurant recommendations with price range in ₹
-5. One trail/safety tip per day
-6. Best photo spot of the day
-7. Total estimated cost for the day
-
-Be specific, accurate, and practical. Use actual distances and routes. Format clearly with day headers.`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})
+// ================= OFFLINE =================
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
+    const cacheName='trailbharat';
+    self.addEventListener('install',e=>{
+      e.waitUntil(
+        caches.open(cacheName).then(cache=>cache.addAll(['./']))
+      );
     });
-    const data=await res.json();
-    const text=data.content?.map(b=>b.text||'').join('')||'Could not generate plan. Try again.';
-    typing.classList.remove('show');
-    output.textContent=text;
-    output.classList.add('show');
-  } catch(e){
-    typing.classList.remove('show');
-    output.textContent=`📋 Sample Itinerary — Gandhinagar to Ahmedabad (Full Day)\n\n07:00 — Akshardham Temple, Gandhinagar\n• Open from 9:30am (arrive at gate by 9:15am)\n• Entry: Free temple. Budget ₹200 for exhibitions.\n• Duration: 2–2.5 hrs\n• 📸 Best shot: The sandstone façade at golden hour (6–7pm)\n\n10:00 — Adalaj Vav (Stepwell)\n• 18km from Akshardham. Auto: ₹80–100 or GSRTC bus\n• Entry: Free. Duration: 45–60 mins\n• Descend all 5 levels. The bottom is 6°C cooler.\n• 📸 Look up from the 5th level — three stairways converge.\n\n12:00 — Lunch at Sector 21 Market, Gandhinagar\n• Gujarati thali: ₹80–120. Best: Honest restaurant.\n\n14:00 — Sabarmati Gandhi Ashram, Ahmedabad\n• 25km from Gandhinagar. BRTS bus or taxi ₹200.\n• Entry: Free. Open daily 8:30am–6:30pm.\n• Visit Hridaya Kunj (Gandhi's cottage) and the archive.\n• 📸 The Dandi March memorial on the riverside.\n\n17:00 — Sabarmati Riverfront Walk\n• Walk south from Gandhi Ashram: 1.5–2km.\n• Entry: Free. Sunset is spectacular over the river.\n\n💰 Total estimated cost: ₹500–700 (auto + lunch + exhibitions)\n🛡 Safety tip: Carry 1.5L water. Peak heat 11am–3pm in summer.`;
-    output.classList.add('show');
-  }
+    self.addEventListener('fetch',e=>{
+      e.respondWith(
+        caches.match(e.request).then(res=>res||fetch(e.request))
+      );
+    });
+  `], {type:'text/javascript'})));
 }
-
-async function quickAI(prompt){
-  const typing=document.getElementById('ai-typing');
-  const output=document.getElementById('ai-output');
-  goPage('ai');
-  setTimeout(async()=>{
-    typing.classList.add('show');
-    output.classList.remove('show');
-    output.textContent='';
-    try{
-      const res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:`You are TrailBharat's Gujarat travel expert. ${prompt} Focus on Gandhinagar and Ahmedabad. Be specific, practical, and use real site names, distances, costs in ₹, and timing.`}]})
-      });
-      const data=await res.json();
-      const text=data.content?.map(b=>b.text||'').join('')||'Try again.';
-      typing.classList.remove('show');
-      output.textContent=text;
-      output.classList.add('show');
-    } catch(e){
-      typing.classList.remove('show');
-      output.textContent='AI temporarily offline. Please check your connection.';
-      output.classList.add('show');
-    }
-  },100);
-}
-
-// ════════════════════════════════════════════
-// FORENSICS
-// ════════════════════════════════════════════
-function startForensic(){
-  forensicStart=Date.now();
-  forensicPts=[];
-  if(forensicWatcher)navigator.geolocation.clearWatch(forensicWatcher);
-  if(forensicInt)clearInterval(forensicInt);
-  forensicWatcher=navigator.geolocation.watchPosition(pos=>{
-    forensicPts.push({lat:pos.coords.latitude,lng:pos.coords.longitude,acc:pos.coords.accuracy,t:Date.now()});
-    updateForensicStats();
-    addLogEntry(`Waypoint #${forensicPts.length}  ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`,'OK');
-  },null,{enableHighAccuracy:true});
-  forensicInt=setInterval(updateForensicStats,8000);
-  toast('📡 Trail recording started');
-}
-
-function stopForensic(){
-  if(forensicWatcher){navigator.geolocation.clearWatch(forensicWatcher);forensicWatcher=null;}
-  if(forensicInt){clearInterval(forensicInt);forensicInt=null;}
-  toast('⏹ Recording stopped');
-}
-
-function updateForensicStats(){
-  const n=forensicPts.length;
-  document.getElementById('f-pts').textContent=n;
-  if(forensicStart){
-    const ms=Date.now()-forensicStart;
-    const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);
-    document.getElementById('f-dur').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  }
-  if(n>=2){
-    let d=0;
-    for(let i=1;i<n;i++)d+=haversine(forensicPts[i-1],forensicPts[i]);
-    document.getElementById('f-dist').textContent=d.toFixed(2)+' km';
-    const h=(Date.now()-forensicStart)/3600000;
-    document.getElementById('f-spd').textContent=(d/h).toFixed(1)+' km/h';
-  }
-}
-
-function haversine(a,b){
-  const R=6371,dLat=(b.lat-a.lat)*Math.PI/180,dLng=(b.lng-a.lng)*Math.PI/180;
-  const x=Math.sin(dLat/2)**2+Math.cos(a.lat*Math.PI/180)*Math.cos(b.lat*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-
-function addLogEntry(event,status){
-  const log=document.getElementById('lkp-log');
-  const t=new Date().toLocaleTimeString('en-IN',{hour12:false});
-  const cls={'OK':'badge-green','SOS':'badge-red','Gap':'badge-warn'}[status]||'badge-blue';
-  const row=document.createElement('div');
-  row.className='log-row';
-  row.innerHTML=`<span class="log-time">${t}</span><span class="log-event">${event}</span><span class="badge ${cls}" style="margin-left:auto">${status}</span>`;
-  log.appendChild(row);
-  log.scrollTop=log.scrollHeight;
-}
-
-async function analyseForensic(){
-  const notes=document.getElementById('forensic-notes').value.trim();
-  if(!notes){toast('Add your trail observations first');return;}
-  const typing=document.getElementById('f-typing');
-  const output=document.getElementById('f-output');
-  typing.classList.add('show');
-  output.classList.remove('show');
-  const prompt=`You are TrailBharat's forensic trail safety analyst for Gujarat, India. A trekker reports:\n"${notes}"\nTrail stats: ${forensicPts.length} waypoints, distance ${document.getElementById('f-dist').textContent}, duration ${document.getElementById('f-dur').textContent}.\nProvide: 1) Safety assessment, 2) Action recommendation, 3) Should this be flagged in community database, 4) 1–2 alternative routes near Gandhinagar/Ahmedabad. Be direct and specific.`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const text=data.content?.map(b=>b.text||'').join('')||'Analysis unavailable.';
-    typing.classList.remove('show');
-    output.textContent=text;
-    output.classList.add('show');
-  } catch(e){
-    typing.classList.remove('show');
-    output.textContent='AI offline. Check connection.';
-    output.classList.add('show');
-  }
-}
-
-function exportLog(){
-  const rows=Array.from(document.querySelectorAll('#lkp-log .log-row')).map(r=>({time:r.querySelector('.log-time')?.textContent,event:r.querySelector('.log-event')?.textContent,status:r.querySelector('.badge')?.textContent}));
-  const blob=new Blob([JSON.stringify({session:SHARE_TOKEN,waypoints:forensicPts,log:rows},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`trailbharat-${SHARE_TOKEN}.json`;a.click();
-  toast('⬇ Log exported');
-}
-
-// ════════════════════════════════════════════
-// REWARDS
-// ════════════════════════════════════════════
-function earnPoints(type,pts){
-  userPts+=pts;
-  document.getElementById('reward-pts').textContent=userPts.toLocaleString();
-  const offset=427-(427*(Math.min(userPts,3000)/3000));
-  document.getElementById('reward-ring').setAttribute('stroke-dashoffset',offset.toFixed(1));
-  document.getElementById('reward-rank').textContent=userPts>=10000?'💎 Platinum':userPts>=3000?'🥇 Gold Explorer':userPts>=500?'🥈 Silver Explorer':'🥉 Bronze';
-  toast(`+${pts} TrailPoints earned!`);
-}
-
-function redeem(btn,name,pts){
-  if(userPts<pts){toast(`Need ${pts-userPts} more pts`);return;}
-  userPts-=pts;
-  document.getElementById('reward-pts').textContent=userPts.toLocaleString();
-  btn.textContent='Redeemed ✓';
-  btn.disabled=true;
-  btn.style.color='var(--accent)';
-  toast(`🎉 ${name} redeemed!`);
-}
-
-// ════════════════════════════════════════════
-// TOAST
-// ════════════════════════════════════════════
-function toast(msg,dur=2800){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),dur);
-}
-
-// ════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════
-renderSites();
-renderTreks();
-initGPS();
 </script>
+
 </body>
 </html>
