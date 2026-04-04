@@ -1,442 +1,235 @@
 // ═══════════════════════════════════════════════════════
-// TRAILBHARAT — COMPLETE SITE & TREK DATA
-// Gandhinagar + Ahmedabad — All sites with GPS coordinates
+// TRAILBHARAT — INDIA MASTER DATA (MULTI-STATE)
+// Gujarat + Delhi-Noida + Kerala + AP + Karnataka
+// Scalable unified structure
 // ═══════════════════════════════════════════════════════
 
-const SITES = [
-  // ─── GANDHINAGAR ───────────────────────────────────────
-  {
-    id: 'akshardham', name: 'Akshardham Temple', type: 'temple',
-    emoji: '🛕', city: 'Gandhinagar',
-    address: 'Sector 20, Gandhinagar, Gujarat 382020',
-    lat: 23.2163, lng: 72.6356,
-    rating: 4.9, reviews: 8420,
-    timings: '9:30 AM – 6:30 PM', closed: 'Monday',
-    entry: '₹70 (Indians)', parking: 'Available (Free)',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['temple', 'architecture', 'heritage', 'spiritual'],
-    desc: 'One of the largest Hindu temples in the world, built in pink sandstone with stunning carvings. The complex features a massive central monument, musical fountain, and exhibitions on Indian culture. Spread over 23 acres.',
-    history: 'Inaugurated in 1992 by BAPS Swaminarayan Sanstha, dedicated to Swaminarayan. The main monument stands 108 feet tall and features 6,000+ statues of devotees, sadhus, and divinities carved by 1,200 artisans over 13 years.',
-    visiting: 'Photography inside the main mandir is not allowed. Musical fountain show runs in evenings. Dress modestly — cover shoulders and knees. Leave electronics at entrance.',
-    entryRoute: 'Main entrance on NH-48. Parking available 200m east. Auto and bus available from Gandhinagar bus stand.',
-    nearbyHelp: 'Sector 20 Police Station: 079-23226070 | Civil Hospital Gandhinagar: 079-23225020',
-    sampleReviews: ['Absolutely stunning architecture. The carvings are unbelievably detailed. Must visit!', 'Peaceful and spiritual. Musical fountain in the evening is the highlight.', 'Huge complex, plan at least 3 hours.']
-  },
-  {
-    id: 'adalaj-vav', name: 'Adalaj Stepwell', type: 'heritage',
-    emoji: '🏛️', city: 'Gandhinagar',
-    address: 'Adalaj, near Gandhinagar, Gujarat 382421',
-    lat: 23.1651, lng: 72.5802,
-    rating: 4.7, reviews: 3210,
-    timings: '6:00 AM – 6:00 PM', closed: 'Open all days',
-    entry: '₹5 (Indians)', parking: 'Street parking nearby',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'stepwell', 'architecture', 'UNESCO candidate'],
-    desc: 'A magnificent 15th-century stepwell built by Queen Rudabai in 1499 CE. Five storeys deep with intricately carved pillars, pavilions, and walls. The geometry and craftsmanship rival anything in the world.',
-    history: 'Built by Queen Rudabai in memory of her husband Virsing. The stepwell blends Hindu and Islamic architectural styles. It was built over the remains of an older stepwell to ensure the village had water year-round.',
-    visiting: 'Best visited in morning light (8-10 AM) when sun illuminates the lower levels. Wear non-slip footwear. Very cool inside — bring a light layer. UNESCO tentative list site.',
-    entryRoute: 'Located in Adalaj village, 18km from Ahmedabad. Take SH-41 from Gandhinagar, turn at Adalaj village sign. Parking 50m from entrance on main road.',
-    nearbyHelp: 'Adalaj Police Outpost: 079-23270999 | Nearest hospital: Gandhinagar Civil 12km away',
-    sampleReviews: ['Five storeys of pure art. Absolutely blew my mind.', 'Underrated gem. Better than most famous places.', 'Go early morning for best light and fewer crowds.']
-  },
-  {
-    id: 'gandhinagar-capital', name: 'Gandhinagar Capital Complex', type: 'heritage',
-    emoji: '🏛️', city: 'Gandhinagar',
-    address: 'Sector 10, Gandhinagar, Gujarat 382010',
-    lat: 23.2156, lng: 72.6369,
-    rating: 4.2, reviews: 560,
-    timings: '10:00 AM – 5:00 PM (Weekdays)', closed: 'Weekends & Holidays',
-    entry: 'Free (Permit required)', parking: 'Government parking',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['heritage', 'government', 'architecture'],
-    desc: 'The planned capital city designed by HK Mewada in 1960s. The Sachivalaya complex, Legislative Assembly, and Raj Bhavan are set amid wide tree-lined boulevards. A rare example of post-independence planned urbanism.',
-    history: 'Gandhinagar was designed as the new capital of Gujarat after state reorganization in 1960. Named after Mahatma Gandhi. Construction began in 1965 and the capital shifted here from Ahmedabad in 1970.',
-    visiting: 'Visit requires prior permit for assembly and Raj Bhavan. Sector 10 gardens are freely accessible. The city is well-planned with 50% green cover — pleasant for cycling.',
-    entryRoute: 'Sector 10 is directly accessible from the main Gandhinagar grid. Bus from Ahmedabad to Gandhinagar bus stand then Sector 10 BRTS.',
-    nearbyHelp: 'Gandhinagar Control Room: 100 | Civil Hospital: 079-23225020',
-    sampleReviews: ['Clean and green city. Very well planned.', 'The Sachivalaya building is impressive from outside.']
-  },
-  {
-    id: 'infocity', name: 'InfoCity & Gift City Promenade', type: 'nature',
-    emoji: '🌆', city: 'Gandhinagar',
-    address: 'GIFT City, Gandhinagar, Gujarat 382355',
-    lat: 23.1723, lng: 72.6750,
-    rating: 4.4, reviews: 1200,
-    timings: 'Open all day', closed: 'None',
-    entry: 'Free', parking: 'Available',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['nature', 'modern', 'walking', 'promenade'],
-    desc: 'GIFT City\'s Sabarmati riverfront promenade — a modern waterfront walk with views of the river, India\'s first international financial city, and evening lights. Great for jogging and evening walks.',
-    history: 'GIFT (Gujarat International Finance Tec-City) was established in 2007. The riverfront development was inspired by Ahmedabad\'s Sabarmati Riverfront project.',
-    visiting: 'Best at sunset and evening. Cycling and jogging tracks available. Nearby GIFT City tower lobby has a public viewing area on Saturdays.',
-    entryRoute: 'NH-48 exit at GIFT City. Auto-rickshaws from Gandhinagar bus stand (15 min). Uber and Ola available.',
-    nearbyHelp: 'GIFT City Security: 079-66112222 | Police: 100',
-    sampleReviews: ['Beautiful evening walk spot.', 'Modern infrastructure, great for jogging.']
-  },
-  {
-    id: 'child-nature-camp', name: 'Child Nature Camp & Botanical Garden', type: 'nature',
-    emoji: '🌿', city: 'Gandhinagar',
-    address: 'Sector 9, Gandhinagar, Gujarat',
-    lat: 23.2243, lng: 72.6478,
-    rating: 4.3, reviews: 890,
-    timings: '7:00 AM – 7:00 PM', closed: 'None',
-    entry: '₹10', parking: 'Available',
-    offlineReady: true, condition: 'Good',
-    tags: ['nature', 'botanical', 'family', 'garden'],
-    desc: 'A sprawling nature camp and botanical garden in Sector 9 with hundreds of species of trees, flowering plants, and a small zoo area. Very popular with families and early morning walkers.',
-    history: 'Developed as part of Gandhinagar\'s green city initiative in the 1980s. The city has the highest green cover per capita among Indian capitals at 54%.',
-    visiting: 'Best for early morning walks. Children\'s play area in the center. Bring water. Bird watching is excellent in winter months (November–February).',
-    entryRoute: 'Sector 9 main entrance. BRTS bus stop \'Sector 9 Nature Camp\'. 3km from Akshardham temple.',
-    nearbyHelp: 'Sector 9 Police: 079-23228888',
-    sampleReviews: ['Peaceful morning walks. Huge variety of trees.', 'Kids loved the nature walk.']
-  },
-  {
-    id: 'dholera-ruins', name: 'Dholera Ruins (Heritage Trail)', type: 'heritage',
-    emoji: '🏺', city: 'Gandhinagar Region',
-    address: 'Dholera, Gujarat 387810',
-    lat: 22.2534, lng: 72.2085,
-    rating: 4.0, reviews: 340,
-    timings: 'Sunrise to Sunset', closed: 'None',
-    entry: 'Free', parking: 'Open land',
-    offlineReady: true, condition: 'Moderate',
-    tags: ['heritage', 'ruins', 'archaeology', 'trek'],
-    desc: 'Ancient ruins near the proposed Dholera Smart City. Evidence of medieval settlements, temples, and step wells in a semi-arid landscape. An off-beat heritage trail for serious explorers.',
-    history: 'Dholera was a major port city during the medieval period and possibly had Harappan-era activity. Archaeological surveys have found structural remains from multiple periods.',
-    visiting: 'Best between October and March. Carry your own water and food. No facilities. Perfect for photography and heritage trekking. GPS essential — no proper roads to ruins.',
-    entryRoute: 'Take SH-6 from Ahmedabad toward Bhavnagar. Turn at Dholera sign. Ruins are 4km east of town. 4WD recommended.',
-    nearbyHelp: 'Dholera Police: 02714-222034 | Nearest hospital in Bhadrut (15km)',
-    sampleReviews: ['Completely off the beaten path. Amazing for history buffs.', 'Carry GPS — easy to get lost.']
+export const INDIA_DATA = {
+
+  // ─────────────────────────────────────────────────────
+  // GUJARAT
+  // ─────────────────────────────────────────────────────
+  gujarat: {
+    sites: [
+      {
+        id:'statue-of-unity', name:'Statue of Unity', type:'heritage',
+        city:'Kevadia', lat:21.8380, lng:73.7191,
+        rating:4.8, reviews:52000,
+        desc:'World’s tallest statue dedicated to Sardar Patel.',
+        tags:['monument']
+      },
+      {
+        id:'somnath', name:'Somnath Temple', type:'temple',
+        city:'Somnath', lat:20.8880, lng:70.4012,
+        rating:4.9,
+        desc:'First Jyotirlinga temple.'
+      },
+      {
+        id:'dwarka', name:'Dwarkadhish Temple', type:'temple',
+        city:'Dwarka', lat:22.2442, lng:68.9685,
+        desc:'Char Dham pilgrimage site.'
+      },
+      {
+        id:'gir', name:'Gir National Park', type:'nature',
+        city:'Junagadh', lat:21.1240, lng:70.8240,
+        desc:'Only Asiatic lion habitat.'
+      },
+      {
+        id:'rann-kutch', name:'Rann of Kutch', type:'nature',
+        city:'Kutch', lat:23.7337, lng:69.8597,
+        desc:'White salt desert.'
+      },
+      {
+        id:'dholavira', name:'Dholavira', type:'heritage',
+        city:'Kutch', lat:23.8850, lng:70.2150,
+        desc:'Harappan site.'
+      }
+    ],
+
+    treks: [
+      {
+        id:'saputara-trail', name:'Saputara Hill Trail',
+        distance:'5km', difficulty:'Easy',
+        desc:'Only hill station trekking zone in Gujarat.'
+      }
+    ]
   },
 
-  // ─── AHMEDABAD ────────────────────────────────────────
-  {
-    id: 'sabarmati-ashram', name: 'Sabarmati Ashram', type: 'heritage',
-    emoji: '🕊️', city: 'Ahmedabad',
-    address: 'Gandhi Smarak Sangrahalaya, Ashram Road, Ahmedabad 380027',
-    lat: 23.0607, lng: 72.5800,
-    rating: 4.8, reviews: 12400,
-    timings: '8:30 AM – 6:30 PM', closed: 'Open all days',
-    entry: 'Free', parking: 'Available nearby',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['heritage', 'Gandhi', 'freedom', 'museum', 'UNESCO candidate'],
-    desc: 'Gandhi\'s home for 13 years (1917–1930). The ashram on the banks of Sabarmati is where he planned the famous Dandi Salt March. Simple yet deeply moving — the spinning wheel, his room, and the river view are unforgettable.',
-    history: 'Gandhi established the Satyagraha Ashram here in 1917. On March 12, 1930, he began the famous 241-mile Dandi March from here to protest the British salt tax. He vowed not to return until India achieved independence.',
-    visiting: 'The museum \'Hriday Kunj\' has Gandhi\'s personal belongings. The charkha (spinning wheel) room is the highlight. Guided tours available. Very moving experience — quiet reflection recommended.',
-    entryRoute: 'Ashram Road, directly accessible. Ashram BRTS bus stop. Auto-rickshaw from any part of Ahmedabad. Sabarmati railway station is 4km away.',
-    nearbyHelp: 'Sabarmati Police Station: 079-27560110 | Emergency: 100',
-    sampleReviews: ['The most moving heritage experience in India. Gandhi\'s simplicity is humbling.', 'Very well maintained. The river view from his room is beautiful.']
-  },
-  {
-    id: 'pols-old-city', name: 'Old City Pols (Heritage Walk)', type: 'heritage',
-    emoji: '🏘️', city: 'Ahmedabad',
-    address: 'Old City, Ahmedabad, Gujarat 380001',
-    lat: 23.0258, lng: 72.5816,
-    rating: 4.7, reviews: 5600,
-    timings: 'All day (best morning)', closed: 'None',
-    entry: 'Free', parking: 'Limited — park outside',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'UNESCO', 'walk', 'architecture', 'culture'],
-    desc: 'The pols (traditional neighborhood clusters) of Ahmedabad\'s Old City are a UNESCO World Heritage Site. Intricate carved wooden havelis, narrow lanes, community wells, and bird feeders create a living medieval city.',
-    history: 'Ahmedabad was founded in 1411 CE by Ahmed Shah I. The pol system was a unique medieval urban planning concept — self-contained neighborhoods with their own gates, wells, and temples, designed for security and community living.',
-    visiting: 'Join the free morning heritage walk at 8 AM from Swaminarayan Temple, Kalupur (every day except Wednesday). Wear comfortable walking shoes. The walk lasts 2 hours. Don\'t miss Doshiwada ni Pol and Mandvi ni Pol.',
-    entryRoute: 'Old City is best reached via BRTS to Lal Darwaja. Enter through Teen Darwaza gate. Rickshaws available but narrow lanes require walking. Park at Lal Darwaja and walk in.',
-    nearbyHelp: 'Old City Police Chowki: 079-25350301 | EMRI: 108',
-    sampleReviews: ['UNESCO site and totally deserving. Living history.', 'The morning heritage walk is fantastic and free.', 'Go before 9 AM — less crowded and better light.']
-  },
-  {
-    id: 'jama-masjid', name: 'Jama Masjid Ahmedabad', type: 'heritage',
-    emoji: '🕌', city: 'Ahmedabad',
-    address: 'Near Teen Darwaza, Ahmedabad 380001',
-    lat: 23.0268, lng: 72.5841,
-    rating: 4.6, reviews: 4200,
-    timings: '6:00 AM – 8:00 PM (Non-prayer)', closed: 'Prayer times restricted',
-    entry: 'Free', parking: 'Lal Darwaja parking',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'mosque', 'architecture', 'UNESCO'],
-    desc: 'One of the finest mosques in India, built in 1424 by Sultan Ahmad Shah I. The mosque blends Hindu and Islamic architecture with 260 pillars supporting the roof and stunning yellow sandstone lattice work.',
-    history: 'Built in 1424 CE by Ahmed Shah I, using stones from demolished Hindu and Jain temples, creating a unique fusion style. The mosque was considered one of the finest in the Sultanate period.',
-    visiting: 'Remove shoes before entering. Women should cover heads. Dress modestly. Non-Muslims welcome outside prayer times (5 daily prayers). Beautiful at dusk.',
-    entryRoute: 'Adjacent to Teen Darwaza. Walking distance from Lal Darwaja BRTS. Auto available from anywhere in old city.',
-    nearbyHelp: 'Lal Darwaja Police: 079-25350200',
-    sampleReviews: ['Stunning architecture. The pillars and lattice work are extraordinary.', 'Peaceful and grand. Please be respectful of prayers.']
-  },
-  {
-    id: 'sabarmati-riverfront', name: 'Sabarmati Riverfront', type: 'nature',
-    emoji: '🌊', city: 'Ahmedabad',
-    address: 'Sabarmati Riverfront, Ahmedabad, Gujarat',
-    lat: 23.0453, lng: 72.5726,
-    rating: 4.5, reviews: 9800,
-    timings: '5:00 AM – 11:00 PM', closed: 'None',
-    entry: 'Free', parking: 'Multiple entry points',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['nature', 'riverfront', 'walking', 'cycling', 'family'],
-    desc: '11km of landscaped riverfront promenade along the Sabarmati. Cycling tracks, jogging paths, gardens, and event spaces. One of India\'s most successful urban riverfront projects. Beautiful at sunset and evenings.',
-    history: 'The Sabarmati Riverfront Development Project began in 2005. The project transformed polluted riverbanks into a 10.4 km promenade with 202 hectares of public space — a model for urban waterfront development.',
-    visiting: 'Rent bicycles at Subhash Bridge point (₹30/hour). Boat rides available. Evening laser show on weekends near Ellis Bridge. Food stalls and cafés open till late.',
-    entryRoute: 'Multiple access points: Subhash Bridge, Ellis Bridge, Sardar Bridge. BRTS stops at all bridges. Free public access.',
-    nearbyHelp: 'Riverfront Security: 079-25441212 | Emergency: 100',
-    sampleReviews: ['Best evening spot in Ahmedabad. Great for cycling.', 'Beautiful at sunset. Great infrastructure.']
-  },
-  {
-    id: 'sidi-saiyyed-mosque', name: 'Sidi Saiyyed Mosque', type: 'heritage',
-    emoji: '🕌', city: 'Ahmedabad',
-    address: 'Lal Darwaja, Ahmedabad 380001',
-    lat: 23.0254, lng: 72.5750,
-    rating: 4.8, reviews: 6700,
-    timings: '6:00 AM – 8:00 PM', closed: 'Prayer times',
-    entry: 'Free', parking: 'Lal Darwaja nearby',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'mosque', 'architecture', 'UNESCO'],
-    desc: 'Famous for its breathtaking stone lattice jali windows — the "Tree of Life" design is the icon of Ahmedabad and the logo of IIM Ahmedabad. Built in 1572, these windows are among the finest examples of stone latticework in the world.',
-    history: 'Built in 1572 by Sidi Saiyyed, an Abyssinian slave-general of the Sultanate. The ten stone latticed windows, especially the "Tree of Life" design, have become the symbol of Ahmedabad.',
-    visiting: 'Go early morning (7-9 AM) for best light through the jali windows. Photography allowed. Small mosque — visit respectfully. The IIM Ahmedabad logo replicates the famous window design.',
-    entryRoute: 'Near Lal Darwaja, walking distance from Teen Darwaza and Jama Masjid. Auto from anywhere in Ahmedabad.',
-    nearbyHelp: 'Lal Darwaja Police: 079-25350200',
-    sampleReviews: ['The jali windows are genuinely magical. Sunlight through them is breathtaking.', 'Small but perfect. One of my favourite heritage moments in India.']
-  },
-  {
-    id: 'kankaria-lake', name: 'Kankaria Lake', type: 'nature',
-    emoji: '🏞️', city: 'Ahmedabad',
-    address: 'Kankaria, Maninagar, Ahmedabad 380008',
-    lat: 22.9923, lng: 72.6061,
-    rating: 4.5, reviews: 15600,
-    timings: '9:00 AM – 10:00 PM', closed: 'Monday',
-    entry: '₹25 adults, ₹10 children', parking: 'Large parking lot',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['nature', 'lake', 'family', 'zoo', 'amusement'],
-    desc: 'A 34-acre medieval lake built in 1451 CE, now a world-class lakefront with zoo, toy train, hot air balloon, water park, and amusement rides. The Nagina Wadi island in the center has beautiful gardens. One of Ahmedabad\'s most loved destinations.',
-    history: 'Built in 1451 by Sultan Qutbuddin Ahmad Shah II. The lake was called Hauz-i-Qutb after him. The octagonal step-lake has an island pavilion (Nagina Wadi) built by Emperor Akbar in 1600s.',
-    visiting: 'Plan minimum 3-4 hours. Zoo (₹50 extra), toy train, hot air balloon (booking required). Balloon safari at sunrise is spectacular. Very crowded on weekends — go weekday morning.',
-    entryRoute: 'Kankaria BRTS stop directly at gate. From Maninagar railway station it\'s 2km. Uber/Ola available. Parking entrance on L.G. Hospital Road.',
-    nearbyHelp: 'Kankaria Police Post: 079-25470123 | Emergency: 108',
-    sampleReviews: ['Loved the hot air balloon! Book in advance.', 'Great for families. The evening is magical with lights.', 'Very well developed. Worth every rupee.']
-  },
-  {
-    id: 'science-city', name: 'Science City Ahmedabad', type: 'nature',
-    emoji: '🔭', city: 'Ahmedabad',
-    address: 'Sola, Ahmedabad, Gujarat 380060',
-    lat: 23.0789, lng: 72.5472,
-    rating: 4.6, reviews: 11200,
-    timings: '10:00 AM – 7:30 PM', closed: 'None',
-    entry: '₹30 (entry), extra for shows', parking: 'Large free parking',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['nature', 'science', 'education', 'family', 'imax'],
-    desc: 'Asia\'s largest science park with robotic gallery, aquarium, IMAX theater, energy park, and life science park. The recently added Robotics Gallery is state-of-the-art. A full day destination for families and students.',
-    history: 'Opened in 2001, expanded significantly in 2020 with the ₹225 crore Robotics Gallery and Aquatics Gallery. Built by Gujarat government as an education and recreation complex.',
-    visiting: 'Book IMAX tickets online in advance. Aquarium is a must. Budget full day — 6+ hours of content. Electric vehicles available inside for mobility. Kids under 3 free.',
-    entryRoute: 'Near Sola crossing on S.G. Highway. Dedicated BRTS stop. Auto from any part of Ahmedabad (15-40 minutes depending on location).',
-    nearbyHelp: 'Science City Security: 079-29700021 | Sola Police: 079-27500100',
-    sampleReviews: ['Robotics gallery is world class. Impressed.', 'IMAX quality is fantastic. Book early.', 'Could easily spend 6 hours here.']
-  },
-  {
-    id: 'vastrapur-lake', name: 'Vastrapur Lake & Garden', type: 'nature',
-    emoji: '🌅', city: 'Ahmedabad',
-    address: 'Vastrapur, Ahmedabad 380054',
-    lat: 23.0448, lng: 72.5269,
-    rating: 4.4, reviews: 8900,
-    timings: '5:30 AM – 10:30 PM', closed: 'None',
-    entry: 'Free', parking: 'Roadside, limited',
-    offlineReady: true, condition: 'Good',
-    tags: ['nature', 'lake', 'walking', 'jogging', 'evening'],
-    desc: 'A popular urban lake and garden in west Ahmedabad. Beautiful walking promenade, boating, and great sunset views. Surrounded by cafés and restaurants. Very popular with young crowds and joggers.',
-    history: 'Developed as part of Ahmedabad\'s western expansion. The lake area was revamped after 2005 and has become a social hub for west Ahmedabad.',
-    visiting: 'Best at sunset (6-8 PM). Boating available (₹30/person). The surrounding area has excellent food — try Agashiye rooftop nearby for traditional Gujarati thali. Very busy on evenings and weekends.',
-    entryRoute: 'Vastrapur Lake BRTS stop. Uber/Ola from anywhere. Walking distance from Ahmedabad University and Gujarat University.',
-    nearbyHelp: 'Vastrapur Police: 079-26751400',
-    sampleReviews: ['Lovely evening lake walk. The food options nearby are great.', 'Good boating at sunset.']
-  },
-  {
-    id: 'rani-sipri-mosque', name: 'Rani Sipri Mosque', type: 'heritage',
-    emoji: '🕌', city: 'Ahmedabad',
-    address: 'Mirzapur Road, Ahmedabad 380001',
-    lat: 23.0213, lng: 72.5857,
-    rating: 4.5, reviews: 1800,
-    timings: '7:00 AM – 7:00 PM', closed: 'None for viewing',
-    entry: 'Free', parking: 'Street parking',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'mosque', 'architecture', 'UNESCO'],
-    desc: 'Known as \'Masjid-e-Nagina\' (jewel of mosques), this exquisite 1514 CE mosque was built by Rani Sipri in memory of her son. It features extraordinarily delicate jali screens and the tomb of Rani Sipri within the compound.',
-    history: 'Built in 1514 CE by Rani Sipri, wife of Sultan Mehmud Begda, as a mausoleum for her executed son. The five-arched facade and the lattice screens are masterpieces of Indo-Saracenic architecture.',
-    visiting: 'A hidden gem compared to Sidi Saiyyed. Less crowded. Best light in late morning. The tomb inside is simple and moving. Photography welcome.',
-    entryRoute: 'Off Mirzapur Road in old city. Walk from Lal Darwaja (10 min) or auto.',
-    nearbyHelp: 'Old City Police: 079-25350301',
-    sampleReviews: ['Far less known than Sidi Saiyyed but equally beautiful.', 'Hidden gem. The jali work here is incredible.']
-  },
-  {
-    id: 'law-garden', name: 'Law Garden Night Market', type: 'nature',
-    emoji: '🛍️', city: 'Ahmedabad',
-    address: 'Law Garden, Ellis Bridge, Ahmedabad 380006',
-    lat: 23.0327, lng: 72.5562,
-    rating: 4.4, reviews: 22000,
-    timings: '7:00 PM – 11:30 PM (Market)', closed: 'None',
-    entry: 'Free', parking: 'Nearby streets',
-    offlineReady: true, condition: 'Excellent',
-    tags: ['culture', 'market', 'night', 'handicrafts', 'food'],
-    desc: 'Ahmedabad\'s famous evening street market — an explosion of Gujarati embroidery, chaniya cholis, handicrafts, and street food. The best place to buy authentic Gujarati textiles directly from rural artisans.',
-    history: 'Law Garden market started organically as tribal artisans from Kutch and Saurashtra began selling directly to city buyers. It has grown to become the city\'s most famous informal market.',
-    visiting: 'Go after 7:30 PM when all stalls are set up. Bargain firmly — 30-40% below asking price is fair. Best for chaniya choli, mirror work, bandhani, and silver jewelry. Try the corn and chaats nearby.',
-    entryRoute: 'Law Garden, Ellis Bridge. BRTS stop Law Garden. Auto from anywhere. Parking on Sardar Patel road nearby.',
-    nearbyHelp: 'Ellis Bridge Police: 079-26575555',
-    sampleReviews: ['Best place for Gujarati handicrafts. Prices are reasonable if you bargain.', 'Vibrant and fun. Go hungry — street food is great.']
-  },
-  {
-    id: 'jhulta-minar', name: 'Jhulta Minar (Shaking Minarets)', type: 'heritage',
-    emoji: '🏛️', city: 'Ahmedabad',
-    address: 'Sarangpur, Ahmedabad 380001',
-    lat: 23.0166, lng: 72.5842,
-    rating: 4.3, reviews: 3200,
-    timings: '9:00 AM – 5:30 PM', closed: 'Friday',
-    entry: '₹25 (ASI site)', parking: 'Limited',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'mystery', 'architecture', 'ASI'],
-    desc: 'A mysterious 14th-century mosque with twin minarets that shake when one is pushed — yet the vibration never transmits to the other or to the connecting bridge. The engineering secret behind this phenomenon remains unsolved.',
-    history: 'Part of the tomb complex of Sidi Bashir built in 1452 CE. The three-storey minarets are famous for their resonating movement. Several attempts by British engineers to dismantle and study them failed.',
-    visiting: 'ASI guides demonstrate the shaking (officially no longer allowed to push them for preservation). Visit on weekdays for less crowd. Combine with nearby Kali Mosque and Sarkhej Roza.',
-    entryRoute: 'Near Sarangpur Gate in old city. 2km from Lal Darwaja. Auto rickshaw available.',
-    nearbyHelp: 'Sarangpur Police: 079-25370200',
-    sampleReviews: ['Fascinating mystery. The minarets really do shake!', 'Small but unique. Unlike anything else in India.']
-  },
-  {
-    id: 'sarkhej-roza', name: 'Sarkhej Roza', type: 'heritage',
-    emoji: '🏯', city: 'Ahmedabad',
-    address: 'Sarkhej, Ahmedabad 382210',
-    lat: 22.9826, lng: 72.5184,
-    rating: 4.6, reviews: 2800,
-    timings: '9:00 AM – 6:00 PM', closed: 'None',
-    entry: '₹25 (ASI)', parking: 'Available',
-    offlineReady: true, condition: 'Good',
-    tags: ['heritage', 'Mughal', 'palace', 'lake', 'ASI', 'UNESCO'],
-    desc: 'A magnificent 15th-century complex with mosque, tombs, palace, and a stepped lake — all in perfect geometric harmony. Called the \'Versailles of Gujarat\', it combines Sultanate architecture with natural landscape in a unique way.',
-    history: 'Built between 1445-1460 CE by Mahmud Begda and his successors as a mausoleum for the Sufi saint Ganj Bakhsh. It became a royal retreat palace. It is part of the UNESCO World Heritage bid for Ahmedabad.',
-    visiting: 'The stepped lake is stunning when dry (winter) as you can walk on the geometric steps. Best visited in morning for light. The palace ruins on the south side are worth exploring. Local guides available.',
-    entryRoute: 'Take SH-41 from Ahmedabad towards Sarkhej. Well-signed from Sarkhej circle. Rickshaws from Maninagar railway station.',
-    nearbyHelp: 'Sarkhej Police: 079-25400290',
-    sampleReviews: ['Hauntingly beautiful. One of my favourite heritage sites in India.', 'The stepped lake is an architectural marvel. Visit!']
+  // ─────────────────────────────────────────────────────
+  // DELHI + NOIDA
+  // ─────────────────────────────────────────────────────
+  delhi_noida: {
+    sites: [
+      {
+        id:'india-gate', name:'India Gate', type:'heritage',
+        city:'Delhi', lat:28.6129, lng:77.2295,
+        desc:'War memorial.'
+      },
+      {
+        id:'red-fort', name:'Red Fort', type:'heritage',
+        city:'Delhi', lat:28.6562, lng:77.2410,
+        desc:'UNESCO Mughal fort.'
+      },
+      {
+        id:'qutub-minar', name:'Qutub Minar', type:'heritage',
+        city:'Delhi', lat:28.5245, lng:77.1855,
+        desc:'Tallest brick minaret.'
+      },
+      {
+        id:'lotus-temple', name:'Lotus Temple',
+        city:'Delhi', lat:28.5535, lng:77.2588,
+        desc:'Bahai temple.'
+      },
+      {
+        id:'akshardham-delhi', name:'Akshardham Delhi',
+        city:'Delhi', lat:28.6127, lng:77.2773,
+        desc:'Massive temple complex.'
+      },
+      {
+        id:'okhla-bird', name:'Okhla Bird Sanctuary',
+        city:'Noida', lat:28.5616, lng:77.3106,
+        desc:'Wetland sanctuary.'
+      }
+    ],
+
+    treks: [
+      {
+        id:'delhi-heritage-walk',
+        name:'Old Delhi Walk',
+        distance:'4km',
+        difficulty:'Easy'
+      }
+    ]
   },
 
-  // ─── EMERGENCY SITES ──────────────────────────────────
-  {
-    id: 'civil-hospital-ahmedabad', name: 'Civil Hospital Ahmedabad', type: 'emergency',
-    emoji: '🏥', city: 'Ahmedabad',
-    address: 'Asarwa, Ahmedabad 380016',
-    lat: 23.0590, lng: 72.6055,
-    rating: 4.0, reviews: 5400,
-    timings: '24 Hours', closed: 'Never',
-    entry: 'Free (Government)', parking: 'Available',
-    offlineReady: true, condition: 'Operational',
-    tags: ['emergency', 'hospital', 'medical'],
-    desc: 'Ahmedabad Civil Hospital — largest government hospital in Gujarat. 24/7 emergency services. Trauma center, ICU, and specialist care available.',
-    history: 'One of the oldest government hospitals in Gujarat, handling emergency cases from across the region.',
-    visiting: 'Emergency entrance on Asarwa main road. Trauma center operational 24/7.',
-    entryRoute: 'Asarwa, off Asarwa Road. Auto available from anywhere.',
-    nearbyHelp: 'Emergency: 108 | Phone: 079-22681002',
-    sampleReviews: ['Emergency services are good and free.']
+  // ─────────────────────────────────────────────────────
+  // KERALA
+  // ─────────────────────────────────────────────────────
+  kerala: {
+    sites: [
+      {
+        id:'munnar', name:'Munnar', type:'nature',
+        city:'Idukki', lat:10.0889, lng:77.0595,
+        desc:'Tea plantation hills.'
+      },
+      {
+        id:'alleppey', name:'Alleppey Backwaters',
+        city:'Alappuzha', lat:9.4981, lng:76.3388,
+        desc:'Houseboat destination.'
+      },
+      {
+        id:'wayanad', name:'Wayanad',
+        city:'Wayanad', lat:11.6854, lng:76.1320,
+        desc:'Forest and waterfalls.'
+      },
+      {
+        id:'varkala', name:'Varkala Cliff',
+        city:'Varkala', lat:8.7379, lng:76.7163,
+        desc:'Cliff beach.'
+      },
+      {
+        id:'kovalam', name:'Kovalam Beach',
+        city:'Trivandrum', lat:8.4000, lng:76.9780,
+        desc:'Famous beach.'
+      },
+      {
+        id:'kochi', name:'Fort Kochi',
+        city:'Kochi', lat:9.9654, lng:76.2425,
+        desc:'Colonial heritage.'
+      }
+    ],
+
+    treks: [
+      {
+        id:'wayanad-trek',
+        name:'Wayanad Forest Trek',
+        distance:'8km',
+        difficulty:'Moderate'
+      }
+    ]
   },
-  {
-    id: 'gandhinagar-civil-hospital', name: 'Civil Hospital Gandhinagar', type: 'emergency',
-    emoji: '🏥', city: 'Gandhinagar',
-    address: 'Sector 12, Gandhinagar 382012',
-    lat: 23.2213, lng: 72.6423,
-    rating: 4.1, reviews: 1200,
-    timings: '24 Hours', closed: 'Never',
-    entry: 'Free (Government)', parking: 'Available',
-    offlineReady: true, condition: 'Operational',
-    tags: ['emergency', 'hospital', 'medical'],
-    desc: 'Gandhinagar district civil hospital. 24/7 emergency services for Gandhinagar region.',
-    history: 'Primary government hospital for Gandhinagar district.',
-    visiting: 'Emergency entrance on Sector 12 road.',
-    entryRoute: 'Sector 12, Gandhinagar. BRTS available.',
-    nearbyHelp: 'Emergency: 108 | Phone: 079-23225020',
-    sampleReviews: ['Good emergency services.']
+
+  // ─────────────────────────────────────────────────────
+  // ANDHRA PRADESH
+  // ─────────────────────────────────────────────────────
+  andhra_pradesh: {
+    sites: [
+      {
+        id:'tirupati', name:'Tirupati Temple',
+        city:'Tirupati', lat:13.6288, lng:79.4192,
+        desc:'Richest temple in India.'
+      },
+      {
+        id:'araku', name:'Araku Valley',
+        city:'Vizag', lat:18.3270, lng:82.8800,
+        desc:'Hill station.'
+      },
+      {
+        id:'borra-caves', name:'Borra Caves',
+        city:'Vizag', lat:18.2797, lng:82.6987,
+        desc:'Limestone caves.'
+      },
+      {
+        id:'rk-beach', name:'RK Beach',
+        city:'Vizag', lat:17.6868, lng:83.2185,
+        desc:'Popular beach.'
+      },
+      {
+        id:'amaravati', name:'Amaravati',
+        city:'Amaravati', lat:16.5714, lng:80.3575,
+        desc:'Buddhist site.'
+      }
+    ],
+
+    treks: [
+      {
+        id:'araku-trek',
+        name:'Araku Valley Trail',
+        distance:'6km',
+        difficulty:'Moderate'
+      }
+    ]
+  },
+
+  // ─────────────────────────────────────────────────────
+  // KARNATAKA
+  // ─────────────────────────────────────────────────────
+  karnataka: {
+    sites: [
+      {
+        id:'hampi', name:'Hampi',
+        city:'Hampi', lat:15.3350, lng:76.4600,
+        desc:'UNESCO ruins.'
+      },
+      {
+        id:'mysore-palace', name:'Mysore Palace',
+        city:'Mysore', lat:12.3052, lng:76.6552,
+        desc:'Royal palace.'
+      },
+      {
+        id:'coorg', name:'Coorg',
+        city:'Kodagu', lat:12.3375, lng:75.8069,
+        desc:'Coffee hills.'
+      },
+      {
+        id:'gokarna', name:'Gokarna Beach',
+        city:'Gokarna', lat:14.5479, lng:74.3188,
+        desc:'Beach town.'
+      },
+      {
+        id:'bangalore', name:'Bangalore',
+        city:'Bangalore', lat:12.9716, lng:77.5946,
+        desc:'Tech capital.'
+      }
+    ],
+
+    treks: [
+      {
+        id:'coorg-trek',
+        name:'Coorg Hill Trek',
+        distance:'10km',
+        difficulty:'Moderate'
+      }
+    ]
   }
-];
-
-const TREKS = [
-  {
-    id: 'old-city-heritage-walk', name: 'Old City Heritage Walk',
-    emoji: '🚶', area: 'Ahmedabad Old City',
-    distance: '3.5 km', duration: '2 hours', difficulty: 'Easy',
-    elevation: '0m', type: 'Walking',
-    desc: 'A guided walk through Ahmedabad\'s UNESCO-listed pol neighborhoods. Start at Swaminarayan Temple Kalupur, walk through Doshiwada ni Pol, Mandvi ni Pol, Teen Darwaza, and end at Jama Masjid.',
-    highlights: 'UNESCO World Heritage Site. Free guided walk at 8 AM daily (except Wed). Best morning walk in Gujarat.',
-    water: 'Public taps at pol entrance points. Buy bottles at Teen Darwaza.',
-    bestSeason: 'Year-round. Avoid midday in summer.',
-    waypoints: [
-      { name: 'Swaminarayan Temple Kalupur', lat: 23.0289, lng: 72.5900 },
-      { name: 'Doshiwada ni Pol', lat: 23.0277, lng: 72.5863 },
-      { name: 'Mandvi ni Pol', lat: 23.0265, lng: 72.5842 },
-      { name: 'Teen Darwaza', lat: 23.0264, lng: 72.5847 },
-      { name: 'Jama Masjid', lat: 23.0268, lng: 72.5841 }
-    ],
-    offlineReady: true
-  },
-  {
-    id: 'sabarmati-cycle-trail', name: 'Sabarmati Riverfront Cycle Trail',
-    emoji: '🚴', area: 'Sabarmati, Ahmedabad',
-    distance: '11 km', duration: '1.5 hours', difficulty: 'Easy',
-    elevation: '5m', type: 'Cycling',
-    desc: 'Full length of the Sabarmati Riverfront — 11km of dedicated cycle track from Vakil Bridge in north to Sardar Bridge in south. Flat, scenic, and car-free. Rentals available at Subhash Bridge.',
-    highlights: 'Flat scenic river cycling. Sunset views. Multiple cafés. Boat ride optional.',
-    water: 'Water kiosks every 2km on the promenade.',
-    bestSeason: 'October to March. Avoid summer afternoons.',
-    waypoints: [
-      { name: 'Subhash Bridge (Cycle Rental)', lat: 23.0500, lng: 72.5756 },
-      { name: 'Gandhi Ashram Viewpoint', lat: 23.0607, lng: 72.5800 },
-      { name: 'Nehru Bridge', lat: 23.0424, lng: 72.5754 },
-      { name: 'Ellis Bridge', lat: 23.0348, lng: 72.5738 },
-      { name: 'Sardar Bridge End', lat: 23.0260, lng: 72.5718 }
-    ],
-    offlineReady: true
-  },
-  {
-    id: 'adalaj-gandhinagar-heritage', name: 'Adalaj–Gandhinagar Heritage Loop',
-    emoji: '🏛️', area: 'Gandhinagar–Adalaj',
-    distance: '28 km', duration: 'Full day', difficulty: 'Easy',
-    elevation: '20m', type: 'Road Trip / Walk at sites',
-    desc: 'A one-day heritage circuit connecting Gandhinagar\'s top sites. Start at Akshardham, drive to Adalaj Stepwell, explore Infocity corridor, and end at Child Nature Camp. Perfect for a full-day heritage experience.',
-    highlights: 'Akshardham Temple + Adalaj Stepwell. Two of Gujarat\'s finest sites in one day.',
-    water: 'Restaurants and stalls at all sites.',
-    bestSeason: 'October to February.',
-    waypoints: [
-      { name: 'Akshardham Temple', lat: 23.2163, lng: 72.6356 },
-      { name: 'Sector 9 Gardens', lat: 23.2243, lng: 72.6478 },
-      { name: 'GIFT City Promenade', lat: 23.1723, lng: 72.6750 },
-      { name: 'Adalaj Stepwell', lat: 23.1651, lng: 72.5802 }
-    ],
-    offlineReady: true
-  },
-  {
-    id: 'kankaria-lake-walk', name: 'Kankaria Lake Heritage Walk',
-    emoji: '🏞️', area: 'Maninagar, Ahmedabad',
-    distance: '4 km', duration: '2 hours', difficulty: 'Easy',
-    elevation: '0m', type: 'Walking',
-    desc: 'A loop walk around the historic Kankaria Lake, taking in the medieval stepwells, Nagina Wadi island, zoo areas, and lakefront gardens. Best at sunrise or sunset for stunning reflections.',
-    highlights: 'Medieval lake + Hot air balloon + Zoo + Toy train.',
-    water: 'Multiple stalls and restaurants around the lake.',
-    bestSeason: 'Year-round. Evening in winter is magical.',
-    waypoints: [
-      { name: 'Kankaria Main Gate', lat: 22.9923, lng: 72.6061 },
-      { name: 'Nagina Wadi Island', lat: 22.9918, lng: 72.6082 },
-      { name: 'Zoo Entrance', lat: 22.9935, lng: 72.6072 },
-      { name: 'Hot Air Balloon Point', lat: 22.9930, lng: 72.6045 }
-    ],
-    offlineReady: true
-  },
-  {
-    id: 'south-ahmedabad-trail', name: 'South Ahmedabad Mosque Trail',
-    emoji: '🕌', area: 'South Ahmedabad',
-    distance: '7 km', duration: '3 hours', difficulty: 'Moderate',
-    elevation: '10m', type: 'Walking / Auto',
-    desc: 'A curated trail connecting Ahmedabad\'s finest sultanate-era mosques. Sidi Saiyyed → Rani Sipri → Jhulta Minar → Sarkhej Roza. A journey through 600 years of Islamic architecture in one afternoon.',
-    highlights: 'Sidi Saiyyed jali windows + Sarkhej Roza palace complex. Two UNESCO-linked masterpieces.',
-    water: 'Buy water before starting. Limited at Sarkhej.',
-    bestSeason: 'October to March. Avoid Friday for mosques.',
-    waypoints: [
-      { name: 'Sidi Saiyyed Mosque', lat: 23.0254, lng: 72.5750 },
-      { name: 'Rani Sipri Mosque', lat: 23.0213, lng: 72.5857 },
-      { name: 'Jhulta Minar', lat: 23.0166, lng: 72.5842 },
-      { name: 'Sarkhej Roza', lat: 22.9826, lng: 72.5184 }
-    ],
-    offlineReady: true
-  }
-];
+};
