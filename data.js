@@ -1,235 +1,66 @@
-// ═══════════════════════════════════════════════════════
-// TRAILBHARAT — INDIA MASTER DATA (MULTI-STATE)
-// Gujarat + Delhi-Noida + Kerala + AP + Karnataka
-// Scalable unified structure
-// ═══════════════════════════════════════════════════════
-
-export const INDIA_DATA = {
-
-  // ─────────────────────────────────────────────────────
-  // GUJARAT
-  // ─────────────────────────────────────────────────────
-  gujarat: {
-    sites: [
-      {
-        id:'statue-of-unity', name:'Statue of Unity', type:'heritage',
-        city:'Kevadia', lat:21.8380, lng:73.7191,
-        rating:4.8, reviews:52000,
-        desc:'World’s tallest statue dedicated to Sardar Patel.',
-        tags:['monument']
-      },
-      {
-        id:'somnath', name:'Somnath Temple', type:'temple',
-        city:'Somnath', lat:20.8880, lng:70.4012,
-        rating:4.9,
-        desc:'First Jyotirlinga temple.'
-      },
-      {
-        id:'dwarka', name:'Dwarkadhish Temple', type:'temple',
-        city:'Dwarka', lat:22.2442, lng:68.9685,
-        desc:'Char Dham pilgrimage site.'
-      },
-      {
-        id:'gir', name:'Gir National Park', type:'nature',
-        city:'Junagadh', lat:21.1240, lng:70.8240,
-        desc:'Only Asiatic lion habitat.'
-      },
-      {
-        id:'rann-kutch', name:'Rann of Kutch', type:'nature',
-        city:'Kutch', lat:23.7337, lng:69.8597,
-        desc:'White salt desert.'
-      },
-      {
-        id:'dholavira', name:'Dholavira', type:'heritage',
-        city:'Kutch', lat:23.8850, lng:70.2150,
-        desc:'Harappan site.'
-      }
-    ],
-
-    treks: [
-      {
-        id:'saputara-trail', name:'Saputara Hill Trail',
-        distance:'5km', difficulty:'Easy',
-        desc:'Only hill station trekking zone in Gujarat.'
-      }
-    ]
-  },
-
-  // ─────────────────────────────────────────────────────
-  // DELHI + NOIDA
-  // ─────────────────────────────────────────────────────
-  delhi_noida: {
-    sites: [
-      {
-        id:'india-gate', name:'India Gate', type:'heritage',
-        city:'Delhi', lat:28.6129, lng:77.2295,
-        desc:'War memorial.'
-      },
-      {
-        id:'red-fort', name:'Red Fort', type:'heritage',
-        city:'Delhi', lat:28.6562, lng:77.2410,
-        desc:'UNESCO Mughal fort.'
-      },
-      {
-        id:'qutub-minar', name:'Qutub Minar', type:'heritage',
-        city:'Delhi', lat:28.5245, lng:77.1855,
-        desc:'Tallest brick minaret.'
-      },
-      {
-        id:'lotus-temple', name:'Lotus Temple',
-        city:'Delhi', lat:28.5535, lng:77.2588,
-        desc:'Bahai temple.'
-      },
-      {
-        id:'akshardham-delhi', name:'Akshardham Delhi',
-        city:'Delhi', lat:28.6127, lng:77.2773,
-        desc:'Massive temple complex.'
-      },
-      {
-        id:'okhla-bird', name:'Okhla Bird Sanctuary',
-        city:'Noida', lat:28.5616, lng:77.3106,
-        desc:'Wetland sanctuary.'
-      }
-    ],
-
-    treks: [
-      {
-        id:'delhi-heritage-walk',
-        name:'Old Delhi Walk',
-        distance:'4km',
-        difficulty:'Easy'
-      }
-    ]
-  },
-
-  // ─────────────────────────────────────────────────────
-  // KERALA
-  // ─────────────────────────────────────────────────────
-  kerala: {
-    sites: [
-      {
-        id:'munnar', name:'Munnar', type:'nature',
-        city:'Idukki', lat:10.0889, lng:77.0595,
-        desc:'Tea plantation hills.'
-      },
-      {
-        id:'alleppey', name:'Alleppey Backwaters',
-        city:'Alappuzha', lat:9.4981, lng:76.3388,
-        desc:'Houseboat destination.'
-      },
-      {
-        id:'wayanad', name:'Wayanad',
-        city:'Wayanad', lat:11.6854, lng:76.1320,
-        desc:'Forest and waterfalls.'
-      },
-      {
-        id:'varkala', name:'Varkala Cliff',
-        city:'Varkala', lat:8.7379, lng:76.7163,
-        desc:'Cliff beach.'
-      },
-      {
-        id:'kovalam', name:'Kovalam Beach',
-        city:'Trivandrum', lat:8.4000, lng:76.9780,
-        desc:'Famous beach.'
-      },
-      {
-        id:'kochi', name:'Fort Kochi',
-        city:'Kochi', lat:9.9654, lng:76.2425,
-        desc:'Colonial heritage.'
-      }
-    ],
-
-    treks: [
-      {
-        id:'wayanad-trek',
-        name:'Wayanad Forest Trek',
-        distance:'8km',
-        difficulty:'Moderate'
-      }
-    ]
-  },
-
-  // ─────────────────────────────────────────────────────
-  // ANDHRA PRADESH
-  // ─────────────────────────────────────────────────────
-  andhra_pradesh: {
-    sites: [
-      {
-        id:'tirupati', name:'Tirupati Temple',
-        city:'Tirupati', lat:13.6288, lng:79.4192,
-        desc:'Richest temple in India.'
-      },
-      {
-        id:'araku', name:'Araku Valley',
-        city:'Vizag', lat:18.3270, lng:82.8800,
-        desc:'Hill station.'
-      },
-      {
-        id:'borra-caves', name:'Borra Caves',
-        city:'Vizag', lat:18.2797, lng:82.6987,
-        desc:'Limestone caves.'
-      },
-      {
-        id:'rk-beach', name:'RK Beach',
-        city:'Vizag', lat:17.6868, lng:83.2185,
-        desc:'Popular beach.'
-      },
-      {
-        id:'amaravati', name:'Amaravati',
-        city:'Amaravati', lat:16.5714, lng:80.3575,
-        desc:'Buddhist site.'
-      }
-    ],
-
-    treks: [
-      {
-        id:'araku-trek',
-        name:'Araku Valley Trail',
-        distance:'6km',
-        difficulty:'Moderate'
-      }
-    ]
-  },
-
-  // ─────────────────────────────────────────────────────
-  // KARNATAKA
-  // ─────────────────────────────────────────────────────
-  karnataka: {
-    sites: [
-      {
-        id:'hampi', name:'Hampi',
-        city:'Hampi', lat:15.3350, lng:76.4600,
-        desc:'UNESCO ruins.'
-      },
-      {
-        id:'mysore-palace', name:'Mysore Palace',
-        city:'Mysore', lat:12.3052, lng:76.6552,
-        desc:'Royal palace.'
-      },
-      {
-        id:'coorg', name:'Coorg',
-        city:'Kodagu', lat:12.3375, lng:75.8069,
-        desc:'Coffee hills.'
-      },
-      {
-        id:'gokarna', name:'Gokarna Beach',
-        city:'Gokarna', lat:14.5479, lng:74.3188,
-        desc:'Beach town.'
-      },
-      {
-        id:'bangalore', name:'Bangalore',
-        city:'Bangalore', lat:12.9716, lng:77.5946,
-        desc:'Tech capital.'
-      }
-    ],
-
-    treks: [
-      {
-        id:'coorg-trek',
-        name:'Coorg Hill Trek',
-        distance:'10km',
-        difficulty:'Moderate'
-      }
-    ]
-  }
+// TRAILBHARAT v3 — ALL INDIA SITES DATA
+const SITES = [
+  // ── GUJARAT ──
+  {id:'akshardham',name:'Akshardham Temple',emoji:'🛕',type:'temple',state:'Gujarat',city:'Gandhinagar',lat:23.2163,lng:72.6356,rating:4.9,reviews:8420,entry:'₹70',timings:'9:30AM–6:30PM',closed:'Monday',parking:'Free',offlineReady:true,condition:'Excellent',safety:92,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Very Low',desc:'One of the largest Hindu temples in the world, built in pink sandstone with stunning carvings across 23 acres.',history:'Inaugurated in 1992 by BAPS Swaminarayan Sanstha. The main monument stands 108 feet tall and features 6,000+ statues carved by 1,200 artisans over 13 years.',visiting:'Photography not allowed inside. Musical fountain show in evenings. Dress modestly. Leave electronics at entrance. Plan 3 hours minimum.',entryRoute:'Main entrance on NH-48. Parking 200m east. Auto from Gandhinagar bus stand.',nearbyHelp:'Sector 20 Police: 079-23226070 | Civil Hospital: 079-23225020',incidents:[],tags:['temple','heritage','architecture']},
+  {id:'adalaj',name:'Adalaj Stepwell',emoji:'🏛️',type:'heritage',state:'Gujarat',city:'Gandhinagar',lat:23.1651,lng:72.5802,rating:4.7,reviews:3210,entry:'₹5',timings:'6AM–6PM',closed:'None',parking:'Street parking',offlineReady:true,condition:'Good',safety:88,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:'Magnificent 15th-century stepwell built by Queen Rudabai in 1499 CE. Five storeys deep with intricately carved pillars.',history:'Built by Queen Rudabai in memory of her husband Virsing. Blends Hindu and Islamic architectural styles. UNESCO tentative list.',visiting:'Best 8-10 AM for morning light. Wear non-slip footwear. Very cool inside — bring a light layer. UNESCO tentative list site.',entryRoute:'Take SH-41 from Gandhinagar, turn at Adalaj village. Parking 50m from entrance.',nearbyHelp:'Adalaj Police: 079-23270999',incidents:['2023: Minor slip on wet steps (non-critical)'],tags:['heritage','stepwell','UNESCO']},
+  {id:'sabarmati-ashram',name:'Sabarmati Ashram',emoji:'🕊️',type:'heritage',state:'Gujarat',city:'Ahmedabad',lat:23.0607,lng:72.5800,rating:4.8,reviews:12400,entry:'Free',timings:'8:30AM–6:30PM',closed:'None',parking:'Nearby',offlineReady:true,condition:'Excellent',safety:95,safetyLevel:'High',accidentRisk:'Very Low',crimeLevel:'Very Low',desc:"Gandhi's home for 13 years (1917–1930). Where he planned the Dandi Salt March. Simple yet deeply moving.",history:'Gandhi established the Satyagraha Ashram here in 1917. March 12, 1930 — Dandi March began from this very spot.',visiting:'Museum Hriday Kunj has personal belongings. Guided tours available. Very peaceful — quiet reflection recommended.',entryRoute:'Ashram Road, Ahmedabad. BRTS stop Sabarmati Ashram. Rickshaw from anywhere.',nearbyHelp:'Sabarmati Police: 079-27560110',incidents:[],tags:['heritage','Gandhi','freedom','UNESCO']},
+  {id:'old-city-pols',name:'Old City Pols (Heritage Walk)',emoji:'🏘️',type:'heritage',state:'Gujarat',city:'Ahmedabad',lat:23.0258,lng:72.5816,rating:4.7,reviews:5600,entry:'Free',timings:'All day (best morning)',closed:'None',parking:'Park at Lal Darwaja and walk',offlineReady:true,condition:'Good',safety:72,safetyLevel:'Medium',accidentRisk:'Medium',crimeLevel:'Low',desc:'UNESCO World Heritage Site — traditional pol neighborhoods with intricate carved havelis and medieval urban planning.',history:'Ahmedabad founded 1411 CE by Ahmed Shah I. Pol system is unique medieval urban planning — self-contained neighborhoods for security.',visiting:'Free heritage walk at 8 AM from Swaminarayan Temple Kalupur (except Wednesday). Comfortable footwear essential. 2 hours.',entryRoute:'BRTS to Lal Darwaja. Enter through Teen Darwaza. Narrow lanes require walking in.',nearbyHelp:'Old City Police: 079-25350301',incidents:['2022: Pickpocketing reported in crowded areas','2023: Road flooding during monsoon'],tags:['heritage','UNESCO','walk','culture']},
+  {id:'sidi-saiyyed',name:'Sidi Saiyyed Mosque',emoji:'🕌',type:'heritage',state:'Gujarat',city:'Ahmedabad',lat:23.0254,lng:72.5750,rating:4.8,reviews:6700,entry:'Free',timings:'6AM–8PM',closed:'During prayer',parking:'Lal Darwaja nearby',offlineReady:true,condition:'Good',safety:90,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:"Famous for breathtaking stone lattice jali windows — the 'Tree of Life' design is the icon of Ahmedabad and IIM logo.",history:'Built in 1572 by Sidi Saiyyed. The ten stone latticed windows are masterpieces of Indo-Saracenic architecture.',visiting:'Best 7-9 AM for light through jali windows. Photography welcome. Small mosque — dress and behave respectfully.',entryRoute:'Near Lal Darwaja. 10 min walk from Teen Darwaza. Auto from anywhere.',nearbyHelp:'Lal Darwaja Police: 079-25350200',incidents:[],tags:['heritage','mosque','UNESCO','architecture']},
+  {id:'kankaria',name:'Kankaria Lake',emoji:'🏞️',type:'nature',state:'Gujarat',city:'Ahmedabad',lat:22.9923,lng:72.6061,rating:4.5,reviews:15600,entry:'₹25',timings:'9AM–10PM',closed:'Monday',parking:'Large lot available',offlineReady:true,condition:'Excellent',safety:85,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:'34-acre medieval lake built 1451 CE with zoo, toy train, hot air balloon, and world-class lakefront development.',history:'Built by Sultan Qutbuddin in 1451. Emperor Akbar built Nagina Wadi island in 1600s. One of the most visited sites in Gujarat.',visiting:'Plan 3-4 hours. Book hot air balloon in advance. Very crowded weekends — go weekday morning for peace.',entryRoute:'Kankaria BRTS stop directly at gate. From Maninagar station 2km. Auto available.',nearbyHelp:'Kankaria Police Post: 079-25470123',incidents:['2023: Hot air balloon delayed by wind, no injuries'],tags:['nature','lake','family','medieval']},
+  {id:'rani-ki-vav',name:'Rani ki Vav',emoji:'🏛️',type:'heritage',state:'Gujarat',city:'Patan',lat:23.8588,lng:72.1013,rating:4.9,reviews:9200,entry:'₹40',timings:'8AM–6PM',closed:'None',parking:'Government lot',offlineReady:true,condition:'Excellent',safety:94,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Very Low',desc:'UNESCO World Heritage 11th-century stepwell with 7 storeys and 500+ sculptural panels. Among the finest in India.',history:'Built by Queen Udayamati in 1063 CE as memorial for King Bhimdev I. Rediscovered from silt in 1940s and restored by ASI.',visiting:'Early morning for best light and fewer crowds. Non-slip footwear essential. Photography freely allowed.',entryRoute:'Located in Patan city. State highway from Ahmedabad (125km). Entry from north gate — community-reported correct route.',nearbyHelp:'Patan Police: 02766-220200 | District Hospital Patan: 02766-223100',incidents:[],tags:['heritage','UNESCO','stepwell','ASI']},
+  {id:'sarkhej-roza',name:'Sarkhej Roza',emoji:'🏯',type:'heritage',state:'Gujarat',city:'Ahmedabad',lat:22.9826,lng:72.5184,rating:4.6,reviews:2800,entry:'₹25',timings:'9AM–6PM',closed:'None',parking:'Available',offlineReady:true,condition:'Good',safety:80,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:"15th-century complex with mosque, tombs, palace and stepped lake — called 'Versailles of Gujarat'.",history:'Built 1445-1460 CE by Mahmud Begda. A royal retreat palace and mausoleum for Sufi saint Ganj Bakhsh. UNESCO bid site.',visiting:'Stepped lake stunning in winter (walk the geometric steps). Best in morning. Local guides available.',entryRoute:'SH-41 from Ahmedabad towards Sarkhej. Rickshaws from Maninagar station.',nearbyHelp:'Sarkhej Police: 079-25400290',incidents:[],tags:['heritage','palace','UNESCO','Mughal']},
+ 
+  // ── RAJASTHAN ──
+  {id:'taj-mahal',name:'Taj Mahal',emoji:'🕌',type:'heritage',state:'Uttar Pradesh',city:'Agra',lat:27.1751,lng:78.0421,rating:4.9,reviews:95000,entry:'₹50 Indians / ₹1100 Foreigners',timings:'30min before sunrise to 30min before sunset',closed:'Friday',parking:'1km away — park and walk',offlineReady:true,condition:'Excellent',safety:75,safetyLevel:'Medium',accidentRisk:'Low',crimeLevel:'Medium',desc:'UNESCO World Heritage — 17th-century white marble mausoleum, one of the Seven Wonders of the World. Built by Mughal Emperor Shah Jahan.',history:'Built between 1632-1653 CE by Shah Jahan for his wife Mumtaz Mahal. 20,000 artisans from across Asia worked for 21 years.',visiting:'Book tickets online to skip queue. Sunrise visit for golden light and fewer crowds. Fridays closed for prayers.',entryRoute:'From Agra Cantonment station take auto/taxi. No vehicles in 500m radius. Walk through eastern or western gate.',nearbyHelp:'Agra Police Tourist Helpline: 0562-2604032 | EMRI: 108',incidents:['2023: High crowd density on weekends — pickpocketing alerts issued','2022: Visitor fell near steps (minor injury)'],tags:['heritage','UNESCO','wonder','Mughal']},
+  {id:'amber-fort',name:'Amber Fort',emoji:'🏰',type:'heritage',state:'Rajasthan',city:'Jaipur',lat:26.9855,lng:75.8513,rating:4.8,reviews:42000,entry:'₹100',timings:'8AM–5:30PM',closed:'None',parking:'Large parking area',offlineReady:true,condition:'Excellent',safety:80,safetyLevel:'High',accidentRisk:'Medium',crimeLevel:'Low',desc:"Magnificent 16th-century fort palace complex on a hill overlooking Maota Lake. The Sheesh Mahal's mirror work is world famous.",history:'Built in 1592 by Raja Man Singh I. Combination of Rajput and Mughal architecture. Palace was residence of Maharajas until 18th century.',visiting:'Go early (8 AM) before crowds and heat. Elephant rides controversial — consider walking. Light and sound show evenings.',entryRoute:'11km from Jaipur city. Bus or auto from Hawa Mahal. Walk up the path or take jeep from base.',nearbyHelp:'Amber Police: 0141-2300060 | Hospital: 0141-2294131',incidents:['2023: Caution on steep cobblestones — 3 slip incidents','Elephant interaction zone — maintain safe distance'],tags:['heritage','fort','Rajput','Mughal']},
+  {id:'jaisalmer-fort',name:'Jaisalmer Fort',emoji:'🏰',type:'heritage',state:'Rajasthan',city:'Jaisalmer',lat:26.9134,lng:70.9128,rating:4.7,reviews:18000,entry:'₹70 + camera fee',timings:'9AM–6PM',closed:'None',parking:'Outside fort walls',offlineReady:true,condition:'Good',safety:85,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:"'Golden Fort' — a living fort where 3,000 people still reside. 12th-century sandstone citadel rising from the Thar desert.",history:'Built in 1156 CE by Maharawal Jaisal Singh. One of the few living forts in the world. 99 bastions protect its walls.',visiting:'Stay inside the fort walls for unique experience. Explore narrow lanes without a guide — part of the charm. Sunset from bastions is magical.',entryRoute:'Walking distance from Jaisalmer city centre. No vehicles inside fort after 10 AM. Walk in from main gate.',nearbyHelp:'Jaisalmer Police: 02992-252233 | Hospital: 02992-252322',incidents:[],tags:['heritage','fort','living fort','desert','UNESCO candidate']},
+ 
+  // ── MAHARASHTRA ──
+  {id:'ajanta-caves',name:'Ajanta Caves',emoji:'🏛️',type:'heritage',state:'Maharashtra',city:'Aurangabad',lat:20.5519,lng:75.7033,rating:4.8,reviews:22000,entry:'₹40 + ₹550 foreigners',timings:'9AM–5:30PM',closed:'Monday',parking:'Base parking + shuttle',offlineReady:true,condition:'Good',safety:87,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Very Low',desc:'30 rock-cut Buddhist cave monuments from 2nd BCE to 480 CE. UNESCO World Heritage — masterpieces of Buddhist religious art.',history:'Discovered by British officer John Smith in 1819 while hunting tigers. Caves were carved over 800 years by Buddhist monks and patrons.',visiting:'Mandatory shuttle from parking (₹17 each way). Carry water and snacks. 3-4 hours minimum. Photography restricted in some caves.',entryRoute:'102km from Aurangabad. State highway. MSRTC buses from Aurangabad or Chalisgaon.',nearbyHelp:'Ajanta Police: 02438-244133 | Hospital Aurangabad: 0240-2334422',incidents:['2023: High humidity inside caves — no cameras flash allowed'],tags:['heritage','UNESCO','Buddhist','caves','ASI']},
+  {id:'ellora-caves',name:'Ellora Caves',emoji:'🏛️',type:'heritage',state:'Maharashtra',city:'Aurangabad',lat:20.0258,lng:75.1779,rating:4.9,reviews:28000,entry:'₹40',timings:'6AM–6PM',closed:'Tuesday',parking:'Government lot',offlineReady:true,condition:'Excellent',safety:90,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Very Low',desc:'34 monasteries and temples from 600-1000 CE spanning Hindu, Buddhist, and Jain religions carved from a single basalt cliff.',history:'Kailasa Temple (Cave 16) is the largest single monolithic rock excavation in the world — carved top-down by 7,000 laborers over 100 years.',visiting:'Kailasa Temple is unmissable. Start from cave 1 and work north for Hindu caves, south for Buddhist. Full day needed.',entryRoute:'30km from Aurangabad on Aurangabad-Chalisgaon highway. MSRTC buses every 30 minutes from Aurangabad.',nearbyHelp:'Ellora Police: 02437-244500',incidents:[],tags:['heritage','UNESCO','Hindu','Buddhist','Jain','ASI']},
+ 
+  // ── TAMIL NADU ──
+  {id:'meenakshi-temple',name:'Meenakshi Amman Temple',emoji:'🛕',type:'temple',state:'Tamil Nadu',city:'Madurai',lat:9.9195,lng:78.1193,rating:4.9,reviews:45000,entry:'Free (camera fee ₹50)',timings:'5AM–12:30PM & 4PM–10PM',closed:'None',parking:'Nearby roads',offlineReady:true,condition:'Excellent',safety:88,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:"One of India's most magnificent temple complexes with 14 gopurams covered in 33,000 colorful sculptures. A living temple of Dravidian architecture.",history:'Original temple from 6th century CE, rebuilt and expanded from 16th century. The twin shrines of Meenakshi and Sundareswarar attract millions.',visiting:'Go before 8 AM for peaceful darshan. Remove footwear and dress modestly. Photography inside shrine restricted. Non-Hindus allowed in outer areas.',entryRoute:'City centre of Madurai. Buses and autos from everywhere. Walking from old city.',nearbyHelp:'Madurai City Police: 0452-2530229 | Government Hospital: 0452-2533381',incidents:['Heavy crowd during festival seasons — plan accordingly'],tags:['temple','Dravidian','heritage','UNESCO candidate']},
+  {id:'mahabalipuram',name:'Mahabalipuram Shore Temple',emoji:'🏛️',type:'heritage',state:'Tamil Nadu',city:'Chennai',lat:12.6172,lng:80.1993,rating:4.7,reviews:18000,entry:'₹40',timings:'6AM–6PM',closed:'None',parking:'ASI parking',offlineReady:true,condition:'Good',safety:82,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:"UNESCO World Heritage — 8th-century Pallava dynasty rock carvings and temples on the Bay of Bengal. Arjuna's Penance is the world's largest rock relief.",history:'Pallava king Narasimhavarman II built the shore temple in 700 CE. The site includes cave temples, rathas (chariots), and bas-reliefs.',visiting:'Carry water — no shade at shore temple. Sunrise is spectacular over the Bay of Bengal. Avoid midday heat.',entryRoute:'58km from Chennai. Buses from Chennai Mofussil Bus Terminal. Taxis from ECR Highway.',nearbyHelp:'Mahabalipuram Police: 044-27443090',incidents:[],tags:['heritage','UNESCO','Pallava','coastal','ASI']},
+ 
+  // ── UTTAR PRADESH ──
+  {id:'varanasi-ghats',name:'Varanasi Ghats',emoji:'🙏',type:'heritage',state:'Uttar Pradesh',city:'Varanasi',lat:25.3176,lng:83.0094,rating:4.9,reviews:67000,entry:'Free',timings:'All day (Aarti at 6AM & 7PM)',closed:'None',parking:'Away from ghats',offlineReady:true,condition:'Good',safety:65,safetyLevel:'Medium',accidentRisk:'Medium',crimeLevel:'Medium',desc:"84 ghats along the Ganges — India's most sacred riverfront. The evening Ganga Aarti is one of the most powerful spiritual experiences in the world.",history:'One of the oldest continuously inhabited cities in the world (3000+ years). Mark Twain wrote "Varanasi is older than history."',visiting:'Ganga Aarti at Dashashwamedh Ghat at 7 PM is unmissable. Boat ride at sunrise on the Ganges. Be aware of narrow lanes and touts.',entryRoute:'Varanasi Junction railway station 5km. Auto or E-rickshaw to ghat area. Park at Lanka crossing and walk.',nearbyHelp:'Varanasi Tourist Police: 0542-2501107 | Hospital: 0542-2307941',incidents:['Touts and overcharging boats reported — fix price before boarding','Slippery ghats during and after rain','Narrow lanes — pickpocketing alert in crowded periods'],tags:['heritage','spiritual','ghats','Ganga']},
+  {id:'fatehpur-sikri',name:'Fatehpur Sikri',emoji:'🏰',type:'heritage',state:'Uttar Pradesh',city:'Agra',lat:27.0942,lng:77.6714,rating:4.6,reviews:14000,entry:'₹50',timings:'Sunrise to Sunset',closed:'None',parking:'ASI parking',offlineReady:true,condition:'Good',safety:83,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:"UNESCO World Heritage — Akbar's 16th-century abandoned Mughal capital city, preserved almost perfectly. Built of red sandstone.",history:"Emperor Akbar built this city in 1571 as his new capital but abandoned it by 1585, likely due to water shortage. Perfectly preserved ghost city.",visiting:'Best with a guide to understand the complex layout. Early morning for light on red sandstone. 2-3 hours.',entryRoute:'37km from Agra. Buses from Agra Idgah bus stand. Taxis available from Agra.',nearbyHelp:'Fatehpur Sikri Police: 05613-282294',incidents:[],tags:['heritage','UNESCO','Mughal','ASI']},
+ 
+  // ── KERALA ──
+  {id:'backwaters',name:'Alleppey Backwaters',emoji:'🚢',type:'nature',state:'Kerala',city:'Alleppey',lat:9.4981,lng:76.3388,rating:4.8,reviews:38000,entry:'Houseboat ₹6k-15k/night',timings:'All day',closed:'None',parking:'Near boat jetty',offlineReady:true,condition:'Excellent',safety:88,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Very Low',desc:"Kerala's iconic network of lagoons, lakes, rivers and canals stretching 900km. Houseboat stays are a unique India experience.",history:'The backwater network was historically used for transportation and trade. Traditional Kettuvallam (rice boats) converted to houseboats in 1990s.',visiting:'Book houseboats in advance especially in peak season (Oct-Mar). Day cruises from Alleppey jetty for budget travel. Sunset on backwaters is magical.',entryRoute:'From Alleppey railway station, auto to boat jetty (2km). Boats depart from KSRTC jetty.',nearbyHelp:'Alleppey Tourism Police: 0477-2243305 | Hospital: 0477-2234994',incidents:['Life jackets mandatory on boats — verify before boarding'],tags:['nature','backwaters','houseboat','Kerala']},
+  {id:'munnar',name:'Munnar Tea Estates',emoji:'🍵',type:'nature',state:'Kerala',city:'Munnar',lat:10.0889,lng:77.0595,rating:4.7,reviews:29000,entry:'Free (tea factory tours ₹150)',timings:'All day',closed:'None',parking:'Town parking',offlineReady:true,condition:'Excellent',safety:92,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Very Low',desc:'Stunning hill station with 80,000 acres of tea plantations at 1,600m altitude. Rolling green hills, misty valleys, and colonial bungalows.',history:'Tea was introduced by the British in 1879. Munnar was the summer resort for British officers from Madras presidency.',visiting:'Best October to March. Road to Top Station (32km) is spectacular. Hire a local auto for hills. Eravikulam National Park for Nilgiri Tahr.',entryRoute:'From Kochi (130km) by bus or taxi via NH85. Buses from Ernakulam KSRTC.',nearbyHelp:'Munnar Police: 04865-231303 | Hospital: 04865-231040',incidents:[],tags:['nature','tea','hills','trekking']},
+ 
+  // ── HIMACHAL PRADESH ──
+  {id:'spiti-valley',name:'Spiti Valley',emoji:'🏔️',type:'trek',state:'Himachal Pradesh',city:'Kaza',lat:32.2432,lng:78.0718,rating:4.9,reviews:8200,entry:'Inner Line Permit required',timings:'Open June-October',closed:'November–May (snowbound)',parking:'Kaza town',offlineReady:true,condition:'Remote — carry supplies',safety:70,safetyLevel:'Medium',accidentRisk:'High',crimeLevel:'Very Low',desc:'Cold desert mountain valley at 3,800m surrounded by barren brown mountains. Key Monastery, Chandratal Lake, fossil sites. One of India\'s most dramatic landscapes.',history:'Ancient Buddhist kingdom. Key Monastery (1000 years old). Route of ancient Silk Road traders. Fossils of 550-million-year-old marine creatures found here.',visiting:'Acclimatize at Shimla first (don\'t go directly from plains). Altitude sickness risk. Carry extra warm clothes even in summer. Satellite phone recommended.',entryRoute:'From Shimla: Shimla → Narkanda → Rampur → Kaza (12 hours, road opens June). Or Manali → Kunzum Pass → Kaza (shorter but higher altitude).',nearbyHelp:'Kaza Police: 01906-222226 | District Hospital Kaza: 01906-222256 | Altitude Emergency: 1800-11-0001',incidents:['2023: Landslide on Kaza-Tabo road (July) — check conditions','2022: Tourist altitude sickness at Kunzum Pass (4,551m)','Road flash floods in August — mandatory weather check'],tags:['trek','mountain','high altitude','Buddhist','remote']},
+  {id:'manali',name:'Manali & Rohtang Pass',emoji:'❄️',type:'trek',state:'Himachal Pradesh',city:'Manali',lat:32.2396,lng:77.1887,rating:4.6,reviews:52000,entry:'₹550 permit for Rohtang',timings:'May-November (Rohtang)',closed:'Winter for Rohtang',parking:'Old Manali',offlineReady:true,condition:'Good',safety:72,safetyLevel:'Medium',accidentRisk:'High',crimeLevel:'Low',desc:'Gateway to Lahaul-Spiti at 2,050m. Snow-capped peaks, Beas river, apple orchards, and the spectacular Rohtang Pass at 3,978m.',history:'Historic trade route between India, Central Asia and Tibet. Name derives from Sanskrit Manallayah (abode of Manu, the progenitor of mankind).',visiting:'Rohtang permit must be booked online (Himachal Tourism). Traffic jams common on weekends. Solang Valley is safer alternative for snow.',entryRoute:'Volvo buses from Delhi ISBT Kashmiri Gate (14 hours). Flights to Bhuntar (50km from Manali).',nearbyHelp:'Manali Police: 01902-252126 | Hospital: 01902-253064 | Mountain Rescue: 01902-252090',incidents:['2023: Road blocked by landslide at Mandi (July-August)','Altitude sickness at Rohtang — acclimatize in Manali first','Ice on Rohtang road — drive only with experienced local driver'],tags:['trek','mountain','snow','Himachal','adventure']},
+ 
+  // ── UTTARAKHAND ──
+  {id:'kedarnath',name:'Kedarnath Temple',emoji:'⛰️',type:'trek',state:'Uttarakhand',city:'Rudraprayag',lat:30.7352,lng:79.0669,rating:4.9,reviews:31000,entry:'Free (helicopter ₹8000+ return)',timings:'6AM–2PM & 5PM–9PM',closed:'October-April (snowbound)',parking:'Gaurikund (base)',offlineReady:true,condition:'Good (rebuilt after 2013)',safety:65,safetyLevel:'Medium',accidentRisk:'High',crimeLevel:'Very Low',desc:'One of the most sacred Shiva temples in Hinduism, at 3,583m. 16km trek from Gaurikund through Mandakini river valley and glaciers.',history:'Temple origin unknown but mentioned in Mahabharat. Ancient stone temple survived the 2013 cloudburst that killed 6,000+ pilgrims. The linga is self-manifested (swayambhu).',visiting:'Book helicopter slots months in advance for June-August. Trek takes 6-8 hours one way. Carry altitude sickness medicine. Ponies/dandis available.',entryRoute:'From Rishikesh to Gaurikund (215km by road). From Gaurikund, 16km trek or helicopter. Register at Gaurikund before trekking.',nearbyHelp:'Kedarnath Police: 01364-222200 | SDRF Rescue: 01364-222244 | Tourist Helpline: 1800-180-4040',incidents:['2013: Catastrophic flood — new safety protocols in place','2023: Cloudburst alert August — 2 days closure','Check SDMA weather forecasts before trekking','Altitude sickness above 3000m — acclimatize properly'],tags:['trek','temple','pilgrimage','Char Dham','high altitude']},
+  {id:'valley-flowers',name:'Valley of Flowers',emoji:'🌸',type:'trek',state:'Uttarakhand',city:'Chamoli',lat:30.7266,lng:79.6072,rating:4.9,reviews:11000,entry:'₹150/day national park fee',timings:'June-October (best July-August)',closed:'November-May',parking:'Govindghat',offlineReady:true,condition:'Excellent',safety:75,safetyLevel:'Medium',accidentRisk:'Medium',crimeLevel:'Very Low',desc:'UNESCO World Heritage — 87 sq km national park filled with 300+ species of Himalayan flowers at 3,352-3,658m altitude.',history:'Discovered by British mountaineer Frank Smythe in 1931. UNESCO World Heritage since 2005. Valley mentioned in ancient texts as Nandankanan (Garden of Gods).',visiting:'Trek from Govindghat (4km to Ghangaria base). From Ghangaria 6km to valley entrance. Only open during bloom season. Forest department guide mandatory.',entryRoute:'From Rishikesh to Govindghat (290km). From Govindghat: 4km trek or mule to Ghangaria. Valley entrance 6km from Ghangaria.',nearbyHelp:'Chamoli Police: 01372-251700 | Hospital Joshimath: 01389-222102',incidents:['2022: Flash flood at Ghangaria (minor, managed)','Leeches common July-August — carry repellent'],tags:['trek','UNESCO','flowers','national park','Himalaya']},
+ 
+  // ── WEST BENGAL ──
+  {id:'sundarbans',name:'Sundarbans National Park',emoji:'🐯',type:'nature',state:'West Bengal',city:'South 24 Parganas',lat:21.9497,lng:88.8943,rating:4.7,reviews:12000,entry:'₹200 + boat ₹500+',timings:'Boat tours: Sunrise-Sunset',closed:'Monsoon restriction June-Sep',parking:'Godkhali jetty',offlineReady:true,condition:'Good',safety:65,safetyLevel:'Medium',accidentRisk:'High',crimeLevel:'Low',desc:"UNESCO World Heritage — world's largest mangrove forest and home to Bengal tigers who swim between islands. A unique ecosystem.",history:'Sundarbans means "beautiful forest" in Bengali. 102 islands (54 inhabited). Bengal tigers here have uniquely adapted to saltwater swimming.',visiting:'Mandatory forest guide. No solo exploration. Tiger sightings rare but possible. Carry water and insect repellent. No flash photography.',entryRoute:'From Kolkata: Bus/train to Canning or Namkhana, then boat to Sundarbans forest. Organized tours recommended.',nearbyHelp:'Forest Department: 03210-255261 | Emergency rescue available',incidents:['Tiger attacks on fishermen reported yearly — stay in boat','Cyclone season May-June — check forecasts','Crocodiles in water — no swimming'],tags:['nature','UNESCO','tiger reserve','mangrove','wildlife']},
+  {id:'darjeeling',name:'Darjeeling & Toy Train',emoji:'🚂',type:'nature',state:'West Bengal',city:'Darjeeling',lat:27.0360,lng:88.2627,rating:4.7,reviews:34000,entry:'Toy Train ₹1380 Darjeeling–Ghum',timings:'All day',closed:'None',parking:'Mall Road parking',offlineReady:true,condition:'Good',safety:85,safetyLevel:'High',accidentRisk:'Low',crimeLevel:'Low',desc:'UNESCO World Heritage toy train, Himalayan views from Tiger Hill, and the finest Darjeeling tea gardens on steep hillsides.',history:'Established as a British sanatorium in 1835. Darjeeling Himalayan Railway (Toy Train) built 1881, UNESCO World Heritage 1999. First Tenzing Norgay trained for Everest here.',visiting:'Tiger Hill sunrise (4 AM departure) for Kanchenjunga views. Toy train booking essential. Tea gardens: Happy Valley Tea Estate is closest to town.',entryRoute:'New Jalpaiguri (NJP) station is nearest rail head (88km). Shared jeeps from NJP to Darjeeling (3 hours). Or overnight train to NJP from major cities.',nearbyHelp:'Darjeeling Police: 0354-2253511 | Hospital: 0354-2252230',incidents:['Landslides on hill roads during monsoon (June-Sep)','Fog reduces visibility — start early morning'],tags:['nature','UNESCO','heritage train','tea','Himalaya']},
+ 
+  // ── EMERGENCY LOCATIONS ──
+  {id:'aiims-delhi',name:'AIIMS New Delhi (Emergency)',emoji:'🏥',type:'emergency',state:'Delhi',city:'New Delhi',lat:28.5672,lng:77.2100,rating:4.5,reviews:3200,entry:'Free (Emergency)',timings:'24 Hours',closed:'Never',parking:'Hospital parking',offlineReady:true,condition:'Operational',safety:99,safetyLevel:'High',accidentRisk:'Very Low',crimeLevel:'Very Low',desc:"India's premier medical institute with 24/7 trauma and emergency services.",history:'Established 1956. India\'s top referral hospital for trauma, critical care, and specialist treatment.',visiting:'Emergency entrance 24/7. Trauma center. No appointment for emergency cases.',entryRoute:'Aurobindo Marg, Ansari Nagar, New Delhi. Yellow Line Metro: AIIMS station.',nearbyHelp:'Emergency: 011-26588500 | EMRI: 108',incidents:[],tags:['emergency','hospital','medical']}
+];
+ 
+const TREKS = [
+  {id:'old-city-walk',name:'Ahmedabad Old City Walk',emoji:'🚶',area:'Ahmedabad Old City',distance:'3.5km',duration:'2 hrs',difficulty:'Easy',season:'Year-round',highlights:'UNESCO World Heritage pols, carved havelis, medieval gates',water:'Taps at pol entry points',waypoints:[{name:'Swaminarayan Temple Kalupur',lat:23.0289,lng:72.5900},{name:'Doshiwada ni Pol',lat:23.0277,lng:72.5863},{name:'Teen Darwaza',lat:23.0264,lng:72.5847},{name:'Jama Masjid',lat:23.0268,lng:72.5841}]},
+  {id:'sabarmati-cycle',name:'Sabarmati Riverfront Cycling',emoji:'🚴',area:'Sabarmati, Ahmedabad',distance:'11km',duration:'1.5 hrs',difficulty:'Easy',season:'October–March',highlights:'Dedicated cycle track, river views, boat rides',water:'Kiosks every 2km',waypoints:[{name:'Subhash Bridge Rental',lat:23.0500,lng:72.5756},{name:'Gandhi Ashram View',lat:23.0607,lng:72.5800},{name:'Ellis Bridge',lat:23.0348,lng:72.5738}]},
+  {id:'spiti-circuit',name:'Spiti Valley Circuit',emoji:'🏔️',area:'Himachal Pradesh',distance:'400km',duration:'7-10 days',difficulty:'Expert',season:'June–October',highlights:'Key Monastery, Chandratal Lake, Pin Valley',water:'Rivers at campsites',waypoints:[{name:'Shimla',lat:31.1048,lng:77.1734},{name:'Narkanda',lat:31.2656,lng:77.4558},{name:'Kaza',lat:32.2232,lng:78.0718},{name:'Key Monastery',lat:32.3010,lng:78.0125}]},
+  {id:'kedarnath-trek',name:'Kedarnath Pilgrimage Trek',emoji:'⛰️',area:'Uttarakhand',distance:'32km (round trip)',duration:'2 days',difficulty:'Hard',season:'May–October',highlights:'Ancient Shiva temple at 3583m, glaciers, Mandakini river',water:'Springs and dhabas every 2km',waypoints:[{name:'Gaurikund Base',lat:30.6655,lng:79.0490},{name:'Jungle Chatti',lat:30.6955,lng:79.0524},{name:'Bhimbali',lat:30.7121,lng:79.0589},{name:'Kedarnath Temple',lat:30.7352,lng:79.0669}]},
+  {id:'valley-flowers-trek',name:'Valley of Flowers Trek',emoji:'🌸',area:'Uttarakhand',distance:'38km (round trip)',duration:'4 days',difficulty:'Moderate',season:'July–September',highlights:'UNESCO World Heritage, 300+ flower species, Hemkund Sahib',water:'Stream at Ghangaria',waypoints:[{name:'Govindghat',lat:30.5492,lng:79.5814},{name:'Ghangaria Base',lat:30.6708,lng:79.6012},{name:'Valley Entrance',lat:30.7266,lng:79.6072}]}
+];
+ 
+const SAFETY_DATA = {
+  'Gandhinagar': {score:92,level:'High',description:'Capital city with high police presence and CCTV coverage. Very safe for tourists.',factors:{police:'Excellent',lighting:'Good',crowd:'Low-Medium',lastCrime:'Petty theft 2023 Q2'},incidents:[]},
+  'Ahmedabad Old City': {score:72,level:'Medium',description:'Dense urban area. Higher tourist footfall leads to petty crime risk. Exercise normal caution.',factors:{police:'Good',lighting:'Moderate (narrow lanes)',crowd:'High',lastCrime:'Pickpocketing 2024 Q1'},incidents:['Pickpocketing in crowded areas','Flash flooding of lanes during heavy rain','Traffic congestion causing accidents near gates']},
+  'Varanasi Ghats': {score:65,level:'Medium',description:'Busy spiritual hub. Touts and overcharging are primary concerns. Violent crime rare.',factors:{police:'Moderate',lighting:'Variable',crowd:'Very High during festivals',lastCrime:'Tourist overcharging 2024'},incidents:['Boat operators overcharging tourists','Slippery ghat steps','Crowding during Diwali / Ganga festivals']},
+  'Spiti Valley': {score:70,level:'Medium',description:'Remote mountain terrain. Risks from altitude, road conditions, and weather are primary.',factors:{police:'Limited',lighting:'None (remote)',crowd:'Low',lastCrime:'No crime incidents'},incidents:['2023: Landslide on Kaza-Tabo road (July)','Altitude sickness above 4000m','Flash floods in monsoon','Limited mobile signal — satellite communication advised']},
+  'Kedarnath': {score:65,level:'Medium',description:'High-altitude pilgrimage route with inherent mountain risks. Well-managed post-2013.',factors:{police:'SDRF present',lighting:'Good near temple',crowd:'Very High May-June',lastCrime:'No crime incidents'},incidents:['2013: Catastrophic flood (new safety systems installed)','2023: Cloudburst closure (2 days)','Altitude sickness is primary risk','Rockfall on trail during rain']},
+  'Mumbai': {score:75,level:'Medium',description:'Major metro. Tourist areas generally safe. Night safety in isolated areas requires caution.',factors:{police:'Good',lighting:'Excellent in tourist areas',crowd:'Very High',lastCrime:'Bag snatching 2024 Q1'},incidents:['Petty theft on crowded local trains','Traffic accidents in busy junctions']},
+  'default': {score:80,level:'High',description:'This location has no specific incident reports. Standard tourist safety guidelines apply.',factors:{police:'Adequate',lighting:'Standard',crowd:'Normal',lastCrime:'No recent incidents'},incidents:[]}
 };
