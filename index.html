@@ -2536,13 +2536,19 @@ self.addEventListener('fetch',e=>{
       <div class="auth-tab on" onclick="switchAuthTab('login',this)">Login</div>
       <div class="auth-tab" onclick="switchAuthTab('signup',this)">Sign Up</div>
     </div>
-    <div id="auth-login">
-      <label>Email</label><input type="text" id="auth-email" placeholder="you@email.com">
-      <label>Password</label><input type="text" id="auth-password" placeholder="Password"><style="margin-bottom:12px">
-      <button class="btn btn-p btn-f" onclick="loginUser()">Login</button>
-      <div style="text-align:center;margin:10px 0;color:var(--t3);font-size:12px">— or —</div>
-      <button class="btn btn-o btn-f" onclick="doGoogleLogin()">🌐 Continue with Google</button>
-    </div>
+   <div id="auth-login">
+  <label>Email</label>
+  <input type="text" id="auth-email" placeholder="you@email.com">
+
+  <label>Password</label>
+  <input type="text" id="auth-password" placeholder="Password">
+
+  <button class="btn btn-p btn-f" onclick="loginUser()">Login</button>
+
+  <div style="text-align:center;margin:10px 0;color:var(--t3);font-size:12px">— or —</div>
+
+  <button class="btn btn-o btn-f" onclick="doGoogleLogin()">🌐 Continue with Google</button>
+</div>
     <div id="auth-signup" style="display:none">
       <label>Full Name</label><input type="text" id="su-name" placeholder="Your name">
       <label>Email</label><input type="text" id="auth-email" placeholder="you@email.com">
