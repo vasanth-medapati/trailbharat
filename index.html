@@ -19,16 +19,43 @@
 html,body{height:100%;overflow-x:hidden;}
 body{background:var(--bg);color:var(--t1);font-family:var(--ff);font-size:15px;line-height:1.6;}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:9000;height:52px;background:rgba(9,16,10,.96);backdrop-filter:blur(18px);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 12px;gap:6px;}
-.nb{font-family:var(--fd);font-size:18px;font-weight:800;color:var(--g);letter-spacing:-1px;margin-right:6px;flex-shrink:0;}
-.ntabs{display:flex;gap:1px;overflow-x:auto;flex:1;scrollbar-width:none;}
-.ntabs::-webkit-scrollbar{display:none;}
-.nt{background:none;border:none;color:var(--t3);font-family:var(--ff);font-size:12px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:all .2s;}
-.nt:hover{color:var(--t2);background:var(--card);}
-.nt.on{color:var(--g);background:rgba(74,222,128,.1);}
-.nsos{flex-shrink:0;margin-left:auto;background:var(--r2);border:none;color:#fff;border-radius:8px;padding:5px 12px;font-family:var(--fd);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.3px;animation:rp 2.2s infinite;}
-@keyframes rp{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5);}60%{box-shadow:0 0 0 10px rgba(239,68,68,0);}}
+<nav>
+  <div class="nb">🏔 TB</div>
+  <div class="ntabs">
+    <button class="nt on" onclick="gp('home')">🏠 Home</button>
+    <button class="nt" onclick="gp('map')">🗺 Map</button>
+    <button class="nt" onclick="gp('sites')">🏛 Sites</button>
+    <button class="nt" onclick="gp('chat')">🤖 AI Chat</button>
+    <button class="nt" onclick="gp('safety')">🛡 Safety</button>
+    <button class="nt" onclick="gp('hotels')">🏨 Hotels</button>
+    <button class="nt" onclick="gp('profile')">👤 Profile</button>
+  </div>
+  <button class="nsos" onclick="gp('sos')">🆘 SOS</button>
+</nav>
+
+<div class="card" style="background: linear-gradient(135deg, var(--bg2), var(--bg3)); border-color: var(--bl);">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <div class="clabel" style="color: var(--bl); margin-bottom: 2px;">Live Weather</div>
+      <div id="w-desc" style="font-size: 18px; font-weight: 700; text-transform: capitalize;">Detecting...</div>
+      <div id="w-loc" style="font-size: 12px; color: var(--t3);">Waiting for GPS</div>
+    </div>
+    <div id="w-temp" style="font-family: var(--fd); font-size: 32px; font-weight: 800; color: var(--g);">--°C</div>
+  </div>
+</div>
+
+<div id="pg-profile" class="pg">
+  <div class="pi">
+    <div class="card" style="text-align: center; padding: 30px 10px;">
+      <div class="av" style="width: 80px; height: 80px; font-size: 30px; margin: 0 auto 15px;">👤</div>
+      <div id="u-name" class="htitle" style="font-size: 24px; margin-bottom: 5px;">Guest Explorer</div>
+      <div id="u-email" class="csub">Please login to sync your data</div>
+      <div style="margin-top: 20px;">
+        <button class="btn btn-p" onclick="handleLogin()">Sign In with Google</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 /* PAGES */
 .pg{display:none;padding-top:52px;min-height:100vh;}
