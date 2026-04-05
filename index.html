@@ -2536,116 +2536,15 @@ self.addEventListener('fetch',e=>{
       <div class="auth-tab on" onclick="switchAuthTab('login',this)">Login</div>
       <div class="auth-tab" onclick="switchAuthTab('signup',this)">Sign Up</div>
     </div>
-   <div id="auth-login">
-  <label>Email</label>
-  <input type="text" id="auth-email" placeholder="you@email.com">
-
-  <label>Password</label>
-  <input type="text" id="auth-password" placeholder="Password">
-
-  <button class="btn btn-p btn-f" onclick="loginUser()">Login</button>
-
-  <div style="text-align:center;margin:10px 0;color:var(--t3);font-size:12px">— or —</div>
-
-  <button class="btn btn-o btn-f" onclick="doGoogleLogin()">🌐 Continue with Google</button>
-</div>
+    <div id="auth-login">
+      <label>Email</label><input type="text" id="li-email" placeholder="you@email.com">
+      <label>Password</label><input type="text" id="li-pw" placeholder="Password" style="margin-bottom:12px">
+      <button class="btn btn-p btn-f" onclick="doLogin()">Login</button>
+      <div style="text-align:center;margin:10px 0;color:var(--t3);font-size:12px">— or —</div>
+      <button class="btn btn-o btn-f" onclick="doGoogleLogin()">🌐 Continue with Google</button>
+    </div>
     <div id="auth-signup" style="display:none">
       <label>Full Name</label><input type="text" id="su-name" placeholder="Your name">
-      <label>Email</label><input type="text" id="auth-email" placeholder="you@email.com">
-      <label>Password</label><input type="text" id="auth-password" placeholder="Min 6 characters" style="margin-bottom:12px">
+      <label>Email</label><input type="text" id="su-email" placeholder="you@email.com">
+      <label>Password</label><input type="text" id="su-pw" placeholder="Min 6 characters" style="margin-bottom:12px">
       <button class="btn btn-p
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut,
-  updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD4pRVVrAB-an8wyYGhfH39IQccfxGQCQU",
-  authDomain: "trail-bharat.firebaseapp.com",
-  projectId: "trail-bharat",
-  storageBucket: "trail-bharat.firebasestorage.app",
-  messagingSenderId: "810109797367",
-  appId: "1:810109797367:web:3e7f6efb30ca4ccac564f2",
-  measurementId: "G-RFXBPHNMRT"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-// SIGNUP
-window.signupUser = async () => {
-  const name = document.getElementById("auth-name")?.value;
-  const email = document.getElementById("auth-email")?.value;
-  const password = document.getElementById("auth-password")?.value;
-
-  if (!name || !email || !password) return alert("Fill all fields");
-
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: name });
-
-    await setDoc(doc(db, "users", cred.user.uid), {
-      name,
-      email,
-      createdAt: serverTimestamp()
-    });
-
-    alert("Signup successful!");
-  } catch (e) {
-    alert(e.message);
-  }
-};
-
-// LOGIN
-window.loginUser = async () => {
-  const email = document.getElementById("auth-email")?.value;
-  const password = document.getElementById("auth-password")?.value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("Login successful!");
-  } catch (e) {
-    alert(e.message);
-  }
-};
-
-// LOGOUT
-window.logoutUser = async () => {
-  await signOut(auth);
-};
-
-// SESSION HANDLER
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    document.getElementById("login-btn").style.display = "none";
-    document.getElementById("user-chip").style.display = "flex";
-
-    const snap = await getDoc(doc(db, "users", user.uid));
-    const data = snap.data();
-
-    const name = data?.name || user.displayName || "User";
-
-    document.getElementById("user-name-short").innerText = name;
-    document.getElementById("user-init").innerText = name.charAt(0);
-  } else {
-    document.getElementById("login-btn").style.display = "block";
-    document.getElementById("user-chip").style.display = "none";
-  }
-});
-</script>
-</body>
-</html>
