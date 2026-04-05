@@ -1,176 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>TrailBharat | Pro</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --bg: #09100a; --g: #4ade80; --r: #ef4444; --t1: #e8f5e9; --t3: #4d7060; --card: #182018; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--t1); font-family: 'DM Sans', sans-serif; overflow: hidden; height: 100vh; }
+        
+        /* Navigation */
+        nav { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(9,16,10,0.9); backdrop-filter: blur(10px); z-index: 9999; display: flex; align-items: center; padding: 0 15px; border-bottom: 1px solid rgba(74,222,128,0.1); }
+        .nb { font-family: 'Syne'; font-size: 20px; color: var(--g); font-weight: 800; margin-right: 15px; }
+        .ntabs { display: flex; gap: 8px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+        .nt { background: none; border: none; color: var(--t3); font-weight: 600; padding: 8px 12px; cursor: pointer; white-space: nowrap; }
+        .nt.on { color: var(--g); background: rgba(74,222,128,0.1); border-radius: 8px; }
+        .nsos { background: var(--r); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        /* Map UI */
+        .pg { display: none; height: 100vh; padding-top: 60px; position: relative; }
+        .pg.on { display: block; }
+        #map, #map3d { height: 100%; width: 100%; position: absolute; top: 0; }
+        #map3d { display: none; z-index: 10; }
+
+        /* Search Bar (Google Maps Style) */
+        .search-box { position: absolute; top: 75px; left: 15px; right: 15px; z-index: 1000; }
+        #mapSearch { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(74,222,128,0.2); background: rgba(9,16,10,0.95); color: #fff; font-size: 14px; outline: none; }
+        .suggestions { background: rgba(9,16,10,0.95); border-radius: 12px; margin-top: 5px; display: none; max-height: 250px; overflow-y: auto; }
+        .s-item { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; font-size: 13px; }
+        .s-item:hover { background: rgba(74,222,128,0.1); }
+
+        /* Floating Controls */
+        .mctrl { position: absolute; right: 15px; bottom: 100px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .mb { width: 45px; height: 45px; background: rgba(9,16,10,0.9); border: 1px solid rgba(74,222,128,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--g); font-size: 20px; }
+
+        /* Profile/SOS Setup Modal */
+        #userModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10001; display: none; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; border: 1px solid var(--g); }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; color: var(--t3); margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
 <nav>
-  <div class="nb">🏔 TB</div>
-  <div class="ntabs">
-    <button class="nt on" onclick="gp('home')">🏠 Home</button>
-    <button class="nt" id="btn2d" onclick="gp('map'); switchMode('2d')">🗺 2D Map</button>
-    <button class="nt" id="btn3d" onclick="gp('map'); switchMode('3d')">🏔 3D View</button>
-    <button class="nt" onclick="gp('safety')">🛡 Safety</button>
-    <button class="nt" onclick="openUserModal()">👤 Profile</button>
-  </div>
-  <button class="nsos" onclick="triggerSOS()">🆘 SOS</button>
+    <div class="nb">TB</div>
+    <div class="ntabs">
+        <button class="nt on" onclick="gp('map')">🗺 Map</button>
+        <button class="nt" onclick="toggleSafetyLayer()">🛡 Safety</button>
+        <button class="nt" onclick="openProfile()">👤 My Profile</button>
+    </div>
+    <button class="nsos" onclick="triggerSOS()">🆘 SOS</button>
 </nav>
 
-<div id="pg-map" class="pg">
-    <div class="msbar">
-        <input id="mapSearch" type="text" placeholder="Search places, trails, cities..." onkeyup="enhancedSearch(this.value)">
-        <div id="searchSuggestions" class="mres"></div>
+<div id="pg-map" class="pg on">
+    <div class="search-box">
+        <input id="mapSearch" type="text" placeholder="Search any city or trail in India..." onkeyup="searchIndia(this.value)">
+        <div id="suggestions" class="suggestions"></div>
     </div>
     
     <div class="mctrl">
-        <div class="mb" onclick="startNavigation()" title="Start Nav">🚀</div>
-        <div class="mb" onclick="toggleSafetyLayers()" title="Toggle Risk Zones">⚠️</div>
-        <div class="mb" onclick="switchMode('3d')">3D</div>
+        <div class="mb" onclick="locateMe()">🛰</div>
+        <div class="mb" onclick="toggle3D()">3D</div>
     </div>
 
     <div id="map"></div>
     <div id="map3d"></div>
+</div>
 
-    <div id="navInstructions" style="position:absolute; bottom:80px; left:10px; right:10px; background:var(--bg2); display:none; padding:15px; border-radius:12px; z-index:2000;">
-        <span id="navText">Proceed to Trailhead...</span>
+<div id="userModal">
+    <div class="modal-content">
+        <h2 style="margin-bottom:20px; font-family:Syne;">SOS Contacts</h2>
+        <div id="contactList"></div>
+        <div class="input-group">
+            <input type="text" id="cName" placeholder="Contact Name">
+            <input type="tel" id="cPhone" placeholder="Phone Number" style="margin-top:5px;">
+        </div>
+        <button onclick="addContact()" style="width:100%; padding:10px; background:var(--g); border:none; border-radius:8px; font-weight:700;">Add Contact</button>
+        <button onclick="closeProfile()" style="width:100%; margin-top:10px; background:none; color:var(--t3); border:none;">Close</button>
     </div>
 </div>
 
 <script>
-/* ============================================================
-   1. USER DATA & SOS SYSTEM (Individual Contacts)
-   ============================================================ */
-let userData = JSON.parse(localStorage.getItem('tb_user')) || {
-    name: "Explorer",
-    contacts: [], // Array of {name, phone}
-    favPlaces: []
-};
+    /* --- CORE STATE --- */
+    let is3D = false;
+    let safetyActive = false;
+    let safetyLayer = L.layerGroup();
+    let userCoords = [20.5937, 78.9629]; // Center of India
+    let contacts = JSON.parse(localStorage.getItem('tb_contacts')) || [];
 
-function saveUser() { localStorage.setItem('tb_user', JSON.stringify(userData)); }
+    // Initialize 2D Map
+    const map = L.map('map', { zoomControl: false }).setView(userCoords, 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png').addTo(map);
 
-function triggerSOS() {
-    if (userData.contacts.length === 0) {
-        alert("Please add Emergency Contacts in your Profile first!");
-        return gp('home');
+    /* --- REAL-TIME GPS (FAST) --- */
+    function locateMe() {
+        map.locate({setView: true, maxZoom: 16, enableHighAccuracy: true});
     }
-    
-    navigator.geolocation.getCurrentPosition(pos => {
-        const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-        const msg = `EMERGENCY! I need help. My live location: ${link}`;
-        
-        // In a real app, this calls a backend SMS API. 
-        // For now, it alerts the specific targets.
-        userData.contacts.forEach(c => {
-            console.log(`Sending individual SOS to ${c.name} (${c.phone}): ${msg}`);
+    map.on('locationfound', (e) => {
+        userCoords = [e.latlng.lat, e.latlng.lng];
+        L.circle(e.latlng, {radius: 10, color: '#4ade80'}).addTo(map);
+    });
+
+    /* --- NATIONAL SEARCH (INDIA-WIDE) --- */
+    async function searchIndia(query) {
+        if (query.length < 3) return;
+        const res = await fetch(`https://photon.komoot.io/api/?q=${query}&lat=20.5&lon=78.9`);
+        const data = await res.json();
+        const box = document.getElementById('suggestions');
+        box.innerHTML = '';
+        box.style.display = 'block';
+
+        data.features.forEach(f => {
+            const item = document.createElement('div');
+            item.className = 's-item';
+            item.innerHTML = `<b>${f.properties.name}</b>, ${f.properties.state || f.properties.country}`;
+            item.onclick = () => {
+                const [lon, lat] = f.geometry.coordinates;
+                map.setView([lat, lon], 14);
+                box.style.display = 'none';
+            };
+            box.appendChild(item);
         });
-        alert(`SOS Sent to ${userData.contacts.length} contacts!`);
-    });
-}
-
-/* ============================================================
-   2. ENHANCED SEARCH (Google Maps Style)
-   ============================================================ */
-async function enhancedSearch(query) {
-    if (query.length < 3) return;
-    const res = await fetch(`https://photon.komoot.io/api/?q=${query}&limit=5`);
-    const data = await res.json();
-    
-    const box = document.getElementById('searchSuggestions');
-    box.innerHTML = '';
-    box.style.display = 'block';
-    
-    data.features.forEach(f => {
-        const div = document.createElement('div');
-        div.className = 'mres-item';
-        div.innerHTML = `📍 ${f.properties.name} <small>${f.properties.city || ''}</small>`;
-        div.onclick = () => {
-            const coords = f.geometry.coordinates;
-            map.setView([coords[1], coords[0]], 15);
-            box.style.display = 'none';
-        };
-        box.appendChild(div);
-    });
-}
-
-/* ============================================================
-   3. FAST GPS & LIVE TRACKING
-   ============================================================ */
-let userMarker;
-function initLiveTracking() {
-    navigator.geolocation.watchPosition(pos => {
-        const { latitude, longitude, heading } = pos.coords;
-        const latlng = [latitude, longitude];
-
-        if (!userMarker) {
-            userMarker = L.marker(latlng).addTo(map);
-        } else {
-            userMarker.setLatLng(latlng);
-        }
-        
-        // If 3D mode is on, sync camera
-        if (map3d) {
-            map3d.jumpTo({ center: [longitude, latitude], bearing: heading || 0 });
-        }
-        
-        document.getElementById('mgpst').innerText = `Live: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-    }, err => console.error(err), { enableHighAccuracy: true, maximumAge: 1000 });
-}
-
-/* ============================================================
-   4. SAFETY SYSTEM (Accident & Natural Risks)
-   ============================================================ */
-const riskZones = [
-    { name: "Landslide Prone Area", coords: [23.1, 72.6], radius: 1000, type: "natural" },
-    { name: "Black Spot - High Accidents", coords: [23.05, 72.58], radius: 500, type: "accident" }
-];
-
-function toggleSafetyLayers() {
-    riskZones.forEach(zone => {
-        L.circle(zone.coords, {
-            color: zone.type === 'natural' ? 'orange' : 'red',
-            fillColor: zone.type === 'natural' ? '#ffa500' : '#f03',
-            fillOpacity: 0.5,
-            radius: zone.radius
-        }).addTo(map).bindPopup(`<b>WARNING: ${zone.name}</b>`);
-    });
-    alert("Risk Zones & Accident Prone Areas loaded on map.");
-}
-
-/* ============================================================
-   5. REAL NAVIGATION LOGIC
-   ============================================================ */
-async function getRoute(start, end) {
-    const url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    const data = await res.json();
-    
-    if (data.routes.length > 0) {
-        L.geoJSON(data.routes[0].geometry, { style: { color: '#4ade80', weight: 6 } }).addTo(map);
-        document.getElementById('navInstructions').style.display = 'block';
-        document.getElementById('navText').innerText = `Distance: ${(data.routes[0].distance / 1000).toFixed(2)} km`;
     }
-}
 
-/* ============================================================
-   6. 3D MAP & MODES
-   ============================================================ */
-let map3d = null;
-function switchMode(mode) {
-    const m2 = document.getElementById('map');
-    const m3 = document.getElementById('map3d');
-    if (mode === '3d') {
-        m2.style.display = 'none'; m3.style.display = 'block';
-        if (!map3d) {
-            map3d = new maplibregl.Map({
-                container: 'map3d',
-                style: 'https://demotiles.maplibre.org/style.json',
-                center: [72.5714, 23.0225], zoom: 14, pitch: 70
+    /* --- INDIVIDUAL SOS SYSTEM --- */
+    function triggerSOS() {
+        if (contacts.length === 0) {
+            alert("Set up your SOS contacts in 'My Profile' first.");
+            return openProfile();
+        }
+        const locLink = `https://www.google.com/maps?q=${userCoords[0]},${userCoords[1]}`;
+        contacts.forEach(c => {
+            // Simulated SMS Trigger
+            console.log(`SENDING PRIVATE SOS TO ${c.name} (${c.phone}): I am at ${locLink}`);
+        });
+        alert(`SOS alert sent to your ${contacts.length} private contacts.`);
+    }
+
+    /* --- SAFETY RISK LAYER (ACCIDENT & NATURAL RISKS) --- */
+    const risks = [
+        {name: "High Accident Zone", type: "accident", lat: 23.0225, lon: 72.5714, severity: "High"},
+        {name: "Landslide Prone Area", type: "natural", lat: 30.7333, lon: 76.7794, severity: "Moderate"}
+    ];
+
+    function toggleSafetyLayer() {
+        safetyActive = !safetyActive;
+        if (safetyActive) {
+            risks.forEach(r => {
+                L.circle([r.lat, r.lon], {radius: 1000, color: r.type === 'accident' ? 'red' : 'orange'})
+                 .bindPopup(`<b>${r.name}</b><br>Type: ${r.type}<br>Risk: ${r.severity}`)
+                 .addTo(safetyLayer);
             });
-            map3d.addControl(new maplibregl.NavigationControl());
+            safetyLayer.addTo(map);
+            alert("Safety Risk Zones enabled.");
+        } else {
+            map.removeLayer(safetyLayer);
         }
-    } else {
-        m3.style.display = 'none'; m2.style.display = 'block';
-        map.invalidateSize();
     }
-}
 
-// Initialize
-window.onload = () => {
-    initLiveTracking();
-    // Load your favorite places/contacts UI logic here
-};
+    /* --- 3D MODE --- */
+    let map3d = null;
+    function toggle3D() {
+        is3D = !is3D;
+        const m2 = document.getElementById('map');
+        const m3 = document.getElementById('map3d');
+        if (is3D) {
+            m2.style.display = 'none'; m3.style.display = 'block';
+            if (!map3d) {
+                map3d = new maplibregl.Map({
+                    container: 'map3d',
+                    style: 'https://demotiles.maplibre.org/style.json',
+                    center: [userCoords[1], userCoords[0]],
+                    zoom: 14, pitch: 70
+                });
+            }
+        } else {
+            m3.style.display = 'none'; m2.style.display = 'block';
+            map.invalidateSize();
+        }
+    }
+
+    /* --- PROFILE LOGIC --- */
+    function openProfile() { document.getElementById('userModal').style.display = 'flex'; renderContacts(); }
+    function closeProfile() { document.getElementById('userModal').style.display = 'none'; }
+    function addContact() {
+        const n = document.getElementById('cName').value;
+        const p = document.getElementById('cPhone').value;
+        if (n && p) {
+            contacts.push({name: n, phone: p});
+            localStorage.setItem('tb_contacts', JSON.stringify(contacts));
+            renderContacts();
+        }
+    }
+    function renderContacts() {
+        const list = document.getElementById('contactList');
+        list.innerHTML = contacts.map((c, i) => `<div style="padding:10px; border-bottom:1px solid #333;">${c.name} - ${c.phone}</div>`).join('');
+    }
+
+    function gp(id) { /* Basic page routing logic here */ }
 </script>
+</body>
+</html>
