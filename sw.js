@@ -1,60 +1,75 @@
-const CACHE_NAME = 'trailbharat-v1';
-const URLS_TO_CACHE = [
+const CACHE_NAME = 'trailbharat-v2';
+
+// Core files to cache immediately
+const STATIC_ASSETS = [
   '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/data.js'
+  '/index.html'
 ];
 
+// ================= INSTALL =================
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
-        return cache.addAll(URLS_TO_CACHE);
+        console.log('Caching core assets');
+        return cache.addAll(STATIC_ASSETS);
       })
       .then(() => self.skipWaiting())
   );
 });
 
+// ================= ACTIVATE =================
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.filter(cacheName => {
-          return cacheName !== CACHE_NAME;
-        })
-        .map(cacheName => {
-          console.log('Deleting old cache:', cacheName);
-          return caches.delete(cacheName);
+        cacheNames.map(name => {
+          if (name !== CACHE_NAME) {
+            console.log('Deleting old cache:', name);
+            return caches.delete(name);
+          }
         })
       );
     }).then(() => self.clients.claim())
   );
 });
 
+// ================= FETCH =================
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        if (!response || response.status !== 200 || response.type === 'error') {
-          return response;
-        }
+  const request = event.request;
 
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME)
-          .then(cache => {
-            cache.put(event.request, responseClone);
+  // 🔥 1. MAP TILE CACHING (MOST IMPORTANT)
+  if (request.url.includes('tile.openstreetmap.org')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache =>
+        cache.match(request).then(response => {
+          if (response) {
+            return response; // return cached tile
+          }
+
+          return fetch(request).then(networkResponse => {
+            cache.put(request, networkResponse.clone()); // save tile
+            return networkResponse;
           });
+        })
+      )
+    );
+    return;
+  }
 
-        return response;
+  // 🔥 2. NORMAL FILES (NETWORK FIRST)
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        return caches.open(CACHE_NAME).then(cache => {
+          cache.put(request, response.clone());
+          return response;
+        });
       })
       .catch(() => {
-        return caches.match(event.request)
-          .then(response => {
-            return response || new Response('Offline - Content not available');
-          });
+        return caches.match(request).then(response => {
+          return response || new Response('Offline - Content not available');
+        });
       })
   );
 });
