@@ -277,7 +277,10 @@ label{display:block;font-size:11px;color:var(--t3);margin-bottom:4px;margin-top:
   <div class="nb">🏔 TB</div>
   <div class="ntabs">
     <button class="nt on" onclick="gp('home')">🏠 Home</button>
-    <button class="nt" onclick="gp('map')">🗺 Map</button>
+    
+    <button class="nt" id="btn2d" onclick="gp('map'); switchMode('2d')">🗺 2D Map</button>
+    <button class="nt" id="btn3d" onclick="gp('map'); switchMode('3d')">🏔 3D View</button>
+    
     <button class="nt" onclick="gp('sites')">🏛 Sites</button>
     <button class="nt" onclick="gp('treks')">🥾 Treks</button>
     <button class="nt" onclick="gp('chat')">🤖 AI Chat</button>
@@ -1242,6 +1245,47 @@ renderTreks();
 renderHotelRec();
 loadContacts();
 startGPS();
+let map3d = null;
+
+function switchMode(mode) {
+    const m2d = document.getElementById('map');
+    const m3d = document.getElementById('map3d');
+    const b2d = document.getElementById('btn2d');
+    const b3d = document.getElementById('btn3d');
+
+    if (mode === '3d') {
+        m2d.style.visibility = 'hidden';
+        m3d.style.display = 'block';
+        b3d.classList.add('on');
+        b2d.classList.remove('on');
+        if (!map3d) init3D();
+        else map3d.resize();
+    } else {
+        m3d.style.display = 'none';
+        m2d.style.visibility = 'visible';
+        b2d.classList.add('on');
+        b3d.classList.remove('on');
+        if (typeof map !== 'undefined') map.invalidateSize();
+    }
+}
+
+function init3D() {
+    map3d = new maplibregl.Map({
+        container: 'map3d',
+        style: 'https://demotiles.maplibre.org/style.json',
+        center: [72.5714, 23.0225], 
+        zoom: 12,
+        pitch: 60
+    });
+    map3d.on('load', () => {
+        map3d.addSource('terrain', {
+            type: 'raster-dem',
+            url: 'https://demotiles.maplibre.org/terrain-cards.json',
+            tileSize: 256
+        });
+        map3d.setTerrain({ source: 'terrain', exaggeration: 1.5 });
+    });
+}
 </script>
 </body>
 </html>
