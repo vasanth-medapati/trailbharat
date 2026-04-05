@@ -1286,6 +1286,9 @@ function init3D() {
         map3d.setTerrain({ source: 'terrain', exaggeration: 1.5 });
     });
 }
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
 </script>
 </body>
 </html>
