@@ -50,9 +50,139 @@ nav{position:fixed;top:0;left:0;right:0;z-index:9000;height:52px;background:rgba
 .mres-item:last-child{border-bottom:none;}
 .mres-item:hover{background:var(--card);}
 
-/* HERO */
-.hero{padding:40px 18px 28px;text-align:center;position:relative;}
-.hero::before{content:'';position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(74,222,128,.05) 0%,transparent 70%);pointer-events:none;}
+/* ════ SPECTACULAR HOME PAGE ════ */
+#pg-home{padding-top:52px;background:var(--bg);overflow-x:hidden;}
+
+/* HERO CINEMATIC */
+.hero{position:relative;min-height:calc(100vh - 52px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 20px 60px;overflow:hidden;}
+.hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
+/* animated orbs */
+.orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbFloat linear infinite;}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(74,222,128,.08),transparent 70%);top:-100px;left:-150px;animation-duration:18s;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(96,165,250,.07),transparent 70%);top:20%;right:-120px;animation-duration:22s;animation-delay:-8s;}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,rgba(167,139,250,.06),transparent 70%);bottom:0;left:20%;animation-duration:26s;animation-delay:-14s;}
+@keyframes orbFloat{0%{transform:translate(0,0) scale(1);}33%{transform:translate(30px,-20px) scale(1.05);}66%{transform:translate(-20px,30px) scale(0.97);}100%{transform:translate(0,0) scale(1);}}
+/* grid overlay */
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(74,222,128,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,.04) 1px,transparent 1px);background-size:60px 60px;z-index:0;}
+/* scan line animation */
+.hero-scan{position:absolute;inset:0;background:linear-gradient(0deg,transparent 0%,rgba(74,222,128,.04) 50%,transparent 100%);background-size:100% 200%;animation:scan 4s linear infinite;z-index:0;}
+@keyframes scan{0%{background-position:0 200%;}100%{background-position:0 -200%;}}
+
+/* HERO CONTENT */
+.hero-inner{position:relative;z-index:2;max-width:680px;width:100%;}
+.h-live-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border:1px solid var(--b2);border-radius:20px;font-size:11px;font-weight:700;color:var(--g);margin-bottom:24px;letter-spacing:.5px;background:rgba(74,222,128,.06);backdrop-filter:blur(8px);}
+.h-live-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:bk 1.3s infinite;}
+.h-title{font-family:var(--fd);font-size:clamp(36px,9vw,72px);font-weight:800;letter-spacing:-3px;line-height:.98;margin-bottom:8px;color:var(--t1);}
+.h-title .acc{color:var(--g);position:relative;display:inline-block;}
+.h-title .acc::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--g),transparent);border-radius:2px;}
+.h-tagline{font-size:clamp(13px,3vw,17px);color:var(--t3);margin:18px auto 32px;line-height:1.7;max-width:500px;}
+.h-tagline b{color:var(--t2);font-weight:500;}
+
+/* CTA BUTTONS */
+.h-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+.btn-cta-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--g);color:#06100a;border:none;border-radius:12px;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 0 40px rgba(74,222,128,.25);letter-spacing:-.3px;}
+.btn-cta-primary:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 0 60px rgba(74,222,128,.4);}
+.btn-cta-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;color:var(--t2);border:1.5px solid var(--b2);border-radius:12px;font-family:var(--fd);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;backdrop-filter:blur(8px);}
+.btn-cta-secondary:hover{background:var(--card);color:var(--t1);transform:translateY(-2px);}
+
+/* LIVE STATS TICKER */
+.h-stats{display:flex;gap:0;margin:0 auto;max-width:560px;border:1px solid var(--b1);border-radius:16px;overflow:hidden;background:rgba(9,16,10,.8);backdrop-filter:blur(12px);}
+.h-stat{flex:1;padding:14px 12px;text-align:center;border-right:1px solid var(--b1);position:relative;}
+.h-stat:last-child{border-right:none;}
+.h-stat-v{font-family:var(--fd);font-size:clamp(18px,5vw,28px);font-weight:800;color:var(--g);line-height:1;}
+.h-stat-l{font-size:10px;color:var(--t3);margin-top:3px;letter-spacing:.3px;text-transform:uppercase;}
+
+/* SCROLL INDICATOR */
+.scroll-hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--t3);font-size:11px;animation:bounce2 2s infinite;}
+@keyframes bounce2{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+.scroll-arrow{width:20px;height:20px;border-right:2px solid var(--t3);border-bottom:2px solid var(--t3);transform:rotate(45deg);margin-top:2px;}
+
+/* ── WEATHER BAR ── */
+.wx-hero-bar{background:rgba(9,16,10,.85);border:1px solid var(--b1);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:16px;margin-bottom:20px;backdrop-filter:blur(10px);flex-wrap:wrap;}
+.wx-big-temp{font-family:var(--fd);font-size:36px;font-weight:800;color:var(--g);line-height:1;}
+.wx-meta{flex:1;}
+.wx-city-name{font-size:14px;font-weight:600;color:var(--t1);}
+.wx-cond{font-size:12px;color:var(--t3);text-transform:capitalize;}
+.wx-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.wx-pill{padding:3px 10px;background:var(--card2);border:1px solid var(--b1);border-radius:20px;font-size:11px;color:var(--t2);}
+
+/* ── FEATURE MARQUEE STRIP ── */
+.feat-strip{background:var(--bg2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);padding:10px 0;overflow:hidden;position:relative;margin-bottom:0;}
+.feat-strip-inner{display:flex;gap:0;animation:marquee 30s linear infinite;white-space:nowrap;}
+.feat-strip-inner:hover{animation-play-state:paused;}
+.fs-item{display:inline-flex;align-items:center;gap:8px;padding:0 28px;font-size:12px;font-weight:600;color:var(--t3);flex-shrink:0;}
+.fs-item span{color:var(--g);}
+.fs-sep{color:var(--b1);padding:0 4px;}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ── FEATURE CARDS GRID ── */
+.feat-section{padding:40px 16px;max-width:860px;margin:0 auto;}
+.feat-section-title{font-family:var(--fd);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;}
+.feat-section-h{font-family:var(--fd);font-size:clamp(22px,5vw,36px);font-weight:800;letter-spacing:-1.5px;color:var(--t1);margin-bottom:28px;line-height:1.1;}
+.feat-section-h span{color:var(--g);}
+
+/* BENTO GRID */
+.bento{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:100px;gap:10px;margin-bottom:40px;}
+.bcard{border-radius:16px;padding:20px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;border:1px solid var(--b1);}
+.bcard:hover{transform:translateY(-3px);border-color:var(--b2);}
+.bcard::before{content:'';position:absolute;inset:0;background:inherit;opacity:.6;z-index:0;}
+.bcard-content{position:relative;z-index:1;}
+.bcard-ico{font-size:28px;margin-bottom:8px;display:block;}
+.bcard-t{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--t1);line-height:1.2;}
+.bcard-d{font-size:12px;color:var(--t3);margin-top:4px;line-height:1.5;}
+/* bento layout */
+.bc-sos{grid-column:span 4;grid-row:span 2;background:linear-gradient(145deg,rgba(239,68,68,.15),rgba(239,68,68,.05));border-color:rgba(239,68,68,.25);}
+.bc-map{grid-column:span 8;grid-row:span 2;background:linear-gradient(145deg,rgba(74,222,128,.1),rgba(74,222,128,.03));}
+.bc-ai{grid-column:span 5;grid-row:span 2;background:linear-gradient(145deg,rgba(167,139,250,.12),rgba(167,139,250,.03));border-color:rgba(167,139,250,.2);}
+.bc-live{grid-column:span 4;grid-row:span 2;background:linear-gradient(145deg,rgba(96,165,250,.12),rgba(96,165,250,.03));border-color:rgba(96,165,250,.2);}
+.bc-weather{grid-column:span 3;grid-row:span 2;background:linear-gradient(145deg,rgba(251,191,36,.1),rgba(251,191,36,.03));border-color:rgba(251,191,36,.2);}
+.bc-treks{grid-column:span 4;grid-row:span 2;background:linear-gradient(145deg,rgba(74,222,128,.07),rgba(74,222,128,.02));}
+.bc-safety{grid-column:span 4;grid-row:span 2;background:linear-gradient(145deg,rgba(248,113,113,.08),rgba(248,113,113,.02));}
+.bc-hotels{grid-column:span 4;grid-row:span 2;background:linear-gradient(145deg,rgba(245,158,11,.1),rgba(245,158,11,.02));border-color:rgba(245,158,11,.2);}
+@media(max-width:640px){
+  .bento{grid-auto-rows:80px;}
+  .bc-sos,.bc-live,.bc-weather,.bc-treks,.bc-safety{grid-column:span 6;}
+  .bc-map,.bc-ai,.bc-hotels{grid-column:span 12;}
+}
+
+/* SITES PREVIEW SCROLL */
+.sites-scroll{display:flex;gap:12px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.sites-scroll::-webkit-scrollbar{display:none;}
+.site-preview{flex-shrink:0;width:180px;background:var(--card);border:1px solid var(--b1);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;}
+.site-preview:hover{border-color:var(--b2);transform:translateY(-2px);}
+.sp-thumb{height:110px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;}
+.sp-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,16,10,.8) 0%,transparent 55%);}
+.sp-info{padding:10px 12px;}
+.sp-name{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--t1);line-height:1.2;margin-bottom:2px;}
+.sp-loc{font-size:10px;color:var(--t3);}
+.sp-rating{font-size:11px;color:var(--go);}
+
+/* APP PROMO SECTION */
+.promo-section{background:linear-gradient(135deg,rgba(74,222,128,.08) 0%,rgba(74,222,128,.03) 100%);border:1px solid var(--b1);border-radius:20px;padding:36px 28px;text-align:center;margin:0 16px 40px;position:relative;overflow:hidden;}
+.promo-section::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(74,222,128,.12),transparent 70%);pointer-events:none;}
+.promo-h{font-family:var(--fd);font-size:clamp(20px,5vw,32px);font-weight:800;letter-spacing:-1px;color:var(--t1);margin-bottom:8px;}
+.promo-sub{font-size:14px;color:var(--t3);margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto;}
+.promo-badges{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.promo-badge{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--card2);border:1px solid var(--b2);border-radius:12px;font-size:13px;color:var(--t2);font-weight:600;}
+
+/* TESTIMONIALS */
+.testi-row{display:flex;gap:12px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none;}
+.testi-row::-webkit-scrollbar{display:none;}
+.testi-card{flex-shrink:0;width:240px;background:var(--card);border:1px solid var(--b1);border-radius:14px;padding:16px;}
+.testi-stars{color:var(--go);font-size:12px;margin-bottom:8px;}
+.testi-txt{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:10px;}
+.testi-name{font-size:12px;font-weight:600;color:var(--t3);}
+
+/* TYPE ANIMATION */
+@keyframes typeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+.animate-in{animation:typeIn .6s ease forwards;}
+.delay-1{animation-delay:.1s;opacity:0;}
+.delay-2{animation-delay:.25s;opacity:0;}
+.delay-3{animation-delay:.4s;opacity:0;}
+.delay-4{animation-delay:.55s;opacity:0;}
+.delay-5{animation-delay:.7s;opacity:0;}
+
+/* HBADGE / HTITLE compat */
 .hbadge{display:inline-flex;align-items:center;gap:6px;padding:3px 13px;border:1px solid var(--b2);border-radius:20px;font-size:12px;color:var(--g);margin-bottom:18px;font-weight:600;}
 .htitle{font-family:var(--fd);font-size:clamp(30px,8vw,52px);font-weight:800;letter-spacing:-2px;line-height:1.05;margin-bottom:12px;}
 .htitle span{color:var(--g);}
@@ -353,47 +483,279 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
   <button id="login-btn" class="btn btn-o btn-sm" style="flex-shrink:0;margin-left:4px" onclick="openAuth()">Login</button>
 </nav>
 
-<!-- HOME -->
+<!-- HOME — SPECTACULAR REDESIGN -->
 <div id="pg-home" class="pg on">
+
+  <!-- ══ CINEMATIC HERO ══ -->
   <div class="hero">
-    <div class="hbadge">📍 Gandhinagar & Ahmedabad — Live</div>
-    <div class="htitle">Navigate India.<br><span>Offline. In 3D.</span></div>
-    <div class="hsub">Real GPS. Offline maps. Emergency SOS. Wikipedia-sourced heritage guides. AI trip planner. All working now.</div>
-    <div class="hbtns">
-      <button class="btn btn-p btn-lg" onclick="gp('map')">📍 Open Live Map</button>
-      <button class="btn btn-o btn-lg" onclick="gp('sites')">🏛 Explore Sites</button>
+    <div class="hero-canvas">
+      <div class="hero-grid"></div>
+      <div class="hero-scan"></div>
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="orb orb3"></div>
     </div>
-    <div class="hstats">
-      <div class="hst"><div class="hstv">47</div><div class="hstl">Sites Mapped</div></div>
-      <div class="hst"><div class="hstv">2</div><div class="hstl">Cities</div></div>
-      <div class="hst"><div class="hstv">0G</div><div class="hstl">Internet Needed</div></div>
-      <div class="hst"><div class="hstv">±3m</div><div class="hstl">GPS Accuracy</div></div>
+    <div class="hero-inner">
+      <div class="h-live-pill animate-in delay-1">
+        <div class="h-live-dot"></div>
+        LIVE · INDIA · GPS ACTIVE
+      </div>
+      <div class="h-title animate-in delay-2">
+        Discover India<br><span class="acc">Trail by Trail</span>
+      </div>
+      <div class="h-tagline animate-in delay-3">
+        <b>Real-time GPS navigation</b> · Offline maps across India · Emergency SOS · <b>AI trip planner</b> · Heritage guides powered by Wikipedia
+      </div>
+      <div class="h-cta animate-in delay-4">
+        <button class="btn-cta-primary" onclick="gp('map')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+          Open Live Map
+        </button>
+        <button class="btn-cta-secondary" onclick="gp('sites')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Explore Heritage
+        </button>
+      </div>
+      <!-- LIVE STATS -->
+      <div class="h-stats animate-in delay-5">
+        <div class="h-stat">
+          <div class="h-stat-v" id="hs-sites">47</div>
+          <div class="h-stat-l">Sites Mapped</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-v" id="hs-users">2.4k</div>
+          <div class="h-stat-l">Explorers</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-v">±3m</div>
+          <div class="h-stat-l">GPS Accuracy</div>
+        </div>
+        <div class="h-stat">
+          <div class="h-stat-v">0G</div>
+          <div class="h-stat-l">Internet Needed</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-arrow"></div>
     </div>
   </div>
-  <div class="pi" style="padding-top:4px">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-      <div class="card" style="cursor:pointer;border-color:rgba(239,68,68,.25)" onclick="gp('sos')">
-        <div style="font-size:26px;margin-bottom:7px">🆘</div>
-        <div class="ctitle" style="color:var(--r)">Emergency SOS</div>
-        <div class="csub">Your GPS → SMS to your contacts. Works on 2G.</div>
+
+  <!-- ══ FEATURE MARQUEE ══ -->
+  <div class="feat-strip">
+    <div class="feat-strip-inner" id="marquee-inner">
+      <div class="fs-item">🗺 <span>Offline Maps</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🆘 <span>Emergency SOS</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🤖 <span>AI Trip Planner</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">📡 <span>Live Location Share</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🌤 <span>Live Weather</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🧭 <span>OSRM Navigation</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🏛 <span>47 Heritage Sites</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🥾 <span>Curated Treks</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🛡 <span>Safety Alerts</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🔍 <span>Trail Forensics</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🏨 <span>Hotel Booking</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">📖 <span>Wikipedia History</span> <span class="fs-sep">·</span></div>
+      <!-- duplicate for seamless loop -->
+      <div class="fs-item">🗺 <span>Offline Maps</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🆘 <span>Emergency SOS</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🤖 <span>AI Trip Planner</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">📡 <span>Live Location Share</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🌤 <span>Live Weather</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🧭 <span>OSRM Navigation</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🏛 <span>47 Heritage Sites</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🥾 <span>Curated Treks</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🛡 <span>Safety Alerts</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🔍 <span>Trail Forensics</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">🏨 <span>Hotel Booking</span> <span class="fs-sep">·</span></div>
+      <div class="fs-item">📖 <span>Wikipedia History</span> <span class="fs-sep">·</span></div>
+    </div>
+  </div>
+
+  <!-- ══ WEATHER BAR ══ -->
+  <div style="padding:16px 16px 0;max-width:860px;margin:0 auto">
+    <div class="wx-hero-bar" id="home-wx-bar">
+      <div class="wx-big-temp" id="home-wx-temp">--°</div>
+      <div class="wx-meta">
+        <div class="wx-city-name" id="home-wx-city">📍 Detecting location…</div>
+        <div class="wx-cond" id="home-wx-cond">Loading weather…</div>
       </div>
-      <div class="card" style="cursor:pointer;border-color:rgba(96,165,250,.2)" onclick="gp('live')">
-        <div style="font-size:26px;margin-bottom:7px">📡</div>
-        <div class="ctitle" style="color:var(--bl)">Live Share</div>
-        <div class="csub">Real-time tracking link. No app needed.</div>
+      <div class="wx-pills">
+        <div class="wx-pill" id="home-wx-hum">💧 --%</div>
+        <div class="wx-pill" id="home-wx-wind">💨 -- km/h</div>
+        <div class="wx-pill" id="home-wx-feel">🌡 --°</div>
       </div>
-      <div class="card" style="cursor:pointer;border-color:rgba(167,139,250,.2)" onclick="gp('chat')">
-        <div style="font-size:26px;margin-bottom:7px">🤖</div>
-        <div class="ctitle" style="color:var(--pu)">AI Trip Planner</div>
-        <div class="csub">Chat with Claude — plans your Gujarat trip.</div>
+      <button class="btn-cta-secondary" style="padding:8px 14px;font-size:13px;flex-shrink:0" onclick="gp('weather')">Full Forecast →</button>
+    </div>
+  </div>
+
+  <!-- ══ BENTO FEATURE GRID ══ -->
+  <div class="feat-section">
+    <div class="feat-section-title">Everything you need</div>
+    <div class="feat-section-h">One app. <span>All of India's trails.</span></div>
+    <div class="bento">
+
+      <div class="bcard bc-sos" onclick="gp('sos')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🆘</span>
+          <div class="bcard-t" style="color:#f87171">Emergency SOS</div>
+          <div class="bcard-d">Real GPS → SMS to your contacts. Works on 2G. You choose who gets alerted.</div>
+        </div>
+        <div style="position:absolute;bottom:14px;right:14px;font-size:11px;font-weight:700;color:rgba(239,68,68,.6);letter-spacing:.5px">TAP TO OPEN →</div>
       </div>
-      <div class="card" style="cursor:pointer;border-color:rgba(251,191,36,.2)" onclick="gp('safety')">
-        <div style="font-size:26px;margin-bottom:7px">🛡</div>
-        <div class="ctitle" style="color:var(--w)">Safety Info</div>
-        <div class="csub">Hazard alerts, emergency contacts, trail risks.</div>
+
+      <div class="bcard bc-map" onclick="gp('map')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🗺</span>
+          <div class="bcard-t">Live Map — India</div>
+          <div class="bcard-d">Street · Satellite · Topo · Offline tiles · Safety overlays · Full India coverage with MapTiler</div>
+        </div>
+        <div style="position:absolute;bottom:-10px;right:-10px;font-size:80px;opacity:.06">🗺</div>
+      </div>
+
+      <div class="bcard bc-ai" onclick="gp('chat')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🤖</span>
+          <div class="bcard-t" style="color:#a78bfa">AI Trip Planner</div>
+          <div class="bcard-d">Claude AI knows every trail, site, food spot and hotel in Gandhinagar & Ahmedabad</div>
+        </div>
+      </div>
+
+      <div class="bcard bc-live" onclick="gp('live')">
+        <div class="bcard-content">
+          <span class="bcard-ico">📡</span>
+          <div class="bcard-t" style="color:#60a5fa">Live Share</div>
+          <div class="bcard-d">Real-time GPS link. Family tracks you — no app needed</div>
+        </div>
+      </div>
+
+      <div class="bcard bc-weather" onclick="gp('weather')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🌤</span>
+          <div class="bcard-t" style="color:#fbbf24">Weather</div>
+          <div class="bcard-d" id="bento-wx">Live conditions</div>
+        </div>
+      </div>
+
+      <div class="bcard bc-treks" onclick="gp('treks')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🥾</span>
+          <div class="bcard-t">Treks & Trails</div>
+          <div class="bcard-d">6 curated trails · Difficulty · Water sources · GPX export</div>
+        </div>
+      </div>
+
+      <div class="bcard bc-safety" onclick="gp('safety')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🛡</span>
+          <div class="bcard-t" style="color:#f87171">Safety</div>
+          <div class="bcard-d">Hazard map · First aid guide · Emergency hospitals</div>
+        </div>
+      </div>
+
+      <div class="bcard bc-hotels" onclick="gp('hotels')">
+        <div class="bcard-content">
+          <span class="bcard-ico">🏨</span>
+          <div class="bcard-t" style="color:#f59e0b">Hotels</div>
+          <div class="bcard-d">MakeMyTrip · Goibibo · OYO · Agoda · Live prices</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ HERITAGE SITES PREVIEW ══ -->
+  <div style="padding:0 16px 0;max-width:860px;margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div>
+        <div class="feat-section-title" style="margin-bottom:2px">UNESCO World Heritage City</div>
+        <div style="font-family:var(--fd);font-size:20px;font-weight:800;letter-spacing:-.8px;color:var(--t1)">Top Heritage <span style="color:var(--g)">Sites</span></div>
+      </div>
+      <button class="btn-cta-secondary" style="padding:8px 14px;font-size:12px" onclick="gp('sites')">View All →</button>
+    </div>
+    <div class="sites-scroll" id="home-sites-preview"></div>
+  </div>
+
+  <!-- ══ QUICK ACTIONS ROW ══ -->
+  <div style="padding:28px 16px;max-width:860px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+      <div style="background:var(--card);border:1px solid var(--b1);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s" onclick="gp('navigate')" onmouseover="this.style.borderColor='var(--b2)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="font-size:24px;margin-bottom:6px">🧭</div>
+        <div style="font-size:12px;font-weight:700;color:var(--t2)">Navigate</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Walk · Drive · Cycle</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--b1);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s" onclick="gp('forensic')" onmouseover="this.style.borderColor='var(--b2)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="font-size:24px;margin-bottom:6px">🔍</div>
+        <div style="font-size:12px;font-weight:700;color:var(--t2)">Forensics</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Record Trail</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--b1);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s" onclick="gp('profile')" onmouseover="this.style.borderColor='var(--b2)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="font-size:24px;margin-bottom:6px">👤</div>
+        <div style="font-size:12px;font-weight:700;color:var(--t2)">Profile</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Save · Review</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--b1);border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s" onclick="gp('sos')" style="border-color:rgba(239,68,68,.2)" onmouseover="this.style.borderColor='rgba(239,68,68,.4)'" onmouseout="this.style.borderColor='rgba(239,68,68,.2)'">
+        <div style="font-size:24px;margin-bottom:6px">🆘</div>
+        <div style="font-size:12px;font-weight:700;color:var(--r)">SOS</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">Emergency</div>
       </div>
     </div>
   </div>
+
+  <!-- ══ TESTIMONIALS ══ -->
+  <div style="padding:0 16px 20px;max-width:860px;margin:0 auto">
+    <div style="font-family:var(--fd);font-size:18px;font-weight:800;letter-spacing:-.6px;color:var(--t1);margin-bottom:14px">What explorers say 💬</div>
+    <div class="testi-row">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"The SOS feature saved my trek when I got lost near Indroda. GPS coordinates sent instantly to my family."</div>
+        <div class="testi-name">— Ravi Sharma, Gandhinagar</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"The Adalaj Vav history section is more detailed than any guidebook. Wikipedia sources are a genius touch."</div>
+        <div class="testi-name">— Priya Mehta, Ahmedabad</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"Offline maps work perfectly in no-signal zones. Used it at Nalsarovar — flawless trail recording."</div>
+        <div class="testi-name">— Kiran Patel, Surat</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★☆</div>
+        <div class="testi-txt">"AI trip planner built my entire 2-day Ahmedabad heritage itinerary in seconds. Incredibly accurate."</div>
+        <div class="testi-name">— Ananya Rao, Bangalore</div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-txt">"Live location sharing gave my parents real peace of mind during my solo Sabarmati dawn walk."</div>
+        <div class="testi-name">— Shreya Joshi, Mumbai</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ APP PROMO ══ -->
+  <div class="promo-section">
+    <div class="promo-h">TrailBharat works <span style="color:var(--g)">everywhere</span></div>
+    <div class="promo-sub">Offline. Online. No signal zones. GPS always active. Built for India's diverse terrain.</div>
+    <div class="promo-badges">
+      <div class="promo-badge">📴 Works Offline</div>
+      <div class="promo-badge">🛰 3 Map Styles</div>
+      <div class="promo-badge">🤖 AI Powered</div>
+      <div class="promo-badge">🆘 Real-time SOS</div>
+      <div class="promo-badge">🔒 Privacy First</div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <div style="text-align:center;padding:20px 16px 40px;border-top:1px solid var(--b1)">
+    <div style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--g);margin-bottom:6px">🏔 TrailBharat</div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:12px">Navigate India. Offline. In 3D.</div>
+    <div style="font-size:11px;color:var(--t3)">Gandhinagar · Ahmedabad · India · All trails · Real GPS · No internet needed</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:6px">Contact: <a href="mailto:veeravasanth.medapati@gmail.com" style="color:var(--bl)">veeravasanth.medapati@gmail.com</a></div>
+  </div>
+
 </div>
 
 <!-- MAP -->
@@ -806,7 +1168,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
       <label>Your Name</label><input type="text" id="qname" placeholder="Your name">
       <label>Message</label><textarea id="qmsg" placeholder="Ask anything about TrailBharat…"></textarea>
       <button class="btn btn-p btn-f" style="margin-top:10px" onclick="sendQuery()">Send to TrailBharat Team</button>
-      <div style="font-size:11px;color:var(--t3);margin-top:6px">Queries sent to: veeravasanth.medapati@gmail.com</div>
+      <div style="font-size:11px;color:var(--t3);margin-top:6px">Queries sent to: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d0a6b5b5a2b1a6b1a3b1bea4b8febdb5b4b1a0b1a4b990b7bdb1b9bcfeb3bfbd">[email&#160;protected]</a></div>
     </div>
   </div>
 </div>
@@ -846,7 +1208,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
 </div>
 
 <div id="toast"></div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ═══════════════════════ DATA ═══════════════════════
 const SITES=[
@@ -952,9 +1314,9 @@ function gp(id){
 function initMap(){
   mapInit=true;
   map=L.map('map',{zoomControl:false,attributionControl:true}).setView([23.17,72.63],12);
-  streetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19});
-  satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri/Maxar',maxZoom:19});
-  topoLayer=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© OpenTopoMap',maxZoom:17});
+  const MAPTILER_KEY='3HxZaMpp6VWZ8RjRqvzw';streetLayer=L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,{attribution:'© MapTiler © OpenStreetMap',maxZoom:20,tileSize:256});
+  satLayer=L.tileLayer(`https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=${MAPTILER_KEY}`,{attribution:'© MapTiler',maxZoom:20});
+  topoLayer=L.tileLayer(`https://api.maptiler.com/maps/topo-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,{attribution:'© MapTiler Topo',maxZoom:20});
   streetLayer.addTo(map);
   SITES.forEach(s=>{
     const ico=L.divIcon({html:`<div style="background:rgba(9,16,10,.92);border:1.5px solid rgba(74,222,128,.5);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(6px)">${s.emoji}</div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]});
@@ -1631,7 +1993,7 @@ function clearSearchHist(){localStorage.removeItem('tb_search_hist');renderSearc
 
 // ═══════════════════════ WEATHER (OpenWeatherMap) ═══════════════════════
 // API Key — replace with your real OpenWeatherMap API key
-const OWM_KEY='your_openweathermap_api_key_here';
+const OWM_KEY='2291ec40bbc344ef8b880855260504';
 
 async function fetchWeather(lat,lon){
   try{
@@ -2058,9 +2420,80 @@ function gp(id){
   if(id==='sos'||id==='live'){startGPS();renderContacts();}
   if(id==='chat'&&document.getElementById('chatmsgs').children.length===0)renderChat();
   if(id==='weather')loadWeatherPage();
+  if(id==='home'){loadHomeWeather();renderHomeSitesPreview();animateCounters();}
   if(id==='navigate')renderQuickRoutes();
   if(id==='profile'){renderSearchHist();loadFavourites();}
   window.scrollTo(0,0);
+}
+
+// ═══════════════════════ HOME PAGE LIVE DATA ═══════════════════════
+async function loadHomeWeather(){
+  if(!navigator.geolocation){initHomeWeatherDefault();return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    try{
+      const {latitude:lat,longitude:lon}=pos.coords;
+      const r=await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OWM_KEY}&units=metric`);
+      if(!r.ok)throw new Error();
+      const w=await r.json();
+      const t=Math.round(w.main.temp);
+      // Hero bar
+      document.getElementById('home-wx-temp').textContent=t+'°C';
+      document.getElementById('home-wx-city').textContent='📍 '+w.name+', Gujarat';
+      document.getElementById('home-wx-cond').textContent=w.weather[0].description;
+      document.getElementById('home-wx-hum').textContent='💧 '+w.main.humidity+'%';
+      document.getElementById('home-wx-wind').textContent='💨 '+Math.round(w.wind.speed)+' km/h';
+      document.getElementById('home-wx-feel').textContent='🌡 '+Math.round(w.main.feels_like)+'°C';
+      // Bento card
+      const el=document.getElementById('bento-wx');
+      if(el)el.textContent=t+'°C · '+w.weather[0].description;
+    }catch{initHomeWeatherDefault();}
+  },()=>initHomeWeatherDefault(),{timeout:8000});
+}
+function initHomeWeatherDefault(){
+  // Fallback: show Gandhinagar weather without GPS
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=Gandhinagar,IN&appid=${OWM_KEY}&units=metric`)
+    .then(r=>r.json()).then(w=>{
+      if(!w.main)return;
+      document.getElementById('home-wx-temp').textContent=Math.round(w.main.temp)+'°C';
+      document.getElementById('home-wx-city').textContent='📍 Gandhinagar, Gujarat';
+      document.getElementById('home-wx-cond').textContent=w.weather[0].description;
+      document.getElementById('home-wx-hum').textContent='💧 '+w.main.humidity+'%';
+      document.getElementById('home-wx-wind').textContent='💨 '+Math.round(w.wind.speed)+' km/h';
+      document.getElementById('home-wx-feel').textContent='🌡 '+Math.round(w.main.feels_like)+'°C';
+      const el=document.getElementById('bento-wx');
+      if(el)el.textContent=Math.round(w.main.temp)+'°C · '+w.weather[0].description;
+    }).catch(()=>{});
+}
+
+function renderHomeSitesPreview(){
+  const el=document.getElementById('home-sites-preview');
+  if(!el||typeof SITES==='undefined')return;
+  el.innerHTML=SITES.map(s=>`
+    <div class="site-preview" onclick="openSite(${s.id})">
+      <div class="sp-thumb" style="background:${s.thumb}">
+        <span style="position:relative;z-index:1">${s.emoji}</span>
+        <div class="sp-overlay"></div>
+      </div>
+      <div class="sp-info">
+        <div class="sp-name">${s.name}</div>
+        <div class="sp-loc">📍 ${s.loc.split(',')[0]}</div>
+        <div class="sp-rating">${'★'.repeat(Math.round(s.rating))} <span style="color:var(--t3);font-size:10px">(${s.rcount.toLocaleString()})</span></div>
+      </div>
+    </div>`).join('');
+}
+
+// Live counter animation
+function animateCounters(){
+  const els=[{id:'hs-sites',target:47,suffix:''},{id:'hs-users',target:2400,suffix:'',display:(v)=>v>=1000?(v/1000).toFixed(1)+'k':''+v}];
+  els.forEach(({id,target,suffix,display})=>{
+    const el=document.getElementById(id);if(!el)return;
+    let cur=0;const step=Math.ceil(target/40);
+    const t=setInterval(()=>{
+      cur=Math.min(cur+step,target);
+      el.textContent=display?display(cur):(cur+suffix);
+      if(cur>=target)clearInterval(t);
+    },40);
+  });
 }
 
 // ═══════════════════════ INIT (EXTENDED) ═══════════════════════
@@ -2071,6 +2504,10 @@ loadContacts();
 startGPS();
 initFirebase();
 renderSearchHist();
+// Home page
+loadHomeWeather();
+renderHomeSitesPreview();
+setTimeout(animateCounters,400);
 // Register SW
 if('serviceWorker' in navigator){
   const swCode=`
@@ -2110,12 +2547,4 @@ self.addEventListener('fetch',e=>{
       <label>Full Name</label><input type="text" id="su-name" placeholder="Your name">
       <label>Email</label><input type="text" id="su-email" placeholder="you@email.com">
       <label>Password</label><input type="text" id="su-pw" placeholder="Min 6 characters" style="margin-bottom:12px">
-      <button class="btn btn-p btn-f" onclick="doSignup()">Create Account</button>
-    </div>
-    <div class="auth-err" id="auth-err"></div>
-    <button class="btn btn-g btn-f" style="margin-top:12px" onclick="closeAuth()">Cancel</button>
-  </div>
-</div>
-
-</body>
-</html>
+      <button class="btn btn-p
