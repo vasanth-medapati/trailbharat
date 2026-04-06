@@ -609,7 +609,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
         <div class="bcard-content">
           <span class="bcard-ico">🗺</span>
           <div class="bcard-t">Live Map — India</div>
-          <div class="bcard-d">Street · Satellite · Topo · Offline tiles · Safety overlays · Full India coverage</div>
+          <div class="bcard-d">Street · Satellite · Topo · Offline tiles · Safety overlays · Full India coverage — 3 free map styles</div>
         </div>
         <div style="position:absolute;bottom:-10px;right:-10px;font-size:80px;opacity:.06">🗺</div>
       </div>
@@ -618,7 +618,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
         <div class="bcard-content">
           <span class="bcard-ico">🤖</span>
           <div class="bcard-t" style="color:#a78bfa">AI Trip Planner</div>
-          <div class="bcard-d">AI knows every trail, site, food spot and hotel in Gandhinagar & Ahmedabad</div>
+          <div class="bcard-d">GPT-4o AI knows every trail, site, food spot and hotel in Gandhinagar & Ahmedabad</div>
         </div>
       </div>
 
@@ -753,7 +753,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
     <div style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--g);margin-bottom:6px">🏔 TrailBharat</div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:12px">Navigate India. Offline. In 3D.</div>
     <div style="font-size:11px;color:var(--t3)">Gandhinagar · Ahmedabad · India · All trails · Real GPS · No internet needed</div>
-    <div style="font-size:11px;color:var(--t3);margin-top:6px">Contact: <a href="/cdn-cgi/l/email-protection#b1c7d4d4c3d0c7d0c2d0dfc5d99fdcd4d5d0c1d0c5d8f1d6dcd0d8dd9fd2dedc" style="color:var(--bl)"><span class="__cf_email__" data-cfemail="d2a4b7b7a0b3a4b3a1b3bca6bafcbfb7b6b3a2b3a6bb92b5bfb3bbbefcb1bdbf">[email&#160;protected]</span></a></div>
+    <div style="font-size:11px;color:var(--t3);margin-top:6px">Contact: <a href="/cdn-cgi/l/email-protection#a7d1c2c2d5c6d1c6d4c6c9d3cf89cac2c3c6d7c6d3cee7c0cac6cecb89c4c8ca" style="color:var(--bl)"><span class="__cf_email__" data-cfemail="c9bfacacbba8bfa8baa8a7bda1e7a4acada8b9a8bda089aea4a8a0a5e7aaa6a4">[email&#160;protected]</span></a></div>
   </div>
 
 </div>
@@ -824,7 +824,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
   <div class="pi">
     <div style="margin-bottom:16px">
       <div style="font-family:var(--fd);font-size:22px;font-weight:800;letter-spacing:-.8px;margin-bottom:4px">🤖 AI Trip Planner</div>
-      <div style="font-size:12px;color:var(--t3)">Powered by GPT-4o · Always-on · Knows Gandhinagar & Ahmedabad</div>
+      <div style="font-size:12px;color:var(--t3)">Powered by GPT-4o AI · Always-on · Knows Gandhinagar & Ahmedabad</div>
     </div>
     <div class="chatbox">
       <div class="chatmsgs" id="chatmsgs"></div>
@@ -1297,15 +1297,15 @@ let contacts=[];
 let chatHistory=[{role:'assistant',content:"Hi! I'm your TrailBharat AI guide for Gandhinagar & Ahmedabad. Ask me anything — trip planning, heritage history, trekking routes, food spots, hotels, safety tips. I know this region well! 🏔"}];
 const STOKEN=Math.random().toString(36).substr(2,8).toUpperCase();
 
-/* gp() defined below with full page logic */
+/* gp() with full logic defined below */
 
 // ═══════════════════════ MAP ═══════════════════════
 function initMap(){
   mapInit=true;
   map=L.map('map',{zoomControl:false,attributionControl:true}).setView([23.17,72.63],12);
-  streetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',maxZoom:19,subdomains:'abc'});
-  satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri, Maxar, Earthstar Geographics',maxZoom:19});
-  topoLayer=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://opentopomap.org">OpenTopoMap</a>',maxZoom:17,subdomains:'abc'});
+  streetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:19,subdomains:'abc'});
+  satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri Maxar Earthstar Geographics',maxZoom:19});
+  topoLayer=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© OpenTopoMap',maxZoom:17,subdomains:'abc'});
   streetLayer.addTo(map);
   SITES.forEach(s=>{
     const ico=L.divIcon({html:`<div style="background:rgba(9,16,10,.92);border:1.5px solid rgba(74,222,128,.5);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(6px)">${s.emoji}</div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]});
@@ -1635,14 +1635,14 @@ Be conversational, helpful, specific and accurate. Give real prices in ₹, real
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
       body:JSON.stringify({model:'gpt-4o',max_tokens:1200,messages:apiMsgs})
     });
-    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error?.message||'HTTP '+res.status);}
+    if(!res.ok){const er=await res.json().catch(()=>({}));throw new Error(er.error?.message||'HTTP '+res.status);}
     const data=await res.json();
     const reply=data.choices?.[0]?.message?.content||'No response. Please try again.';
     chatHistory.push({role:'assistant',content:reply});
     hideTyping();appendMsg('assistant',reply);
   }catch(e){
     hideTyping();
-    const fallback='⚠ AI error: '+e.message+'\n\nQuick help:\n• Police: 100  Ambulance: 108\n• Gujarat Tourism: gujarattourism.com';
+    const fallback='⚠ AI error: '+e.message+'\n\nQuick help:\n• Police: 100  |  Ambulance: 108\n• Gujarat Tourism: gujarattourism.com\n• Book hotels: makemytrip.com';
     chatHistory.push({role:'assistant',content:fallback});
     appendMsg('assistant',fallback);
   }
@@ -1753,12 +1753,12 @@ async function analyFo(){
   const tp=document.getElementById('ftyp'),out=document.getElementById('fout');
   tp.style.display='block';out.style.display='none';
   try{
-    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
-      body:JSON.stringify({model:'gpt-4o',max_tokens:700,
-        messages:[
-          {role:'system',content:'You are a trail safety analyst for Gujarat, India. Be direct and practical.'},
-          {role:'user',content:`Trekker reports: "${notes}". Trail: ${foPts.length} waypoints, ${document.getElementById('fdist').textContent}, ${document.getElementById('fdur').textContent}. Give: 1) Safety assessment 2) Recommended action 3) Flag for community? 4) Alternatives near Gandhinagar/Ahmedabad.`}
-        ]})});
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:700,messages:[
+        {role:'system',content:'You are a trail safety analyst for Gujarat, India. Be direct and practical.'},
+        {role:'user',content:`Trekker reports: "${notes}". Trail: ${foPts.length} waypoints, ${document.getElementById('fdist').textContent}, ${document.getElementById('fdur').textContent}. Give: 1) Safety assessment 2) Recommended action 3) Flag for community? 4) Alternative routes near Gandhinagar/Ahmedabad.`}
+      ]})});
     const d=await res.json();
     const txt=d.choices?.[0]?.message?.content||'Analysis unavailable.';
     tp.style.display='none';out.textContent=txt;out.style.display='block';
@@ -1812,7 +1812,7 @@ window.addEventListener('beforeinstallprompt',e=>{
 function installPWA(){
   if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.choosenOption=null;deferredPrompt=null;document.getElementById('install-btn').style.display='none';}
 }
-// SW registered via blob URL below
+// SW via blob URL below
 
 // ═══════════════════════ FIREBASE AUTH ═══════════════════════
 // Using Firebase CDN with compat SDK
@@ -2325,11 +2325,7 @@ function openSite(id){
       <div class="clabel">Write a Review</div>
       ${currentUser?`
         <div class="star-pick" id="star-pick-${s.id}">
-          ${[1,2,3,4,5].map(i=>`<span onclick="pickStar(${s.id},${i})" data-v="${i}">☆</span>`).join('')}
-        </div>
-        <textarea id="rv-txt-${s.id}" placeholder="Share your experience…" style="margin-bottom:8px"></textarea>
-        <button class="btn btn-p btn-f" onclick="submitReview(${s.id})">Submit Review</button>
-      `:'<div style="font-size:13px;color:var(--t3)">Login to write a review.</div><button class="btn btn-o btn-f" style="margin-top:8px" onclick="openAuth()">Login</button>'}
+          ${[1,2,3,4,5].map(i=>`<span onclick="pickStar(${s.id},${i})" d`:'<div style="font-size:13px;color:var(--t3)">Login to write a review.</div><button class="btn btn-o btn-f" style="margin-top:8px" onclick="openAuth()">Login</button>'}
     </div>`;
 
   document.getElementById('tc-book').innerHTML=buildBookLinks(s.loc,s.name);
@@ -2525,17 +2521,15 @@ self.addEventListener('fetch',e=>{
     </div>
     <div id="auth-login">
       <label>Email</label><input type="text" id="li-email" placeholder="you@email.com">
-      <label>Password</label><input type="text" id="li-pw" placeholder="Password" style="margin-bottom:12px">
+      <label>Password</label><input type="password" id="li-pw" placeholder="Password" style="margin-bottom:12px">
       <button class="btn btn-p btn-f" onclick="doLogin()">Login</button>
       <div style="text-align:center;margin:10px 0;color:var(--t3);font-size:12px">— or —</div>
       <button class="btn btn-o btn-f" onclick="doGoogleLogin()">🌐 Continue with Google</button>
     </div>
     <div id="auth-signup" style="display:none">
-      <label>Full Name</label><input type="text" id="su-name" placeholder="Your full name">
-      <label>Email</label>
-      <input type="text" id="su-email" placeholder="you@email.com">
-      <label>Password</label>
-      <input type="password" id="su-pw" placeholder="Min 6 characters" style="margin-bottom:12px">
+      <label>Full Name</label><input type="text" id="su-name" placeholder="Your name">
+      <label>Email</label><input type="text" id="su-email" placeholder="you@email.com">
+      <label>Password</label><input type="password" id="su-pw" placeholder="Min 6 characters" style="margin-bottom:12px">
       <button class="btn btn-p btn-f" onclick="doSignup()">Create Account</button>
     </div>
     <div id="auth-err" style="display:none;color:var(--r);font-size:13px;margin-top:10px;padding:8px 12px;background:rgba(239,68,68,.08);border-radius:8px;"></div>
