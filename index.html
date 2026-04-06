@@ -753,7 +753,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
     <div style="font-family:var(--fd);font-size:20px;font-weight:800;color:var(--g);margin-bottom:6px">🏔 TrailBharat</div>
     <div style="font-size:12px;color:var(--t3);margin-bottom:12px">Navigate India. Offline. In 3D.</div>
     <div style="font-size:11px;color:var(--t3)">Gandhinagar · Ahmedabad · India · All trails · Real GPS · No internet needed</div>
-    <div style="font-size:11px;color:var(--t3);margin-top:6px">Contact: <a href="mailto:veeravasanth.medapati@gmail.com" style="color:var(--bl)">veeravasanth.medapati@gmail.com</a></div>
+    <div style="font-size:11px;color:var(--t3);margin-top:6px">Contact: <a href="/cdn-cgi/l/email-protection#dfa9babaadbea9beacbeb1abb7f1b2babbbeafbeabb69fb8b2beb6b3f1bcb0b2" style="color:var(--bl)"><span class="__cf_email__" data-cfemail="0670636374677067756768726e286b6362677667726f46616b676f6a2865696b">[email&#160;protected]</span></a></div>
   </div>
 
 </div>
@@ -1208,7 +1208,7 @@ body.light input[type=text],body.light input[type=tel],body.light textarea,body.
 </div>
 
 <div id="toast"></div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ═══════════════════════ DATA ═══════════════════════
 const SITES=[
@@ -1314,9 +1314,10 @@ function gp(id){
 function initMap(){
   mapInit=true;
   map=L.map('map',{zoomControl:false,attributionControl:true}).setView([23.17,72.63],12);
-  const MAPTILER_KEY='3HxZaMpp6VWZ8RjRqvzw';streetLayer=L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,{attribution:'© MapTiler © OpenStreetMap',maxZoom:20,tileSize:256});
-  satLayer=L.tileLayer(`https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=${MAPTILER_KEY}`,{attribution:'© MapTiler',maxZoom:20});
-  topoLayer=L.tileLayer(`https://api.maptiler.com/maps/topo-v2/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`,{attribution:'© MapTiler Topo',maxZoom:20});
+  // Free tile layers — no API key required
+  streetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:19,subdomains:'abc'});
+  satLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri, Maxar, Earthstar Geographics',maxZoom:19});
+  topoLayer=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© OpenTopoMap (CC-BY-SA)',maxZoom:17,subdomains:'abc'});
   streetLayer.addTo(map);
   SITES.forEach(s=>{
     const ico=L.divIcon({html:`<div style="background:rgba(9,16,10,.92);border:1.5px solid rgba(74,222,128,.5);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:18px;backdrop-filter:blur(6px)">${s.emoji}</div>`,className:'',iconSize:[34,34],iconAnchor:[17,17]});
@@ -1640,23 +1641,20 @@ async function sendChat(){
 Be conversational, helpful, specific and accurate. Give real prices in ₹, real distances, real timings. If asked about booking, mention MakeMyTrip, Goibibo, OYO, Agoda. Keep responses concise but thorough.`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const msgs=[{role:'system',content:sysPrompt},...chatHistory.filter(m=>m.role!=='system').map(m=>({role:m.role,content:m.content}))];
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:1200,
-        system:sysPrompt,
-        messages:chatHistory.filter(m=>m.role!=='system').map(m=>({role:m.role,content:m.content}))
-      })
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:1200,messages:msgs})
     });
-    if(!res.ok)throw new Error('API '+res.status);
+    if(!res.ok){const err=await res.json();throw new Error(err.error?.message||'API '+res.status);}
     const data=await res.json();
-    const reply=data.content?.map(b=>b.text||'').join('')||'I could not get a response. Please try again.';
+    const reply=data.choices?.[0]?.message?.content||'I could not get a response. Please try again.';
     chatHistory.push({role:'assistant',content:reply});
     hideTyping();appendMsg('assistant',reply);
   }catch(e){
     hideTyping();
-    const fallback='I\'m having trouble connecting right now. For Gandhinagar/Ahmedabad trip planning, you can check:\n• Gujarat Tourism: gujarattourism.com\n• Heritage info: heritageofahmedabad.com\n• Book hotels: makemytrip.com or booking.com\n• Emergency: 100 (Police) / 108 (Ambulance)\n\nPlease check your internet connection and try again.';
+    const fallback='I\'m having trouble connecting right now. For Gandhinagar/Ahmedabad trip planning, you can check:\n• Gujarat Tourism: gujarattourism.com\n• Heritage info: heritageofahmedabad.com\n• Book hotels: makemytrip.com or booking.com\n• Emergency: 100 (Police) / 108 (Ambulance)\n\nError: '+e.message;
     chatHistory.push({role:'assistant',content:fallback});
     appendMsg('assistant',fallback);
   }
@@ -1767,11 +1765,11 @@ async function analyFo(){
   const tp=document.getElementById('ftyp'),out=document.getElementById('fout');
   tp.style.display='block';out.style.display='none';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,
-        messages:[{role:'user',content:`You are a trail safety analyst for Gujarat, India. A trekker reports: "${notes}". Trail: ${foPts.length} waypoints, ${document.getElementById('fdist').textContent}, ${document.getElementById('fdur').textContent}. Provide: 1) Safety assessment, 2) Recommended action, 3) Flag for community database? 4) Alternative routes near Gandhinagar/Ahmedabad. Be direct.`}]})});
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+OPENAI_KEY},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:700,
+        messages:[{role:'system',content:'You are a trail safety analyst for Gujarat, India. Be direct and practical.'},{role:'user',content:`A trekker reports: "${notes}". Trail: ${foPts.length} waypoints, ${document.getElementById('fdist').textContent}, ${document.getElementById('fdur').textContent}. Provide: 1) Safety assessment, 2) Recommended action, 3) Flag for community database? 4) Alternative routes near Gandhinagar/Ahmedabad.`}]})});
     const d=await res.json();
-    const txt=d.content?.map(b=>b.text||'').join('')||'Analysis unavailable.';
+    const txt=d.choices?.[0]?.message?.content||'Analysis unavailable.';
     tp.style.display='none';out.textContent=txt;out.style.display='block';
   }catch{tp.style.display='none';out.textContent='AI offline. Check connection.';out.style.display='block';}
 }
@@ -1824,8 +1822,8 @@ function installPWA(){
   if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.choosenOption=null;deferredPrompt=null;document.getElementById('install-btn').style.display='none';}
 }
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
+  // SW registered via blob URL below at page init
+
 
 // ═══════════════════════ FIREBASE AUTH ═══════════════════════
 // Using Firebase CDN with compat SDK
@@ -1993,7 +1991,8 @@ function clearSearchHist(){localStorage.removeItem('tb_search_hist');renderSearc
 
 // ═══════════════════════ WEATHER (OpenWeatherMap) ═══════════════════════
 // API Key — replace with your real OpenWeatherMap API key
-const OWM_KEY='2291ec40bbc344ef8b880855260504';
+const OWM_KEY='46f4ec4893c6ae3d368a77b370f4939a';
+const OPENAI_KEY='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';
 
 async function fetchWeather(lat,lon){
   try{
@@ -2481,7 +2480,7 @@ function renderHomeSitesPreview(){
       </div>
     </div>`).join('');
 }
-
+  
 // Live counter animation
 function animateCounters(){
   const els=[{id:'hs-sites',target:47,suffix:''},{id:'hs-users',target:2400,suffix:'',display:(v)=>v>=1000?(v/1000).toFixed(1)+'k':''+v}];
@@ -2544,7 +2543,4 @@ self.addEventListener('fetch',e=>{
       <button class="btn btn-o btn-f" onclick="doGoogleLogin()">🌐 Continue with Google</button>
     </div>
     <div id="auth-signup" style="display:none">
-      <label>Full Name</label><input type="text" id="su-name" placeholder="Your name">
-      <label>Email</label><input type="text" id="su-email" placeholder="you@email.com">
-      <label>Password</label><input type="text" id="su-pw" placeholder="Min 6 characters" style="margin-bottom:12px">
-      <button class="btn btn-p
+      <label>Full Name</label><input type="text" id="su-
